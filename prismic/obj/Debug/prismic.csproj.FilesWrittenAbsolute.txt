@@ -1,0 +1,6 @@
+/Volumes/Devdisk/Prismic/csharp-kit/prismic/obj/Debug/.NETFramework,Version=v4.5.AssemblyAttribute.cs
+/Volumes/Devdisk/Prismic/csharp-kit/prismic/bin/Debug/prismic.dll.mdb
+/Volumes/Devdisk/Prismic/csharp-kit/prismic/bin/Debug/prismic.dll
+/Volumes/Devdisk/Prismic/csharp-kit/prismic/obj/Debug/prismic.dll
+/Volumes/Devdisk/Prismic/csharp-kit/prismic/obj/Debug/prismic.dll.mdb
+/Volumes/Devdisk/Prismic/csharp-kit/prismic/bin/Debug/Newtonsoft.Json.dll
