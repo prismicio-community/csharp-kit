@@ -13,10 +13,10 @@ namespace prismic.tests
 		public void ShouldAccessGroupField()
 		{
 			var url = "https://micro.prismic.io/api";
-			Api api = prismic.Api.Get(url);
+			Api api = prismic.Api.Get(url).Result;
 			var form = api.Form("everything").Ref(api.Master).Query (@"[[:d = at(document.type, ""docchapter"")]]");
 
-			var document = form.Submit().Results.First();
+			var document = form.Submit().Result.Results.First();
 			var group = document.GetGroup ("docchapter.docs");
 			Assert.IsNotNull (group, "group was not found");
 
@@ -31,10 +31,10 @@ namespace prismic.tests
 		public void ShouldSerializeGroupToHTML()
 		{
 			var url = "https://micro.prismic.io/api";
-			Api api = prismic.Api.Get(url);
+			Api api = prismic.Api.Get(url).Result;
 			var form = api.Form("everything").Ref(api.Master).Query (@"[[:d = at(document.type, ""docchapter"")]]");
 
-			var document = form.Submit().Results[1];
+			var document = form.Submit().Result.Results[1];
 			var group = document.GetGroup ("docchapter.docs");
 
 			Assert.IsNotNull (group, "group was not found");
@@ -53,10 +53,10 @@ namespace prismic.tests
 		public void ShouldAccessMediaLink()
 		{
 			var url = "https://test-public.prismic.io/api";
-			Api api = prismic.Api.Get(url);
+			Api api = prismic.Api.Get(url).Result;
 			var form = api.Form("everything").Ref(api.Master).Query (@"[[:d = at(document.id, ""Uyr9_wEAAKYARDMV"")]]");
 
-			var document = form.Submit().Results.First();
+			var document = form.Submit().Result.Results.First();
 			var link = document.GetLink ("test-link.related");
 			Assert.IsNotNull (link, "link was not found");
 			Assert.AreEqual ("baastad.pdf", ((fragments.FileLink)link).Filename);
@@ -67,10 +67,11 @@ namespace prismic.tests
 		public void ShouldAccessFirstLinkInMultipleDocumentLink()
 		{
 			var url = "https://lesbonneschoses.prismic.io/api";
-			Api api = prismic.Api.Get(url);
-			var form = api.Form("everything").Ref(api.Master).Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXba"")]]");
-
-			var document = form.Submit().Results.First();
+			Api api = prismic.Api.Get(url).Result;
+			Console.WriteLine ("Got API " + api);
+			var response = api.Form("everything").Ref(api.Master).Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXba"")]]").Submit().Result;
+			Console.WriteLine ("Got response " + response);
+			var document = response.Results[0];
 			var link = document.GetLink ("job-offer.location");
 			Assert.IsNotNull (link, "link was not found");
 			Assert.AreEqual ("paris-saint-lazare", ((fragments.DocumentLink)link).Slug);
@@ -96,10 +97,10 @@ namespace prismic.tests
 			});
 
 			var url = "https://lesbonneschoses.prismic.io/api";
-			Api api = prismic.Api.Get(url);
+			Api api = prismic.Api.Get(url).Result;
 			var form = api.Form("everything").Ref(api.Master).Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbf"")]]");
 
-			var document = form.Submit().Results.First();
+			var document = form.Submit().Result.Results.First();
 			var text = document.GetStructuredText ("article.content");
 			var html = text.AsHtml(resolver, serializer);
 			Assert.AreEqual("<h2>A tale of pastry and passion</h2>\n"
@@ -120,10 +121,10 @@ namespace prismic.tests
 		public void ShouldFindAllLinksInMultipleDocumentLink()
 		{
 			var url = "https://lesbonneschoses.prismic.io/api";
-			Api api = prismic.Api.Get(url);
+			Api api = prismic.Api.Get(url).Result;
 			var form = api.Form("everything").Ref(api.Master).Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXba"")]]");
 
-			var document = form.Submit().Results.First();
+			var document = form.Submit().Result.Results.First();
 			var links = document.GetAll ("job-offer.location");
 			Assert.AreEqual (3, links.Count());
 			Assert.AreEqual ("paris-saint-lazare", ((fragments.DocumentLink)links[0]).Slug);
@@ -134,10 +135,10 @@ namespace prismic.tests
 		public void ShouldAccessStructuredText()
 		{
 			var url = "https://lesbonneschoses.prismic.io/api";
-			Api api = prismic.Api.Get(url);
+			Api api = prismic.Api.Get(url).Result;
 				var form = api.Form("everything").Ref(api.Master).Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbX"")]]");
 
-			var document = form.Submit().Results.First();
+			var document = form.Submit().Result.Results.First();
 			var maybeText = document.GetStructuredText ("blog-post.body");
 			Assert.IsNotNull (maybeText);
 		}
@@ -147,11 +148,11 @@ namespace prismic.tests
 		public void ShouldAccessImage()
 		{
 			var url = "https://test-public.prismic.io/api";
-			Api api = prismic.Api.Get(url);
+			Api api = prismic.Api.Get(url).Result;
 			var form = api.Form("everything").Ref(api.Master).Query (@"[[:d = at(document.id, ""Uyr9sgEAAGVHNoFZ"")]]");
 
 			var resolver = prismic.DocumentLinkResolver.For (l => String.Format ("http://localhost/{0}/{1}", l.Type, l.Id));
-			var document = form.Submit().Results.First();
+			var document = form.Submit().Result.Results.First();
 			var maybeImgView = document.GetImageView ("article.illustration", "icon");
 			Assert.IsNotNull (maybeImgView);
 

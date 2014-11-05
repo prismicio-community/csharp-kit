@@ -1,9 +1,34 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="prismic/MyClass.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="prismic.tests/DocTest.cs">
     <Files>
-      <File FileName="prismic/MyClass.cs" Line="1" Column="1" />
+      <File FileName="prismic/Api.cs" Line="5" Column="5" />
+      <File FileName="prismic/Predicates.cs" Line="10" Column="10" />
+      <File FileName="prismic/Response.cs" Line="6" Column="6" />
+      <File FileName="prismic.tests/FragmentsTests.cs" Line="42" Column="42" />
+      <File FileName="prismic/WithFragments.cs" Line="16" Column="16" />
+      <File FileName="prismic/StructuredText.cs" Line="27" Column="27" />
+      <File FileName="prismic/Experiments.cs" Line="17" Column="17" />
+      <File FileName="prismic.tests/DocTest.cs" Line="60" Column="60" />
+      <File FileName="prismic/Document.cs" Line="34" Column="34" />
+      <File FileName="prismic/Fragment.cs" Line="1" Column="1" />
     </Files>
+    <Pads>
+      <Pad Id="MonoDevelop.NUnit.TestPad">
+        <State expanded="True">
+          <Node name="prismic.tests" expanded="True">
+            <Node name="prismic" expanded="True">
+              <Node name="tests" expanded="True">
+                <Node name="DocTest" expanded="True">
+                  <Node name="DateTimestampTest" selected="True" />
+                </Node>
+                <Node name="FragmentsTests" expanded="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />

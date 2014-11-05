@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace prismic
 {
@@ -30,48 +31,99 @@ namespace prismic
 			return result;
 		}
 
-		public fragments.Text GetText(String field) {
-			return null; // TODO
+		public Fragment Get(String field) {
+			Fragment single = null;
+			Fragments.TryGetValue(field, out single);
+			if (single == null) {
+				IList<Fragment> multi = GetAll(field);
+				if (multi.Count > 0) {
+					single = multi [0];
+				}
+			}
+			return single;
+		}
+
+		public String GetText(String field) {
+			Fragment frag = Get (field);
+			if (frag is fragments.Text) {
+				return ((fragments.Text)frag).Value;
+			}
+			if (frag is fragments.Number) {
+				return ((fragments.Number)frag).Value.ToString ();
+			}
+			if (frag is fragments.Color) {
+				return ((fragments.Color)frag).Hex;
+			}
+			if (frag is fragments.StructuredText) {
+				var result = "";
+				foreach (fragments.StructuredText.Block block in ((fragments.StructuredText)frag).Blocks) {
+					if (block is fragments.StructuredText.TextBlock) {
+						result += ((fragments.StructuredText.TextBlock)block).Text;
+					}
+				}
+				return result;
+			}
+			if (frag is fragments.Number) {
+				return ((fragments.Number)frag).Value.ToString ();
+			}
+			return null;
 		}
 
 		public fragments.Number GetNumber(String field) {
-			return null; // TODO
+			Fragment frag = Get (field);
+			return frag is fragments.Number ? (fragments.Number)frag : null;
 		}
 
 		public fragments.Image.View GetImageView(String field, String view) {
-			return null; // TODO
+			var image = GetImage (field);
+			if (image != null)
+				return image.GetView (view);
+			return null;
+		}
+
+		public fragments.Image GetImage(String field) {
+			Fragment frag = Get (field);
+			return frag is fragments.Image ? (fragments.Image)frag : null;
 		}
 
 		public fragments.Link GetLink(String field) {
-			return null; // TODO
+			Fragment frag = Get (field);
+			return frag is fragments.Link ? (fragments.Link)frag : null;
 		}
 
 		public fragments.Date GetDate(String field) {
-			return null; // TODO
+			Fragment frag = Get (field);
+			return frag is fragments.Date ? (fragments.Date)frag : null;
 		}
 
 		public fragments.Timestamp GetTimestamp(String field) {
-			return null; // TODO
+			Fragment frag = Get (field);
+			return frag is fragments.Timestamp ? (fragments.Timestamp)frag : null;
 		}
 
 		public fragments.Embed GetEmbed(String field) {
-			return null; // TODO
+			Fragment frag = Get (field);
+			return frag is fragments.Embed ? (fragments.Embed)frag : null;
 		}
 
 		public fragments.Group GetGroup(String field) {
-			return null; // TODO
+			Fragment frag = Get (field);
+			return frag is fragments.Group ? (fragments.Group)frag : null;
 		}
 
 		public fragments.Color GetColor(String field) {
-			return null; // TODO
+			Fragment frag = Get (field);
+			return frag is fragments.Color ? (fragments.Color)frag : null;
 		}
 
 		public fragments.GeoPoint GetGeoPoint(String field) {
-			return null; // TODO
+			Fragment frag = Get (field);
+			return frag is fragments.GeoPoint ? (fragments.GeoPoint)frag : null;
 		}
 
 		public fragments.StructuredText GetStructuredText(String field) {
-			return null; // TODO
+			Fragment frag = Get (field);
+			return frag is fragments.StructuredText ? (fragments.StructuredText)frag : null;
 		}
 
 		public String GetHtml(String field, DocumentLinkResolver resolver) {

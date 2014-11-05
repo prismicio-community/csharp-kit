@@ -339,7 +339,11 @@ namespace prismic
 				var id = (string)document["id"];
 				var type = (string)document["type"];
 				var slug = (string)document["slug"];
-				ISet<String> tags = new HashSet<String>(json ["tags"].Select (r => (string)r));
+				ISet<String> tags;
+				if (json["tags"] != null)
+					tags = new HashSet<String>(json ["tags"].Select (r => (string)r));
+				else
+					tags = new HashSet<String> ();
 				return new DocumentLink(id, type, tags, slug, broken);
 			}
 
@@ -544,6 +548,7 @@ namespace prismic
 
 		public static class FragmentParser {
 			public static Fragment Parse(String type, JToken json) {
+				Console.WriteLine ("Fragment parse for type " + type);
 				switch (type) {
 				case "StructuredText":
 					return StructuredText.Parse (json);

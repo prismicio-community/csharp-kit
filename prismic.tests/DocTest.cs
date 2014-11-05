@@ -3,7 +3,7 @@ using prismic;
 using System;
 using System.Linq;
 using System.ComponentModel;
-using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace prismic.tests
 {
@@ -14,7 +14,7 @@ namespace prismic.tests
 		public void ApiTest ()
 		{
 			// startgist:c023234afbc20303f792:prismic-api.cs
-			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
+			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api").Result;
 			// endgist
 			Assert.IsNotNull (api);
 		}
@@ -25,7 +25,7 @@ namespace prismic.tests
 		{
 			// startgist:a6f1067b28cc9dca7a82:prismic-apiPrivate.cs
 			// This will fail because the token is invalid, but this is how to access a private API
-			Api api = prismic.Api.Get("MC5-XXXXXXX-vRfvv70", "https://lesbonneschoses.prismic.io/api");
+			Api api = prismic.Api.Get("MC5-XXXXXXX-vRfvv70", "https://lesbonneschoses.prismic.io/api").Result;
 			// endgist
 		}
 
@@ -34,7 +34,7 @@ namespace prismic.tests
 		{
 			// startgist:7b8defb1e1057ad27494:prismic-references.cs
 			var previewToken = "MC5VbDdXQmtuTTB6Z0hNWHF3.c--_vVbvv73vv73vv73vv71EA--_vS_vv73vv70T77-9Ke-_ve-_vWfvv70ebO-_ve-_ve-_vQN377-9ce-_vRfvv70";
-			Api api = prismic.Api.Get(previewToken, "https://lesbonneschoses.prismic.io/api");
+			Api api = prismic.Api.Get(previewToken, "https://lesbonneschoses.prismic.io/api").Result;
 			var stPatrickRef = api.Ref("St-Patrick specials");
 			// Now we'll use this reference for all our calls
 			var response = api.Form("everything")
@@ -44,14 +44,14 @@ namespace prismic.tests
 			// The documents object contains a Response object with all documents of type "product"
 			// including the new "Saint-Patrick's Cupcake"
 			// endgist
-			Assert.AreEqual(17, response.Results.Count());
+			Assert.AreEqual(17, response.Result.Results.Count());
 		}
 
 		[Test ()]
 		public void SimpleQueryTest ()
 		{
 			// startgist:6b01f5bd50568045f9a0:prismic-simplequery.cs
-			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
+			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api").Result;
 			var response = api
 				.Form("everything")
 				.Ref(api.Master)
@@ -59,20 +59,20 @@ namespace prismic.tests
 				.Submit();
 			// The response object contains all documents of type "product", paginated
 			// endgist
-			Assert.AreEqual (16, response.Results.Count());
+			Assert.AreEqual (16, response.Result.Results.Count());
 		}
 
 		[Test ()]
 		public void OrderingsTest ()
 		{
 			// startgist:6437bcf0207f170dace9:prismic-orderings.cs
-			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
+			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api").Result;
 			var response = api.Form("everything")
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.type, ""product"")]]")
 				.PageSize(100)
 				.Orderings("[my.product.price desc]")
-				.Submit();
+				.Submit().Result;
 			// The products are now ordered by price, highest first
 			var results = response.Results;
 			// endgist
@@ -83,14 +83,14 @@ namespace prismic.tests
 		public void PredicatesTest ()
 		{
 			// startgist:dbd1a1f4056ae7bf9959:prismic-predicates.cs
-			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
+			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api").Result;
 			var response = api
 				.Form("everything")
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.type, ""blog-post"")][:d = date.after(my.blog-post.date, 1401580800000)]]")
 				.Submit();
 			// endgist
-			Assert.AreEqual (0, response.Results.Count());
+			Assert.AreEqual (0, response.Result.Results.Count());
 		}
 
 		[Test ()]
@@ -113,14 +113,14 @@ namespace prismic.tests
 		[Test ()]
 		public void GetTextTest ()
 		{
-			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
+			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api").Result;
 			var response = api.Form("everything")
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbl"")]]")
-				.Submit();
+				.Submit().Result;
 			var doc = response.Results[0];
 			// startgist:7869828eaa8c1b8555d3:prismic-getText.cs
-			var author = doc.GetText("blog-post.author").Value;
+			var author = doc.GetText("blog-post.author");
 			// endgist
 			Assert.AreEqual(author, "John M. Martelle, Fine Pastry Magazine"); // gisthide
 		}
@@ -128,11 +128,11 @@ namespace prismic.tests
 		[Test ()]
 		public void GetNumberTest()
 		{
-			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
+			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api").Result;
 			var response = api.Form("everything")
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbO"")]]")
-				.Submit();
+				.Submit().Result;
 			var doc = response.Results[0];
 			// startgist:57e8cda4c83cadf7f7d0:prismic-getNumber.cs
 			// Number predicates
@@ -149,11 +149,11 @@ namespace prismic.tests
 		[Test ()]
 		public void ImagesTest()
 		{
-			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
+			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api").Result;
 			var response = api.Form("everything")
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbO"")]]")
-				.Submit();
+				.Submit().Result;
 			var doc = response.Results[0];
 			// startgist:2ba6c72a80cf9d2af15e:prismic-images.cs
 			// Accessing image fields
@@ -166,12 +166,13 @@ namespace prismic.tests
 		[Test ()]
 		public void DateTimestampTest()
 		{
-			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
+			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api").Result;
+			Console.WriteLine ("DateTimestampTest, got API " + api);
 			var response = api.Form("everything")
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbl"")]]")
 				.Submit();
-			var doc = response.Results[0];
+			var doc = response.Result.Results[0];
 			// startgist:653bcba6211a9b71429d:prismic-dateTimestamp.cs
 			// Date and Timestamp predicates
 			var dateBefore = "[[:d = date.before(my.product.releaseDate, \"2014-6-1\")]]";
@@ -209,7 +210,8 @@ namespace prismic.tests
 				prismic.DocumentLinkResolver.For (l => String.Format ("http://localhost/{0}/{1}", l.Type, l.Id));
 
 			var json = "{\"id\":\"abcd\",\"type\":\"article\",\"href\":\"\",\"slugs\":[],\"tags\":[],\"data\":{\"article\":{\"documents\":{\"type\":\"Group\",\"value\":[{\"linktodoc\":{\"type\":\"Link.document\",\"value\":{\"document\":{\"id\":\"UrDejAEAAFwMyrW9\",\"type\":\"doc\",\"tags\":[],\"slug\":\"installing-meta-micro\"},\"isBroken\":false}},\"desc\":{\"type\":\"StructuredText\",\"value\":[{\"type\":\"paragraph\",\"text\":\"A detailed step by step point of view on how installing happens.\",\"spans\":[]}]}},{\"linktodoc\":{\"type\":\"Link.document\",\"value\":{\"document\":{\"id\":\"UrDmKgEAALwMyrXA\",\"type\":\"doc\",\"tags\":[],\"slug\":\"using-meta-micro\"},\"isBroken\":false}}}]}}}}";
-			var document = JsonConvert.DeserializeObject<Document>(json);
+			var document = Document.Parse(JObject.Parse(json));
+			Console.WriteLine ("Parsed doc: " + document);
 			// startgist:b5b40c40a696911081d7:prismic-group.cs
 			var group = document.GetGroup("article.documents");
 			foreach (GroupDoc doc in group.GroupDocs) {
@@ -230,7 +232,7 @@ namespace prismic.tests
 		public void LinkTest()
 		{
 			var json = "{\"id\":\"abcd\",\"type\":\"article\",\"href\":\"\",\"slugs\":[],\"tags\":[],\"data\":{\"article\":{\"source\":{\"type\":\"Link.document\",\"value\":{\"document\":{\"id\":\"UlfoxUnM0wkXYXbE\",\"type\":\"product\",\"tags\":[\"Macaron\"],\"slug\":\"dark-chocolate-macaron\"},\"isBroken\":false}}}}}";
-			var document = JsonConvert.DeserializeObject<Document>(json);
+			var document = Document.Parse(JObject.Parse(json));
 			// startgist:f439d465a87cbddb2737:prismic-link.cs
 			var resolver =
 				prismic.DocumentLinkResolver.For (l => String.Format ("http://localhost/{0}/{1}", l.Id, l.Slug));
@@ -244,7 +246,7 @@ namespace prismic.tests
 		public void EmbedTest()
 		{
 			var json = "{\"id\":\"abcd\",\"type\":\"article\",\"href\":\"\",\"slugs\":[],\"tags\":[],\"data\":{\"article\":{\"video\":{\"type\":\"Embed\",\"value\":{\"oembed\":{\"provider_url\":\"http://www.youtube.com/\",\"type\":\"video\",\"thumbnail_height\":360,\"height\":270,\"thumbnail_url\":\"http://i1.ytimg.com/vi/baGfM6dBzs8/hqdefault.jpg\",\"width\":480,\"provider_name\":\"YouTube\",\"html\":\"<iframe width=\\\"480\\\" height=\\\"270\\\" src=\\\"http://www.youtube.com/embed/baGfM6dBzs8?feature=oembed\\\" frameborder=\\\"0\\\" allowfullscreen></iframe>\",\"author_name\":\"Siobhan Wilson\",\"version\":\"1.0\",\"author_url\":\"http://www.youtube.com/user/siobhanwilsonsongs\",\"thumbnail_width\":480,\"title\":\"Siobhan Wilson - All Dressed Up\",\"embed_url\":\"https://www.youtube.com/watch?v=baGfM6dBzs8\"}}}}}}";
-			var document = JsonConvert.DeserializeObject<Document>(json);
+			var document = Document.Parse(JObject.Parse(json));
 			// startgist:a0a1846d443b2fa39097:prismic-embed.cs
 			var video = document.GetEmbed ("article.video");
 			// Html is the code to include to embed the object, and depends on the embedded service
@@ -257,7 +259,7 @@ namespace prismic.tests
 		public void ColorTest()
 		{
 			var json = "{\"id\":\"abcd\",\"type\":\"article\",\"href\":\"\",\"slugs\":[],\"tags\":[],\"data\":{\"article\":{\"background\":{\"type\":\"Color\",\"value\":\"#000000\"}}}}";
-			var document = JsonConvert.DeserializeObject<Document>(json);
+			var document = Document.Parse(JObject.Parse(json));
 			// startgist:0d0fa9849ae5ff7c921c:prismic-color.cs
 			var bgcolor = document.GetColor("article.background");
 			var hex = bgcolor.Hex;
@@ -269,7 +271,7 @@ namespace prismic.tests
 		public void GeopointTest()
 		{
 			var json = "{\"id\":\"abcd\",\"type\":\"article\",\"href\":\"\",\"slugs\":[],\"tags\":[],\"data\":{\"article\":{\"location\":{\"type\":\"GeoPoint\",\"value\":{\"latitude\":48.877108,\"longitude\":2.333879}}}}}";
-			var document = JsonConvert.DeserializeObject<Document>(json);
+			var document = Document.Parse(JObject.Parse(json));
 			// startgist:ffd5197f8b1f3c9b302c:prismic-geopoint.cs
 			// "near" predicate for GeoPoint fragments
 			var near = "[[:d = geopoint.near(my.store.location, 48.8768767, 2.3338802, 10)]]";
@@ -284,14 +286,14 @@ namespace prismic.tests
 		[Test ()]
 		public void AsHtmlTest ()
 		{
-			var api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
+			var api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api").Result;
 			var response = api
 				.Form("everything")
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbX"")]]")
 				.Submit();
 			// startgist:097067bd2495233520bb:prismic-asHtml.cs
-			var document = response.Results.First ();
+			var document = response.Result.Results.First ();
 			var resolver =
 				prismic.DocumentLinkResolver.For (l => String.Format ("http://localhost/{0}/{1}", l.Type, l.Id));
 			var html = document.GetStructuredText ("blog-post.body").AsHtml(resolver);
@@ -302,14 +304,14 @@ namespace prismic.tests
 		[Test ()]
 		public void HtmlSerializerTest ()
 		{
-			var api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
+			var api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api").Result;
 			var response = api
 				.Form("everything")
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbX"")]]")
 				.Submit();
 			// startgist:b5f2de0fb813b52a14a9:prismic-htmlSerializer.cs
-			var document = response.Results.First ();
+			var document = response.Result.Results.First ();
 			var resolver =
 				prismic.DocumentLinkResolver.For (l => String.Format ("http://localhost/{0}/{1}", l.Type, l.Id));
 			var serializer = prismic.HtmlSerializer.For ((elt, body) => {

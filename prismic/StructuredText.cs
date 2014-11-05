@@ -440,6 +440,8 @@ namespace prismic
 		// --
 
 			public static Link ParseLink(JToken json) {
+				if (json == null)
+					return null;
 				String linkType = (string)json["type"];
 				JObject value = (JObject)json["value"];
 				switch (linkType) {

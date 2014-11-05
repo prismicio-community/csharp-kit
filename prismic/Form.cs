@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Web;
 using System.Net;
 using System.Linq;
+using System.Threading.Tasks;
+using prismic.extensions;
 using Newtonsoft.Json.Linq;
 
 namespace prismic
@@ -355,7 +357,7 @@ namespace prismic
      *
      * @return the list of documents, that can be directly used as such.
      */
-			public Response Submit() {
+			public Task<Response> Submit() {
 				if("GET" == form.Method && "application/x-www-form-urlencoded" == form.Enctype) {
 					var url = form.Action;
 					var sep = form.Action.Contains("?") ? "&" : "?";
@@ -368,8 +370,9 @@ namespace prismic
 							sep = "&";
 						}
 					}
-					String json = HttpClient.fetch(url, api.Logger, api.Cache);
-					return Response.Parse(JObject.Parse(json));
+					return HttpClient.fetch(url, api.Logger, api.Cache).Select(json => {
+						return Response.Parse(JObject.Parse(json));
+					});
 				} else {
 					// throw new Api.Error(Api.Error.Code.UNEXPECTED, "Form type not supported");
 					return null;

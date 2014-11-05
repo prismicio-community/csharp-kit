@@ -5,6 +5,8 @@ using System.Web;
 using System.Net;
 using System.Linq;
 using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
+using prismic.extensions;
 
 namespace prismic
 {
@@ -13,6 +15,9 @@ namespace prismic
 
 		private ApiData apiData;
 		private String accessToken;
+		public String AccessToken {
+			get { return accessToken; }
+		}
 		private ICache cache;
 		public ICache Cache {
 			get {
@@ -25,7 +30,6 @@ namespace prismic
 				return logger;
 			}
 		}
-
 		public IList<Ref> Refs {
 			get {
 				return apiData.Refs;
@@ -76,9 +80,8 @@ namespace prismic
 		* @param logger instance of a class that implements the {@link Logger} interface, and will handle the logging
 		* @return the usable API object
 		*/
-		public static Api Get(String endpoint, String accessToken, ICache cache, ILogger logger) {
+		public static Task<Api> Get(String endpoint, String accessToken, ICache cache, ILogger logger) {
 			String url = (accessToken == null ? endpoint : (endpoint + "?access_token=" + HttpUtility.UrlEncode(accessToken)));
-			String json = HttpClient.fetch(url, logger, cache);
 
 			/* TODO Reactive cache JsonNode json = cache.getOrSet(
 				url,
@@ -89,12 +92,15 @@ namespace prismic
 					}
 				}
 			);*/
-
-			ApiData apiData = ApiData.Parse(JObject.Parse(json));
-			return new Api(apiData, accessToken, cache, logger);
+			Task<String> stringTask = HttpClient.fetch (url, logger, cache);
+			Task<Api> result = stringTask.Select<String, Api> (json => {
+				ApiData apiData = ApiData.Parse (JObject.Parse (json));
+				return new Api (apiData, accessToken, cache, logger);
+			});
+			return result;
 		}
 
-		public static Api Get(String url, ICache cache, ILogger logger) {
+		public static Task<Api> Get(String url, ICache cache, ILogger logger) {
 			return Get(url, null, cache, logger);
 		}
 
@@ -106,7 +112,7 @@ namespace prismic
 		* @param accessToken Your Oauth access token if you wish to use one (to access future content releases, for instance)
 		* @return the usable API object
 		*/
-		public static Api Get(String url, String accessToken) {
+		public static Task<Api> Get(String url, String accessToken) {
 			return Get(url, accessToken, new NoCache(), new NoLogger());
 		}
 
@@ -117,7 +123,7 @@ namespace prismic
 		* @param url the endpoint of your prismic.io content repository, typically https://yourrepoid.prismic.io/api
 		* @return the usable API object
 		*/
-		public static Api Get(String url) {
+		public static Task<Api> Get(String url) {
 			return Get(url, null);
 		}
 

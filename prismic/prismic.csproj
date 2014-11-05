@@ -55,6 +55,7 @@
     <Compile Include="GroupDoc.cs" />
     <Compile Include="HtmlSerializer.cs" />
     <Compile Include="StructuredText.cs" />
+    <Compile Include="Extensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
