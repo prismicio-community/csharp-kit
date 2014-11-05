@@ -373,7 +373,7 @@ namespace prismic
 						}
 					}
 					return HttpClient.fetch(url, api.Logger, api.Cache).Select(json => {
-						return Response.Parse(JObject.Parse(json));
+						return Response.Parse(json);
 					});
 				} else {
 					throw new Error(Error.ErrorCode.UNEXPECTED, "Form type not supported");

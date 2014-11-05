@@ -92,9 +92,9 @@ namespace prismic
 					}
 				}
 			);*/
-			Task<String> stringTask = HttpClient.fetch (url, logger, cache);
-			Task<Api> result = stringTask.Select<String, Api> (json => {
-				ApiData apiData = ApiData.Parse (JObject.Parse (json));
+			Task<JToken> stringTask = HttpClient.fetch (url, logger, cache);
+			Task<Api> result = stringTask.Select<JToken, Api> (json => {
+				ApiData apiData = ApiData.Parse (json);
 				return new Api (apiData, accessToken, cache, logger);
 			});
 			return result;
@@ -208,7 +208,7 @@ namespace prismic
 
 		// --
 
-		public static ApiData Parse(JObject json) {
+		public static ApiData Parse(JToken json) {
 			IList<Ref> refs = json ["refs"].Select (r => Ref.Parse ((JObject)r)).ToList ();
 
 			IDictionary<String, String> bookmarks = new Dictionary<String, String> ();
@@ -231,7 +231,7 @@ namespace prismic
 			var oauthInitiateEndpoint = (string)json["oauth_initiate"];
 			var oauthTokenEndpoint = (string)json["oauth_token"];
 
-			var experiments = Experiments.Parse((JObject)json["experiments"]);
+			var experiments = Experiments.Parse(json["experiments"]);
 
 			return new ApiData(refs, bookmarks, types, tags, forms, experiments, oauthInitiateEndpoint, oauthTokenEndpoint);
 		}

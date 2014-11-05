@@ -63,7 +63,7 @@ namespace prismic
 			this.prev_page = prev_page;
 		}
 
-		public static Response Parse(JObject json) {
+		public static Response Parse(JToken json) {
 			IList<Document> results = json ["results"].Select (r => Document.Parse ((JObject)r)).ToList ();
 
 			return new Response(results,

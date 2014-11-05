@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
 using prismic.extensions;
 
@@ -13,12 +14,24 @@ namespace prismic
 	public static class HttpClient
 	{
 
-		public static Task<String> fetch(String url, ILogger logger, ICache cache)
+		public static Task<JToken> fetch(string url, ILogger logger, ICache cache)
 		{
-			// TODO: Cache
+			JToken fromCache = cache.Get (url);
+			if (fromCache != null) {
+				var taskSource = new TaskCompletionSource<JToken>();
+				taskSource.SetResult(fromCache);
+				return taskSource.Task;
+			} else {
+				return _fetch (url, logger, cache);
+			}
+		}
+
+		private static Regex maxAgeRe = new Regex(@"max-age=(\d+)");
+
+		private static Task<JToken> _fetch(string url, ILogger logger, ICache cache) {
 			HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
 			Task<WebResponse> responseTask = request.GetResponseAsync ();
-			var r = new TaskCompletionSource<String>();
+			var r = new TaskCompletionSource<JToken>();
 
 			responseTask.ContinueWith(self => {
 				if (self.IsFaulted) {
@@ -55,7 +68,14 @@ namespace prismic
 				else try {
 					var response = self.Result as HttpWebResponse;
 					StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
-					r.SetResult(reader.ReadToEnd());
+					var json = JToken.Parse(reader.ReadToEnd());
+					var maxAge = maxAgeRe.Match(response.GetResponseHeader("max-age"));
+					if (maxAge.Success) {
+						long ttl = long.Parse(maxAge.Groups[1].Value);
+						Console.WriteLine("Got a ttl of: " + ttl);
+						cache.Set(url, ttl, json);
+					}
+					r.SetResult(json);
 				} catch (Exception e) {
 					r.SetException(e);
 				}
