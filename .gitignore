@@ -25,3 +25,19 @@ UpgradeLog.*
 # dotCover
 *.dotCover
 
+#MonoDevelop
+*.pidb
+*.userprefs
+
+# dlls
+[Oo]bj/
+[Bb]in
+[Dd]ebug*/
+[Rr]elease*/
+
+src/packages/
+src/nuget/packages/
+src/nuget/packaging/
+
+node_modules/
+

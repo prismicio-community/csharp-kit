@@ -3,6 +3,7 @@ using prismic;
 using System;
 using System.Linq;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace prismic.tests
@@ -14,7 +15,10 @@ namespace prismic.tests
 		public void ApiTest ()
 		{
 			// startgist:c023234afbc20303f792:prismic-api.cs
-			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api").Result;
+			// Fetching the API is an asynchronous process
+			Task<Api> task = prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
+			// But you can get it synchronously by calling .Result
+			Api api = task.Result;
 			// endgist
 			Assert.IsNotNull (api);
 		}
@@ -54,7 +58,8 @@ namespace prismic.tests
 		{
 			// startgist:6b01f5bd50568045f9a0:prismic-simplequery.cs
 			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api").Result;
-			var response = api
+			// Just like Api.Get, fetching a Response is asynchronous
+			Task<Response> response = api
 				.Form("everything")
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.type, ""product"")]]")
@@ -143,7 +148,7 @@ namespace prismic.tests
 			var inRange = "[[:d = number.inRange(my.product.price, 10, 20)]]";
 
 			// Accessing number fields
-			var price = doc.GetNumber("product.price").Value;
+			double price = doc.GetNumber("product.price").Value;
 			// endgist
 			Assert.AreEqual(price, 2.5);
 		}
@@ -159,7 +164,7 @@ namespace prismic.tests
 			var doc = response.Results[0];
 			// startgist:2ba6c72a80cf9d2af15e:prismic-images.cs
 			// Accessing image fields
-			var imageView = doc.GetImageView("product.image", "main");
+			fragments.Image.View imageView = doc.GetImageView("product.image", "main");
 			String url = imageView.Url;
 			// endgist
 			Assert.AreEqual(url, "https://prismic-io.s3.amazonaws.com/lesbonneschoses/f606ad513fcc2a73b909817119b84d6fd0d61a6d.png");
@@ -195,11 +200,11 @@ namespace prismic.tests
 			var hourAfter = "[[:d = date.hour-after(my.product.releaseDate, 12)]]";
 
 			// Accessing Date and Timestamp fields
-			var date = doc.GetDate("blog-post.date").Value;
-			var dateYear = date.Year;
-			var updateTime = doc.GetTimestamp("blog-post.update");
+			DateTime date = doc.GetDate("blog-post.date").Value;
+			int dateYear = date.Year;
+			fragments.Timestamp updateTime = doc.GetTimestamp("blog-post.update");
 			if (updateTime != null) {
-				var updateHour = updateTime.Value.Hour;
+				int updateHour = updateTime.Value.Hour;
 			}
 			// endgist
 			Assert.AreEqual(dateYear, 2013);
@@ -213,14 +218,12 @@ namespace prismic.tests
 
 			var json = "{\"id\":\"abcd\",\"type\":\"article\",\"href\":\"\",\"slugs\":[],\"tags\":[],\"data\":{\"article\":{\"documents\":{\"type\":\"Group\",\"value\":[{\"linktodoc\":{\"type\":\"Link.document\",\"value\":{\"document\":{\"id\":\"UrDejAEAAFwMyrW9\",\"type\":\"doc\",\"tags\":[],\"slug\":\"installing-meta-micro\"},\"isBroken\":false}},\"desc\":{\"type\":\"StructuredText\",\"value\":[{\"type\":\"paragraph\",\"text\":\"A detailed step by step point of view on how installing happens.\",\"spans\":[]}]}},{\"linktodoc\":{\"type\":\"Link.document\",\"value\":{\"document\":{\"id\":\"UrDmKgEAALwMyrXA\",\"type\":\"doc\",\"tags\":[],\"slug\":\"using-meta-micro\"},\"isBroken\":false}}}]}}}}";
 			var document = Document.Parse(JObject.Parse(json));
-			Console.WriteLine ("Parsed doc: " + document);
 			// startgist:b5b40c40a696911081d7:prismic-group.cs
 			var group = document.GetGroup("article.documents");
 			foreach (GroupDoc doc in group.GroupDocs) {
-				// Desc and Link are Fragments, their type depending on what's declared in the Document Mask
 				try {
-					var desc = doc.GetStructuredText("desc");
-					var link = doc.GetLink("linktodoc");
+					fragments.StructuredText desc = doc.GetStructuredText("desc");
+					fragments.Link link = doc.GetLink("linktodoc");
 				} catch (Exception e) {
 					// Missing key
 				}
@@ -279,7 +282,7 @@ namespace prismic.tests
 			var near = "[[:d = geopoint.near(my.store.location, 48.8768767, 2.3338802, 10)]]";
 
 			// Accessing GeoPoint fragments
-			var place = document.GetGeoPoint("article.location");
+			fragments.GeoPoint place = document.GetGeoPoint("article.location");
 			var coordinates = place.Latitude + "," + place.Longitude;
 			// endgist
 			Assert.AreEqual(coordinates, "48.877108,2.333879");
@@ -325,9 +328,10 @@ namespace prismic.tests
 						return String.Format("<a class=\"some-link\" href=\"{0}\">{1}</a>", resolver.Resolve(doclink), body);
 					}
 				}
-				if (elt is fragments.Image) {
+				if (elt is fragments.StructuredText.Image) {
 					// Don't wrap images in <p> blocks
-					return ((fragments.Image)elt).AsHtml(resolver);
+					var imageview = ((fragments.StructuredText.Image)elt).View;
+					return imageview.AsHtml(resolver);
 				}
 				return null;
 			});
