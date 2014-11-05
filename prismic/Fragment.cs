@@ -5,6 +5,7 @@ using System.Linq;
 using System.Globalization;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
+using System.Web;
 
 namespace prismic
 {
@@ -25,7 +26,7 @@ namespace prismic
 				this.value = value;
 			}
 			public String AsHtml() {
-				return ("<span class=\"text\">" + value + "</span>");
+				return ("<span class=\"text\">" + HttpUtility.HtmlEncode(value) + "</span>");
 			}
 
 			public static Text Parse(JToken json) {
@@ -329,7 +330,7 @@ namespace prismic
 				return resolver.Resolve (this);
 			}
 
-			public String asHtml(DocumentLinkResolver linkResolver) {
+			public String AsHtml(DocumentLinkResolver linkResolver) {
 				return ("<a " + (linkResolver.GetTitle(this) == null ? "" : "title=\"" + linkResolver.GetTitle(this) + "\" ") + "href=\"" + linkResolver.Resolve(this) + "\">" + slug + "</a>");
 			}
 
@@ -359,6 +360,9 @@ namespace prismic
 			public Date(DateTime value) {
 				this.value = value;
 			}
+			public String AsHtml() {
+				return ("<time>" + value + "</time>");
+			}
 			public static Date Parse(JToken json) {
 				try {
 					return new Date(DateTime.ParseExact((string)json, "yyyy-MM-dd", CultureInfo.InvariantCulture));
@@ -377,6 +381,9 @@ namespace prismic
 			}
 			public Timestamp(DateTime value) {
 				this.value = value;
+			}
+			public String AsHtml() {
+				return ("<time>" + value + "</time>");
 			}
 			public static Timestamp Parse(JToken json) {
 				try {

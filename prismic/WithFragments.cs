@@ -21,7 +21,7 @@ namespace prismic
 		}
 
 		public IList<Fragment> GetAll(String field) {
-			Regex r = new Regex (@"\\Q" + field + "\\E\\[\\d+\\]");
+			Regex r = new Regex (Regex.Escape(field) + @"\[\d+\]");
 			IList<Fragment> result = new List<Fragment>();
 			foreach(KeyValuePair<String,Fragment> entry in Fragments) {
 				if(r.Match(entry.Key).Success) {
@@ -87,6 +87,10 @@ namespace prismic
 		}
 
 		public fragments.Link GetLink(String field) {
+			Console.WriteLine ("Get link for " + field);
+			foreach (String key in Fragments.Keys) {
+				Console.WriteLine ("Available = " + key);
+			}
 			Fragment frag = Get (field);
 			return frag is fragments.Link ? (fragments.Link)frag : null;
 		}
@@ -131,7 +135,41 @@ namespace prismic
 		}
 
 		public String GetHtml(String field, DocumentLinkResolver resolver, HtmlSerializer serializer) {
-			return ""; // TODO
+			Fragment fragment = Get(field);
+			if (fragment == null)
+				return "";
+			if (fragment is fragments.StructuredText) {
+				return ((fragments.StructuredText)fragment).AsHtml(resolver, serializer);
+			}
+			if(fragment is fragments.Number) {
+				return ((fragments.Number)fragment).AsHtml();
+			}
+			if(fragment is fragments.Color) {
+				return ((fragments.Color)fragment).AsHtml();
+			}
+			if(fragment is fragments.Text) {
+				return ((fragments.Text)fragment).AsHtml();
+			}
+			if(fragment is fragments.Date) {
+				return ((fragments.Date)fragment).AsHtml();
+			}
+			if(fragment is fragments.Embed) {
+				return ((fragments.Embed)fragment).AsHtml();
+			}
+			else if(fragment is fragments.Image) {
+				return ((fragments.Image)fragment).AsHtml(resolver);
+			}
+			else if(fragment is fragments.WebLink) {
+				return ((fragments.WebLink)fragment).AsHtml();
+			}
+			else if(fragment is fragments.DocumentLink) {
+				return ((fragments.DocumentLink)fragment).AsHtml(resolver);
+			}
+			else if(fragment is fragments.Group) {
+				return ((fragments.Group)fragment).AsHtml(resolver);
+			}
+			return "";
+
 		}
 
 		public String AsHtml(DocumentLinkResolver linkResolver) {

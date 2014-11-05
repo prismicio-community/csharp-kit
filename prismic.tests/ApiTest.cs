@@ -10,17 +10,17 @@ namespace prismic.tests
 	public class ApiTest
 	{
 		[Test ()]
-		[ExpectedException(typeof(prismic.Error))]
+		[ExpectedException(typeof(AggregateException))]
 		public void GetPrivateApiWithoutAuthorizationTokenShouldThrow()
 		{
-			Api.Get ("https://private-test.prismic.io/api");
+			var api = Api.Get ("https://private-test.prismic.io/api").Result;
 		}
 
 		[Test ()]
-		[ExpectedException(typeof(prismic.Error))]
+		[ExpectedException(typeof(AggregateException))]
 		public void GetPrivateApiWithInvalidTokenShouldThrow()
 		{
-			Api.Get ("https://private-test.prismic.io/api", "dummy token");
+			var api = Api.Get ("https://private-test.prismic.io/api", "dummy token").Result;
 		}
 
 		private void ExpectInnerException<ExT>(Action action, Func<ExT, bool> exceptionPredicate) where ExT : Exception

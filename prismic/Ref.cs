@@ -60,7 +60,7 @@ namespace prismic
 			var id = (string)json ["id"];
 			var reference = (string)json["ref"];
 			var label = (string)json["label"];
-			var masterRef = (Boolean)json["isMasterRef"];
+			var masterRef = json["isMasterRef"] != null && (Boolean)json["isMasterRef"];
 			return new Ref(id, reference, label, masterRef, null);
 		}
 

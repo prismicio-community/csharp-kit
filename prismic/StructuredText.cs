@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
+using System.Web;
 
 namespace prismic
 {
@@ -356,7 +357,7 @@ namespace prismic
 
 			private String insertSpans(String text, IList<Span> spans, DocumentLinkResolver linkResolver, HtmlSerializer htmlSerializer) {
 				if (spans.Count == 0) {
-					return escape(text);
+					return HttpUtility.HtmlEncode(text);
 				}
 
 				IDictionary<int, List<Span>> tagsStart = new Dictionary<int, List<Span>>();
@@ -399,7 +400,7 @@ namespace prismic
 						}
 					}
 					c = text[pos];
-					String escaped = escape(c.ToString());
+					String escaped = HttpUtility.HtmlEncode(c.ToString());
 					if (stack.Count == 0) {
 						// Top-level text
 						html += escaped;
@@ -431,10 +432,6 @@ namespace prismic
 
 			public String AsHtml(DocumentLinkResolver linkResolver, HtmlSerializer htmlSerializer) {
 				return AsHtml(getBlocks(), linkResolver, htmlSerializer);
-			}
-
-			private static String escape(String input) {
-				return input.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
 			}
 
 		// --

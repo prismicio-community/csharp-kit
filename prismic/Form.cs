@@ -44,10 +44,10 @@ namespace prismic
 
 			// --
 
-			public static Field Parse(JObject json) {
+			public static Field Parse(JToken json) {
 				String type = (string)json["type"];
-				String defaultValue = (json["default"] is string ? (string)json["default"] : null);
-				Boolean multiple = (json["multiple"] is Boolean ? (Boolean)json["multiple"] : false);
+				String defaultValue = (json["default"] != null ? (string)json["default"] : null);
+				Boolean multiple = (json["multiple"] != null ? (Boolean)json["multiple"] : false);
 				return new Field(type, multiple, defaultValue);
 			}
 
@@ -103,7 +103,7 @@ namespace prismic
 			this.rel = rel;
 			this.enctype = enctype;
 			this.action = action;
-			this.fields = fields;
+			this.fields = new Dictionary<String, Field>(fields);
 		}
 
 		public String toString() {
@@ -148,9 +148,9 @@ namespace prismic
 				this.data = new Dictionary<String,IList<String>>();
 				foreach(KeyValuePair<String,Field> entry in form.Fields) {
 					if (entry.Value.DefaultValue != null) {
-						IList<String> value = new List<String>(1);
+						IList<String> value = new List<String>();
 						value.Add(entry.Value.DefaultValue);
-						this.data.Add(entry.Key, value);
+						this.data[entry.Key] = value;
 					}
 				}
 			}
@@ -171,16 +171,18 @@ namespace prismic
 					throw new ArgumentException("Unknown field " + field); 
 				}
 				if(fieldDesc.IsMultiple) {
-					var existingValue = data[field];
-					if(existingValue == null) {
+					IList<String> existingValue;
+					if (data.ContainsKey(field)) {
+						existingValue = data[field];
+					} else {
 						existingValue = new List<String>();
 					}
 					existingValue.Add(value);
-					data.Add(field, existingValue);
+					data[field] = existingValue;
 				} else {
 					var newValue = new List<String>();
 					newValue.Add(value);
-					data.Add(field, newValue);
+					data[field] = newValue;
 				}
 				return this;
 			}
@@ -342,7 +344,7 @@ namespace prismic
      * @param predicates any number of predicate, is more than one is provided documents that satisfy all predicates will be returned ("AND" query)
      * @return the current form, in order to chain those calls
      */
-			public SearchForm query(params Predicate[] predicates) {
+			public SearchForm Query(params Predicate[] predicates) {
 				String result = "";
 				foreach (Predicate p in predicates) {
 					result += p.q();
@@ -374,8 +376,7 @@ namespace prismic
 						return Response.Parse(JObject.Parse(json));
 					});
 				} else {
-					// throw new Api.Error(Api.Error.Code.UNEXPECTED, "Form type not supported");
-					return null;
+					throw new Error(Error.ErrorCode.UNEXPECTED, "Form type not supported");
 				}
 			}
 

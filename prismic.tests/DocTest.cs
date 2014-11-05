@@ -25,7 +25,7 @@ namespace prismic.tests
 		{
 			// startgist:a6f1067b28cc9dca7a82:prismic-apiPrivate.cs
 			// This will fail because the token is invalid, but this is how to access a private API
-			Api api = prismic.Api.Get("MC5-XXXXXXX-vRfvv70", "https://lesbonneschoses.prismic.io/api").Result;
+			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api", "MC5-XXXXXXX-vRfvv70").Result;
 			// endgist
 		}
 
@@ -34,8 +34,10 @@ namespace prismic.tests
 		{
 			// startgist:7b8defb1e1057ad27494:prismic-references.cs
 			var previewToken = "MC5VbDdXQmtuTTB6Z0hNWHF3.c--_vVbvv73vv73vv73vv71EA--_vS_vv73vv70T77-9Ke-_ve-_vWfvv70ebO-_ve-_ve-_vQN377-9ce-_vRfvv70";
-			Api api = prismic.Api.Get(previewToken, "https://lesbonneschoses.prismic.io/api").Result;
+			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api", previewToken).Result;
+			Console.WriteLine ("API OK");
 			var stPatrickRef = api.Ref("St-Patrick specials");
+			Console.WriteLine ("StPar = " + stPatrickRef);
 			// Now we'll use this reference for all our calls
 			var response = api.Form("everything")
 				.Ref(stPatrickRef)
