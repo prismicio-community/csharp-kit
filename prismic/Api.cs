@@ -3,8 +3,8 @@
 using System.Collections.Generic;
 using System.Web;
 using System.Net;
-using System.Xml.Serialization;
-using System.Runtime.Serialization.Json;
+using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace prismic
 {
@@ -78,11 +78,7 @@ namespace prismic
 		*/
 		public static Api Get(String endpoint, String accessToken, ICache cache, ILogger logger) {
 			String url = (accessToken == null ? endpoint : (endpoint + "?access_token=" + HttpUtility.UrlEncode(accessToken)));
-			HttpWebResponse httpResponse = HttpClient.fetch(url, logger, cache);
-
-			DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(Response));
-			object response = jsonSerializer.ReadObject(httpResponse.GetResponseStream());
-			return response as Api;
+			String json = HttpClient.fetch(url, logger, cache);
 
 			/* TODO Reactive cache JsonNode json = cache.getOrSet(
 				url,
@@ -92,10 +88,10 @@ namespace prismic
 						return HttpClient.fetch(url, logger, null);
 					}
 				}
-			);
+			);*/
 
-			ApiData apiData = ApiData.parse(json);
-			return new Api(apiData, accessToken, cache, logger, fragmentParser);*/
+			ApiData apiData = ApiData.Parse(JObject.Parse(json));
+			return new Api(apiData, accessToken, cache, logger);
 		}
 
 		public static Api Get(String url, ICache cache, ILogger logger) {
@@ -189,7 +185,7 @@ namespace prismic
 		public ApiData(IList<Ref> refs,
 			IDictionary<String,String> bookmarks,
 			IDictionary<String,String> types,
-			List<String> tags,
+			IList<String> tags,
 			IDictionary<String,Form> forms,
 			Experiments experiments,
 			String oauthInitiateEndpoint,
@@ -205,49 +201,35 @@ namespace prismic
 		}
 
 		// --
-		/*
-		static ApiData parse(JsonValue json) {
-			var refs = new List<Ref>();
-			var refsJson = json.withArray("refs").elements();
-			while(refsJson.hasNext()) {
-				refs.add(Ref.parse(refsJson.next()));
-			}
 
-			var bookmarks = new Dictionary<String,String>();
-			var bookmarksJson = json.with("bookmarks").fieldNames();
-			while(bookmarksJson.hasNext()) {
-				String bookmark = bookmarksJson.next();
-				bookmarks.put(bookmark, json.with("bookmarks").path(bookmark).asText());
+		public static ApiData Parse(JObject json) {
+			IList<Ref> refs = json ["refs"].Select (r => Ref.Parse ((JObject)r)).ToList ();
+
+			IDictionary<String, String> bookmarks = new Dictionary<String, String> ();
+			foreach (KeyValuePair<String, JToken> bk in ((JObject)json ["bookmarks"])) {
+				bookmarks [bk.Key] = (string)bk.Value;
 			}
 
 			var types = new Dictionary<String,String>();
-			var typesJson = json.with("types").fieldNames();
-			while(typesJson.hasNext()) {
-				var type = typesJson.next();
-				types.put(type, json.with("types").path(type).asText());
+			foreach (KeyValuePair<String, JToken> t in ((JObject)json ["types"])) {
+				types [t.Key] = (string)t.Value;
 			}
 
-			var tags = new List<String>();
-			var tagsJson = json.withArray("tags").elements();
-			while(tagsJson.hasNext()) {
-				tags.add(tagsJson.next().asText());
-			}
+			IList<String> tags = json ["tags"].Select (r => (string)r).ToList ();
 
 			var forms = new Dictionary<String,Form>();
-			var formsJson = json.with("forms").fieldNames();
-			while(formsJson.hasNext()) {
-				var form = formsJson.next();
-				forms.put(form, Form.parse(json.with("forms").path(form)));
+			foreach (KeyValuePair<String, JToken> t in ((JObject)json ["forms"])) {
+				forms [t.Key] = Form.Parse((JObject)t.Value);
 			}
 
-			var oauthInitiateEndpoint = json.path("oauth_initiate").asText();
-			var oauthTokenEndpoint = json.path("oauth_token").asText();
+			var oauthInitiateEndpoint = (string)json["oauth_initiate"];
+			var oauthTokenEndpoint = (string)json["oauth_token"];
 
-			var experiments = Experiments.parse(json.path("experiments"));
+			var experiments = Experiments.Parse((JObject)json["experiments"]);
 
 			return new ApiData(refs, bookmarks, types, tags, forms, experiments, oauthInitiateEndpoint, oauthTokenEndpoint);
 		}
-*/
+
 	}
 
 }

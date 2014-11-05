@@ -1,5 +1,8 @@
 ﻿using System;
 
+using System.Linq;
+using Newtonsoft.Json.Linq;
+
 namespace prismic
 {
 	public class Ref
@@ -32,14 +35,14 @@ namespace prismic
 			}
 		}
 
-		private DateTime scheduledAt;
-		public DateTime ScheduledAt {
+		private DateTime? scheduledAt;
+		public DateTime? ScheduledAt {
 			get {
 				return scheduledAt;
 			}
 		}
 
-		public Ref(String id, String reference, String label, Boolean masterRef, DateTime scheduledAt) {
+		public Ref(String id, String reference, String label, Boolean masterRef, DateTime? scheduledAt) {
 			this.id = id;
 			this.reference = reference;
 			this.label = label;
@@ -52,15 +55,15 @@ namespace prismic
 		}
 
 		// --
-		/*
-		static Ref parse(JsonNode json) {
-			var id = json.path("id").asText();
-			var reference = json.path("ref").asText();
-			var label = json.path("label").asText();
-			var masterRef = json.path("isMasterRef").asBoolean();
+
+		public static Ref Parse(JObject json) {
+			var id = (string)json ["id"];
+			var reference = (string)json["ref"];
+			var label = (string)json["label"];
+			var masterRef = (Boolean)json["isMasterRef"];
 			return new Ref(id, reference, label, masterRef, null);
 		}
-*/
+
 	}
 }
 

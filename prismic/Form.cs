@@ -3,9 +3,8 @@
 using System.Collections.Generic;
 using System.Web;
 using System.Net;
-using System.Xml.Serialization;
-using System.Runtime.Serialization.Json;
-
+using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace prismic
 {
@@ -42,14 +41,14 @@ namespace prismic
 			}
 
 			// --
-/*
-			static Field parse(JsonValue json) {
-				String type = json.path("type").asText();
-				String defaultValue = (json.has("default") ? json.path("default").asText() : null);
-				Boolean multiple = (json.has("multiple") ? json.path("multiple").asBoolean() : false);
+
+			public static Field Parse(JObject json) {
+				String type = (string)json["type"];
+				String defaultValue = (json["default"] is string ? (string)json["default"] : null);
+				Boolean multiple = (json["multiple"] is Boolean ? (Boolean)json["multiple"] : false);
 				return new Field(type, multiple, defaultValue);
 			}
-*/
+
 		}
 
 		// --
@@ -110,24 +109,22 @@ namespace prismic
 		}
 
 		// --
-		/*
-		static Form parse(JsonNode json) {
-			String name = json.path("name").asText();
-			String method = json.path("method").asText();
-			String rel = json.path("rel").asText();
-			String enctype = json.path("enctype").asText();
-			String action = json.path("action").asText();
 
-			Map<String,Field> fields = new HashMap<String,Field>();
-			Iterator<String> fieldsJson = json.with("fields").fieldNames();
-			while(fieldsJson.hasNext()) {
-				String field = fieldsJson.next();
-				fields.put(field, Field.parse(json.with("fields").path(field)));
+		public static Form Parse(JObject json) {
+			String name = (string)json["name"];
+			String method = (string)json["method"];
+			String rel = (string)json["rel"];
+			String enctype = (string)json["enctype"];
+			String action = (string)json["action"];
+
+			var fields = new Dictionary<String,Field>();
+			foreach (KeyValuePair<String, JToken> t in ((JObject)json ["fields"])) {
+				fields [t.Key] = Field.Parse((JObject)t.Value);
 			}
 
 			return new Form(name, method, rel, enctype, action, fields);
 		}
-*/
+
 /**
    * The object you will use to perform queries. At the moment, only queries of the type "SearchForm" exist in prismic.io's APIs.
    * There is one named "everything", that allow to query through the while repository, and there is also one per collection
@@ -371,11 +368,8 @@ namespace prismic
 							sep = "&";
 						}
 					}
-					HttpWebResponse httpResponse = HttpClient.fetch(url, api.Logger, api.Cache);
-
-					DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(Response));
-					object response = jsonSerializer.ReadObject(httpResponse.GetResponseStream());
-					return response as Response;
+					String json = HttpClient.fetch(url, api.Logger, api.Cache);
+					return Response.Parse(JObject.Parse(json));
 				} else {
 					// throw new Api.Error(Api.Error.Code.UNEXPECTED, "Form type not supported");
 					return null;

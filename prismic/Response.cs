@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace prismic
 {
@@ -61,24 +63,19 @@ namespace prismic
 			this.prev_page = prev_page;
 		}
 
-		/*
-		static Response parse(JsonNode json, FragmentParser fragmentParser) {
-			Iterator<JsonNode> resultsJson = null;
-			resultsJson = json.path("results").elements();
-			List<Document> results = new ArrayList<Document>();
-			while (resultsJson.hasNext()) {
-				results.add(Document.parse(resultsJson.next(), fragmentParser));
-			}
+		public static Response Parse(JObject json) {
+			IList<Document> results = json ["results"].Select (r => Document.Parse ((JObject)r)).ToList ();
+
 			return new Response(results,
-				Integer.parseInt(json.path("page").asText()),
-				Integer.parseInt(json.path("results_per_page").asText()),
-				Integer.parseInt(json.path("total_results_size").asText()),
-				Integer.parseInt(json.path("total_pages").asText()),
-				json.path("next_page").asText().equals("null") ? null : json.path("next_page").asText(),
-				json.path("prev_page").asText().equals("null") ? null : json.path("prev_page").asText()
+				int.Parse((string)json["page"]),
+				int.Parse((string)json["results_per_page"]),
+				int.Parse((string)json["total_results_size"]),
+				int.Parse((string)json["total_pages"]),
+				(json["next_page"] != null ? (string)json["next_page"] : null),
+				(json["prev_page"] != null ? (string)json["prev_page"] : null)
 			);
 		}
-*/
+
 	}
 }
 

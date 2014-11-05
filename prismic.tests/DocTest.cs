@@ -215,14 +215,14 @@ namespace prismic.tests
 			foreach (GroupDoc doc in group.GroupDocs) {
 				// Desc and Link are Fragments, their type depending on what's declared in the Document Mask
 				try {
-					var desc = doc.GetStructuredText["desc"];
-					var link = doc.GetLink["linktodoc"];
+					var desc = doc.GetStructuredText("desc");
+					var link = doc.GetLink("linktodoc");
 				} catch (Exception e) {
 					// Missing key
 				}
 			}
 			// endgist
-			var firstDesc = (prismic.Fragments.Fragment.StructuredText)group.Item.First().fragments["desc"];
+			var firstDesc = group.GroupDocs [0].GetStructuredText ("desc");
 			Assert.AreEqual(firstDesc.AsHtml(resolver), "<p>A detailed step by step point of view on how installing happens.</p>");
 		}
 
@@ -230,11 +230,11 @@ namespace prismic.tests
 		public void LinkTest()
 		{
 			var json = "{\"id\":\"abcd\",\"type\":\"article\",\"href\":\"\",\"slugs\":[],\"tags\":[],\"data\":{\"article\":{\"source\":{\"type\":\"Link.document\",\"value\":{\"document\":{\"id\":\"UlfoxUnM0wkXYXbE\",\"type\":\"product\",\"tags\":[\"Macaron\"],\"slug\":\"dark-chocolate-macaron\"},\"isBroken\":false}}}}}";
-			var document = Api.Document.FromJson(FSharp.Data.JsonValue.Parse(json, null));
+			var document = JsonConvert.DeserializeObject<Document>(json);
 			// startgist:f439d465a87cbddb2737:prismic-link.cs
 			var resolver =
 				prismic.DocumentLinkResolver.For (l => String.Format ("http://localhost/{0}/{1}", l.Id, l.Slug));
-			var source = document.GetLink("article.source").Value();
+			var source = document.GetLink("article.source");
 			var url = source.GetUrl(resolver);
 			// endgist
 			Assert.AreEqual("http://localhost/UlfoxUnM0wkXYXbE/dark-chocolate-macaron", url);
@@ -248,7 +248,7 @@ namespace prismic.tests
 			// startgist:a0a1846d443b2fa39097:prismic-embed.cs
 			var video = document.GetEmbed ("article.video");
 			// Html is the code to include to embed the object, and depends on the embedded service
-			var html = video.Value().Item.html.Value();
+			var html = video.Html;
 			// endgist
 			Assert.AreEqual("<iframe width=\"480\" height=\"270\" src=\"http://www.youtube.com/embed/baGfM6dBzs8?feature=oembed\" frameborder=\"0\" allowfullscreen></iframe>", html);
 		}
@@ -257,10 +257,10 @@ namespace prismic.tests
 		public void ColorTest()
 		{
 			var json = "{\"id\":\"abcd\",\"type\":\"article\",\"href\":\"\",\"slugs\":[],\"tags\":[],\"data\":{\"article\":{\"background\":{\"type\":\"Color\",\"value\":\"#000000\"}}}}";
-			var document = Api.Document.fromJson(FSharp.Data.JsonValue.Parse(json, null));
+			var document = JsonConvert.DeserializeObject<Document>(json);
 			// startgist:0d0fa9849ae5ff7c921c:prismic-color.cs
 			var bgcolor = document.GetColor("article.background");
-			var hex = bgcolor.Value ().Item.hex;
+			var hex = bgcolor.Hex;
 			// endgist
 			Assert.AreEqual("#000000", hex);
 		}
@@ -269,14 +269,14 @@ namespace prismic.tests
 		public void GeopointTest()
 		{
 			var json = "{\"id\":\"abcd\",\"type\":\"article\",\"href\":\"\",\"slugs\":[],\"tags\":[],\"data\":{\"article\":{\"location\":{\"type\":\"GeoPoint\",\"value\":{\"latitude\":48.877108,\"longitude\":2.333879}}}}}";
-			var document = Api.Document.fromJson(FSharp.Data.JsonValue.Parse(json, null));
+			var document = JsonConvert.DeserializeObject<Document>(json);
 			// startgist:ffd5197f8b1f3c9b302c:prismic-geopoint.cs
 			// "near" predicate for GeoPoint fragments
 			var near = "[[:d = geopoint.near(my.store.location, 48.8768767, 2.3338802, 10)]]";
 
 			// Accessing GeoPoint fragments
-			var place = document.GetGeoPoint("article.location").Value().Item;
-			var coordinates = place.latitude + "," + place.longitude;
+			var place = document.GetGeoPoint("article.location");
+			var coordinates = place.Latitude + "," + place.Longitude;
 			// endgist
 			Assert.AreEqual(coordinates, "48.877108,2.333879");
 		}
@@ -286,17 +286,17 @@ namespace prismic.tests
 		{
 			var api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
 			var response = api
-				.Forms["everything"]
+				.Form("everything")
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbX"")]]")
-				.SubmitableAsTask().Submit().Result;
+				.Submit();
 			// startgist:097067bd2495233520bb:prismic-asHtml.cs
-			var document = response.results.First ();
+			var document = response.Results.First ();
 			var resolver =
 				prismic.DocumentLinkResolver.For (l => String.Format ("http://localhost/{0}/{1}", l.Type, l.Id));
-			var html = document.GetStructuredText ("blog-post.body").BindAsHtml(resolver);
+			var html = document.GetStructuredText ("blog-post.body").AsHtml(resolver);
 			// endgist
-			Assert.IsTrue (html.Exists ());
+			Assert.IsNotNull (html);
 		}
 
 		[Test ()]
@@ -304,40 +304,40 @@ namespace prismic.tests
 		{
 			var api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
 			var response = api
-				.Forms["everything"]
+				.Form("everything")
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbX"")]]")
-				.SubmitableAsTask().Submit().Result;
+				.Submit();
 			// startgist:b5f2de0fb813b52a14a9:prismic-htmlSerializer.cs
-			var document = response.results.First ();
+			var document = response.Results.First ();
 			var resolver =
 				prismic.DocumentLinkResolver.For (l => String.Format ("http://localhost/{0}/{1}", l.Type, l.Id));
 			var serializer = prismic.HtmlSerializer.For ((elt, body) => {
-				if (elt is Fragments.Span.Hyperlink) {
+				if (elt is fragments.StructuredText.Hyperlink) {
+					var link = ((fragments.StructuredText.Hyperlink)elt).Link;
 					// Add a class to hyperlinks
-					var link = ((Fragments.Span.Hyperlink)elt).Item.Item3;
-					if (link is Fragments.Link.DocumentLink) {
-						var doclink = ((Fragments.Link.DocumentLink)link).Item;
-						return String.Format("<a class=\"some-link\" href=\"{0}\">{1}</a>", resolver.Apply(doclink), body);
+					if (link is fragments.DocumentLink) {
+						var doclink = ((fragments.DocumentLink)link);
+						return String.Format("<a class=\"some-link\" href=\"{0}\">{1}</a>", resolver.Resolve(doclink), body);
 					}
 				}
-				if (elt is Fragments.Block.Image) {
+				if (elt is fragments.Image) {
 					// Don't wrap images in <p> blocks
-					var imageview = ((Fragments.Block.Image)elt).Item;
-					return imageview.AsHtml(resolver);
+					return ((fragments.Image)elt).AsHtml(resolver);
 				}
 				return null;
 			});
-			var html = document.GetStructuredText ("blog-post.body").BindAsHtml(resolver, serializer);
+			var html = document.GetStructuredText ("blog-post.body").AsHtml(resolver, serializer);
 			// endgist
-			Assert.IsTrue (html.Exists ());
+			Assert.IsNotNull (html);
 		}
 
 		[Test()]
 		public void CacheTest()
 		{
 			// startgist:9307922348c5ce1ef34c:prismic-cache.cs
-			var cache = prismic.Cache.For<Api.Response> (
+			// TODO
+/*			var cache = Cache.For<Api.Response> (
 				(key, value, ttl) => {
 					return null;
 				},
@@ -346,7 +346,7 @@ namespace prismic.tests
 				}
 			);
 			// This Api will use the custom cache object
-			var api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api", cache, null);
+			var api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api", cache, null);*/
 			// endgist
 		}
 

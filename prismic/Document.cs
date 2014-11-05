@@ -1,6 +1,8 @@
 ﻿using System;
 
 using System.Collections.Generic;
+using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace prismic
 {
@@ -55,6 +57,43 @@ namespace prismic
 		public fragments.DocumentLink AsDocumentLink() {
 			return new fragments.DocumentLink(id, type, tags, slugs[0], false);
 		}
+
+		public static Document Parse(JObject json) {
+			var id = (string)json["id"];
+			var href = (string)json["href"];
+			var type = (string)json["type"];
+
+			ISet<String> tags = new HashSet<String>(json ["tags"].Select (r => (string)r));
+			IList<String> slugs = json ["slugs"].Select (r => (string)r).ToList ();
+			IList<LinkedDocument> linkedDocuments = json ["linked_documents"].Select (r => LinkedDocument.Parse((JObject)r)).ToList ();
+
+			IDictionary<String, Fragment> fragments = new Dictionary<String, Fragment>();
+			foreach (KeyValuePair<String, JToken> field in ((JObject)json ["data"])) {
+				if(field.Value is JArray) {
+					var i = 0;
+					foreach (JToken elt in ((JArray)field.Value)) {
+						String fragmentName = type + "." + field.Key + "[" + i++ + "]";
+						String fragmentType = (string)elt["type"];
+						JObject fragmentValue = (JObject)elt[id]["value"];
+						Fragment fragment = prismic.fragments.FragmentParser.Parse(fragmentType, fragmentValue);
+						if (fragment != null) {
+							fragments[fragmentName] = fragment;
+						}
+					}
+				} else {
+					String fragmentName = type + "." + field.Key;
+					String fragmentType = (string)field.Value["type"];
+					JObject fragmentValue = (JObject)field.Value["value"];
+					Fragment fragment = prismic.fragments.FragmentParser.Parse(fragmentType, fragmentValue);
+					if(fragment != null) {
+						fragments[fragmentName] = fragment;
+					}
+				}
+			}
+
+			return new Document(id, type, href, tags, slugs, linkedDocuments, fragments);
+		}
+
 
 	}
 }

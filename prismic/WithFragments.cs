@@ -1,6 +1,7 @@
 ﻿using System;
 
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace prismic
 {
@@ -18,6 +19,17 @@ namespace prismic
 			this.fragments = fragments;
 		}
 
+		public IList<Fragment> GetAll(String field) {
+			Regex r = new Regex (@"\\Q" + field + "\\E\\[\\d+\\]");
+			IList<Fragment> result = new List<Fragment>();
+			foreach(KeyValuePair<String,Fragment> entry in Fragments) {
+				if(r.Match(entry.Key).Success) {
+					result.Add(entry.Value);
+				}
+			}
+			return result;
+		}
+
 		public fragments.Text GetText(String field) {
 			return null; // TODO
 		}
@@ -27,6 +39,10 @@ namespace prismic
 		}
 
 		public fragments.Image.View GetImageView(String field, String view) {
+			return null; // TODO
+		}
+
+		public fragments.Link GetLink(String field) {
 			return null; // TODO
 		}
 
@@ -43,6 +59,14 @@ namespace prismic
 		}
 
 		public fragments.Group GetGroup(String field) {
+			return null; // TODO
+		}
+
+		public fragments.Color GetColor(String field) {
+			return null; // TODO
+		}
+
+		public fragments.GeoPoint GetGeoPoint(String field) {
 			return null; // TODO
 		}
 

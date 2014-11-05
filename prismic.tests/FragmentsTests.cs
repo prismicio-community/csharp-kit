@@ -14,17 +14,17 @@ namespace prismic.tests
 		{
 			var url = "https://micro.prismic.io/api";
 			Api api = prismic.Api.Get(url);
-			var form = api.Forms["everything"].Ref(api.Master).Query (@"[[:d = at(document.type, ""docchapter"")]]").SubmitableAsTask();
+			var form = api.Form("everything").Ref(api.Master).Query (@"[[:d = at(document.type, ""docchapter"")]]");
 
-			var document = form.Submit().Result.results.First();
-			var maybeGroup = document.GetGroup ("docchapter.docs");
-			Assert.IsTrue (maybeGroup.Exists(), "group was not found");
+			var document = form.Submit().Results.First();
+			var group = document.GetGroup ("docchapter.docs");
+			Assert.IsNotNull (group, "group was not found");
 
-			var maybeFirstDoc = maybeGroup.Value.Item.FirstOrDefault ();
-			Assert.IsNotNull (maybeFirstDoc, "doc was not found");
+			var firstDoc = group.GroupDocs[0];
+			Assert.IsNotNull (firstDoc, "doc was not found");
 
-			var maybeLink = maybeFirstDoc.GetLink ("linktodoc");
-			Assert.IsTrue (maybeLink.Exists(), "link was not found");
+			var link = firstDoc.GetLink ("linktodoc");
+			Assert.IsNotNull (link, "link was not found");
 		}
 
 		[Test ()]
@@ -32,35 +32,34 @@ namespace prismic.tests
 		{
 			var url = "https://micro.prismic.io/api";
 			Api api = prismic.Api.Get(url);
-			var form = api.Forms["everything"].Ref(api.Master).Query (@"[[:d = at(document.type, ""docchapter"")]]").SubmitableAsTask();
+			var form = api.Form("everything").Ref(api.Master).Query (@"[[:d = at(document.type, ""docchapter"")]]");
 
-			var document = form.Submit().Result.results.ElementAt(1);
-			var maybeGroup = document.GetGroup ("docchapter.docs");
+			var document = form.Submit().Results[1];
+			var group = document.GetGroup ("docchapter.docs");
 
-			Assert.IsTrue (maybeGroup.Exists(), "group was not found");
+			Assert.IsNotNull (group, "group was not found");
 
 			var resolver =
 				prismic.DocumentLinkResolver.For (l => String.Format ("http://localhost/{0}/{1}", l.Type, l.Id));
 
-			var html = maybeGroup.BindAsHtml(resolver);
-			Assert.IsTrue (html.Exists ());
-			Console.WriteLine (html.Value);
+			var html = group.AsHtml(resolver);
+			Assert.IsNotNull (html);
 			Assert.AreEqual(@"<section data-field=""linktodoc""><a href=""http://localhost/doc/UrDejAEAAFwMyrW9"">installing-meta-micro</a></section>
 <section data-field=""desc""><p>Just testing another field in a group section.</p></section>
-<section data-field=""linktodoc""><a href=""http://localhost/doc/UrDmKgEAALwMyrXA"">using-meta-micro</a></section>", html.Value);
+<section data-field=""linktodoc""><a href=""http://localhost/doc/UrDmKgEAALwMyrXA"">using-meta-micro</a></section>", html);
 		}
 
 		[Test ()]
 		public void ShouldAccessMediaLink()
 		{
 			var url = "https://test-public.prismic.io/api";
-			Api api = (prismic.Api.Get(url, new prismic.ApiInfra.NoCache<prismic.Api.Response>(), (l, m) => {})).Result;
-			var form = api.Forms["everything"].Ref(api.Master).Query (@"[[:d = at(document.id, ""Uyr9_wEAAKYARDMV"")]]");
+			Api api = prismic.Api.Get(url);
+			var form = api.Form("everything").Ref(api.Master).Query (@"[[:d = at(document.id, ""Uyr9_wEAAKYARDMV"")]]");
 
 			var document = form.Submit().Results.First();
-			var maybeLink = document.GetLink ("test-link.related");
-			Assert.IsTrue (maybeLink.Exists(), "link was not found");
-			Assert.AreEqual ("baastad.pdf", maybeLink.BindAsMediaLink ().Value.filename);
+			var link = document.GetLink ("test-link.related");
+			Assert.IsNotNull (link, "link was not found");
+			Assert.AreEqual ("baastad.pdf", ((fragments.FileLink)link).Filename);
 
 		}
 
@@ -68,40 +67,40 @@ namespace prismic.tests
 		public void ShouldAccessFirstLinkInMultipleDocumentLink()
 		{
 			var url = "https://lesbonneschoses.prismic.io/api";
-			Api api = (prismic.Api.Get(url, new prismic.ApiInfra.NoCache<prismic.Api.Response>(), (l, m) => {}));
-			var form = api.Forms["everything"].Ref(api.Master).Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXba"")]]");
+			Api api = prismic.Api.Get(url);
+			var form = api.Form("everything").Ref(api.Master).Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXba"")]]");
 
 			var document = form.Submit().Results.First();
-			var maybeLink = document.GetLink ("job-offer.location");
-			Assert.IsTrue (maybeLink.Exists(), "link was not found");
-			Assert.AreEqual ("paris-saint-lazare", maybeLink.BindAsDocumentLink ().Value.slug);
+			var link = document.GetLink ("job-offer.location");
+			Assert.IsNotNull (link, "link was not found");
+			Assert.AreEqual ("paris-saint-lazare", ((fragments.DocumentLink)link).Slug);
 		}
 
 		[Test ()]
 		public void ShouldSerializeHTMLWithCustomOutput()
 		{
-			var resolver = prismic.DocumentLinkResolver.For (l => String.Format ("http://localhost/{0}/{1}", l.typ, l.id));
+			var resolver = prismic.DocumentLinkResolver.For (l => String.Format ("http://localhost/{0}/{1}", l.Type, l.Id));
 			var serializer = prismic.HtmlSerializer.For ((elt, body) => {
-				if (elt is Fragments.Span.Hyperlink) {
-					var link = ((Fragments.Span.Hyperlink)elt).Item.Item3;
-					if (link is Fragments.Link.DocumentLink) {
-						var doclink = ((Fragments.Link.DocumentLink)link).Item;
-						return String.Format("<a class=\"some-link\" href=\"{0}\">{1}</a>", resolver.Apply(doclink), body);
+				if (elt is fragments.StructuredText.Hyperlink) {
+					var link = ((fragments.StructuredText.Hyperlink)elt).Link;
+					if (link is fragments.DocumentLink) {
+						var doclink = ((fragments.DocumentLink)link);
+						return String.Format("<a class=\"some-link\" href=\"{0}\">{1}</a>", resolver.Resolve(doclink), body);
 					}
 				}
-				if (elt is Fragments.Block.Image) {
-					var imageview = ((Fragments.Block.Image)elt).Item;
+				if (elt is fragments.Image) {
+					var imageview = ((fragments.Image)elt);
 					return imageview.AsHtml(resolver);
 				}
 				return null;
 			});
 
 			var url = "https://lesbonneschoses.prismic.io/api";
-			Api api = (prismic.Api.Get(url, new prismic.ApiInfra.NoCache<prismic.Api.Response>(), (l, m) => {})).Result;
-			var form = api.Forms["everything"].Ref(api.Master).Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbf"")]]");
+			Api api = prismic.Api.Get(url);
+			var form = api.Form("everything").Ref(api.Master).Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbf"")]]");
 
 			var document = form.Submit().Results.First();
-			var text = document.GetStructuredText ("article.content").Value;
+			var text = document.GetStructuredText ("article.content");
 			var html = text.AsHtml(resolver, serializer);
 			Assert.AreEqual("<h2>A tale of pastry and passion</h2>\n"
 				+ "<p>As a child, Jean-Michel Pastranova learned the art of fine cuisine from his grand-father, Jacques Pastranova, who was the creator of the &quot;taste-design&quot; art current, and still today an unmissable reference of forward-thinking in cuisine. At first an assistant in his grand-father&#39;s kitchen, Jean-Michel soon found himself fascinated by sweet flavors and the tougher art of pastry, drawing his own path in the ever-changing cuisine world.</p>\n"
@@ -121,26 +120,26 @@ namespace prismic.tests
 		public void ShouldFindAllLinksInMultipleDocumentLink()
 		{
 			var url = "https://lesbonneschoses.prismic.io/api";
-			Api.Api api = (prismic.Api.Get(url, new prismic.ApiInfra.NoCache<prismic.Api.Response>(), (l, m) => {}));
-			var form = api.Forms["everything"].Ref(api.Master).Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXba"")]]");
+			Api api = prismic.Api.Get(url);
+			var form = api.Form("everything").Ref(api.Master).Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXba"")]]");
 
-			var document = form.Submit().Result.results.First();
+			var document = form.Submit().Results.First();
 			var links = document.GetAll ("job-offer.location");
 			Assert.AreEqual (3, links.Count());
-			Assert.AreEqual ("paris-saint-lazare", FSharpOption<Fragments.Fragment>.Some(links.ElementAt(0)).BindAsDocumentLink ().Value.slug);
-			Assert.AreEqual ("tokyo-roppongi-hills", FSharpOption<Fragments.Fragment>.Some(links.ElementAt(1)).BindAsDocumentLink ().Value.slug);
+			Assert.AreEqual ("paris-saint-lazare", ((fragments.DocumentLink)links[0]).Slug);
+			Assert.AreEqual ("tokyo-roppongi-hills", ((fragments.DocumentLink)links[1]).Slug);
 		}
 
 		[Test ()]
 		public void ShouldAccessStructuredText()
 		{
 			var url = "https://lesbonneschoses.prismic.io/api";
-			Api.Api api = (prismic.extensions.Api.Get(url, new prismic.ApiInfra.NoCache<prismic.Api.Response>(), (l, m) => {})).Result;
-			var form = api.Forms["everything"].Ref(api.Master).Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbX"")]]").SubmitableAsTask();
+			Api api = prismic.Api.Get(url);
+				var form = api.Form("everything").Ref(api.Master).Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbX"")]]");
 
-			var document = form.Submit().Result.results.First();
+			var document = form.Submit().Results.First();
 			var maybeText = document.GetStructuredText ("blog-post.body");
-			Assert.IsTrue (maybeText.Exists ());
+			Assert.IsNotNull (maybeText);
 		}
 
 
@@ -148,15 +147,15 @@ namespace prismic.tests
 		public void ShouldAccessImage()
 		{
 			var url = "https://test-public.prismic.io/api";
-			Api.Api api = (prismic.extensions.Api.Get(url, new prismic.ApiInfra.NoCache<prismic.Api.Response>(), (l, m) => {})).Result;
-			var form = api.Forms["everything"].Ref(api.Master).Query (@"[[:d = at(document.id, ""Uyr9sgEAAGVHNoFZ"")]]").SubmitableAsTask();
+			Api api = prismic.Api.Get(url);
+			var form = api.Form("everything").Ref(api.Master).Query (@"[[:d = at(document.id, ""Uyr9sgEAAGVHNoFZ"")]]");
 
-			var resolver = prismic.extensions.DocumentLinkResolver.For (l => String.Format ("http://localhost/{0}/{1}", l.typ, l.id));
-			var document = form.Submit().Result.results.First();
+			var resolver = prismic.DocumentLinkResolver.For (l => String.Format ("http://localhost/{0}/{1}", l.Type, l.Id));
+			var document = form.Submit().Results.First();
 			var maybeImgView = document.GetImageView ("article.illustration", "icon");
-			Assert.IsTrue (maybeImgView.Exists ());
+			Assert.IsNotNull (maybeImgView);
 
-			var html = maybeImgView.BindAsHtml(resolver).Value;
+			var html = maybeImgView.AsHtml(resolver);
 
 			var someurl = "https://prismic-io.s3.amazonaws.com/test-public/9f5f4e8a5d95c7259108e9cfdde953b5e60dcbb6.jpg";
 			var expect = String.Format (@"<img alt=""some alt text"" src=""{0}"" width=""100"" height=""100"" />", someurl);
