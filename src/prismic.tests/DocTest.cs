@@ -94,7 +94,7 @@ namespace prismic.tests
 			var response = api
 				.Form("everything")
 				.Ref(api.Master)
-				.Query (@"[[:d = at(document.type, ""blog-post"")][:d = date.after(my.blog-post.date, 1401580800000)]]")
+				.Query (Predicates.at("document.type", "blog-post"), Predicates.dateAfter("my.blog-post.date", DateTime.Now))
 				.Submit();
 			// endgist
 			Assert.AreEqual (0, response.Result.Results.Count());
@@ -105,15 +105,15 @@ namespace prismic.tests
 		{
 			// startgist:26e651e93de58bdf7165:prismic-allPredicates.cs
 			// "at" predicate: equality of a fragment to a value.
-			var at = "[[:d = at(document.type, \"article\")]]";
+			var at = Predicates.at("document.type", "article");
 			// "any" predicate: equality of a fragment to a value.
-			var any = "[[:d = any(document.type, [\"article\", \"blog-post\"])]]";
+			var any = Predicates.any("document.type", new string[] {"article", "blog-post"});
 
 			// "fulltext" predicate: fulltext search in a fragment.
-			var fulltext = "[[:d = fulltext(my.article.body, \"sausage\")]]";
+			var fulltext = Predicates.fulltext("my.article.body", "sausage");
 
 			// "similar" predicate, with a document id as reference
-			var similar = "[[:d = similar(\"UXasdFwe42D\", 10)]]";
+			var similar = Predicates.similar("UXasdFwe42D", 10);
 			// endgist
 		}
 
@@ -345,7 +345,7 @@ namespace prismic.tests
 		{
 			// startgist:9307922348c5ce1ef34c:prismic-cache.cs
 			// TODO
-/*			var cache = Cache.For<Api.Response> (
+			var cache = LambdaCache.For (
 				(key, value, ttl) => {
 					return null;
 				},
@@ -354,7 +354,7 @@ namespace prismic.tests
 				}
 			);
 			// This Api will use the custom cache object
-			var api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api", cache, null);*/
+			var api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api", cache, null);
 			// endgist
 		}
 

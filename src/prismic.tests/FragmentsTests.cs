@@ -142,6 +142,17 @@ namespace prismic.tests
 			Assert.IsNotNull (maybeText);
 		}
 
+		[Test ()]
+		public void ShouldQueryWithPredicate()
+		{
+			var url = "https://lesbonneschoses.prismic.io/api";
+			Api api = prismic.Api.Get(url).Result;
+			var form = api.Form("everything").Ref(api.Master).Query (Predicates.at("document.id", "UlfoxUnM0wkXYXbX"));
+
+			var document = form.Submit().Result.Results.First();
+			var maybeText = document.GetStructuredText ("blog-post.body");
+			Assert.IsNotNull (maybeText);
+		}
 
 		[Test ()]
 		public void ShouldAccessImage()

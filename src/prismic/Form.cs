@@ -344,7 +344,7 @@ namespace prismic
      * @param predicates any number of predicate, is more than one is provided documents that satisfy all predicates will be returned ("AND" query)
      * @return the current form, in order to chain those calls
      */
-			public SearchForm Query(params Predicate[] predicates) {
+			public SearchForm Query(params IPredicate[] predicates) {
 				String result = "";
 				foreach (Predicate p in predicates) {
 					result += p.q();

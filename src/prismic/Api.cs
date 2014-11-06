@@ -113,7 +113,7 @@ namespace prismic
 		* @return the usable API object
 		*/
 		public static Task<Api> Get(String url, String accessToken) {
-			return Get(url, accessToken, new NoCache(), new NoLogger());
+			return Get(url, accessToken, new DefaultCache(), new NoLogger());
 		}
 
 		/**
