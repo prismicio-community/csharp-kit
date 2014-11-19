@@ -1,33 +1,13 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="prismic.tests/DocTest.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="nuget/build.fsx">
     <Files>
-      <File FileName="prismic/Predicates.cs" Line="1" Column="1" />
-      <File FileName="prismic/Response.cs" Line="1" Column="1" />
-      <File FileName="prismic/Api.cs" Line="6" Column="6" />
-      <File FileName="prismic/Form.cs" Line="3" Column="3" />
-      <File FileName="prismic.tests/DocTest.cs" Line="50" Column="50" />
-      <File FileName="prismic.tests/ApiTest.cs" Line="4" Column="4" />
-      <File FileName="prismic/HttpClient.cs" Line="48" Column="48" />
-      <File FileName="prismic/Extensions.cs" Line="24" Column="24" />
+      <File FileName="prismic/Cache.cs" Line="1" Column="1" />
+      <File FileName="prismic/Api.cs" Line="1" Column="1" />
+      <File FileName="prismic/Properties/AssemblyInfo.cs" Line="35" Column="35" />
+      <File FileName="prismic.tests/packages.config" Line="12" Column="12" />
+      <File FileName="nuget/build.fsx" Line="30" Column="30" />
     </Files>
-    <Pads>
-      <Pad Id="MonoDevelop.NUnit.TestPad">
-        <State expanded="True">
-          <Node name="prismic.tests" expanded="True">
-            <Node name="prismic" expanded="True">
-              <Node name="tests" expanded="True">
-                <Node name="ApiTest" expanded="True">
-                  <Node name="GetPrivateApiWithInvalidTokenShouldThrow" selected="True" />
-                </Node>
-                <Node name="DocTest" expanded="True" />
-                <Node name="FragmentsTests" expanded="True" />
-              </Node>
-            </Node>
-          </Node>
-        </State>
-      </Pad>
-    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />

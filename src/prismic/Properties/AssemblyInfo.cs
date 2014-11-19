@@ -5,11 +5,11 @@ using System.Runtime.CompilerServices;
 // Change them to the values specific to your project.
 
 [assembly: AssemblyTitle ("prismic")]
-[assembly: AssemblyDescription ("")]
+[assembly: AssemblyDescription ("prismic.io Development Kit for C#")]
 [assembly: AssemblyConfiguration ("")]
-[assembly: AssemblyCompany ("")]
-[assembly: AssemblyProduct ("")]
-[assembly: AssemblyCopyright ("elo")]
+[assembly: AssemblyCompany ("Prismic.io")]
+[assembly: AssemblyProduct ("Prismic.io")]
+[assembly: AssemblyCopyright ("Zengularity")]
 [assembly: AssemblyTrademark ("")]
 [assembly: AssemblyCulture ("")]
 
@@ -24,4 +24,5 @@ using System.Runtime.CompilerServices;
 
 //[assembly: AssemblyDelaySign(false)]
 //[assembly: AssemblyKeyFile("")]
+[assembly: InternalsVisibleTo("prismic.tests")]
 

@@ -12,8 +12,9 @@
     <copyright>Copyright 2014</copyright>    
     <tags>prismic.io</tags>
     <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System" targetFramework="net40" />
       <frameworkAssembly assemblyName="System.Web" targetFramework="net40" />
-      <frameworkAssembly assemblyName="FSharp.Core" targetFramework="net40" />
+      <frameworkAssembly assemblyName="System.Net.Http.WebRequest" targetFramework="net40" />
     </frameworkAssemblies>
     @dependencies@
     @references@

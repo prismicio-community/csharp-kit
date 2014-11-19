@@ -46,9 +46,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\prismic\prismic.csproj">
+    <ProjectReference Include="..\prismic\prismicio.csproj">
       <Project>{D952F249-33CE-4A07-BD96-08A78B25BEFC}</Project>
-      <Name>prismic</Name>
+      <Name>prismicio</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>
