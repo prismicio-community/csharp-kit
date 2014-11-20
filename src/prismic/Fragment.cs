@@ -447,13 +447,14 @@ namespace prismic
 			}
 
 			public String AsHtml() {
-				return ("<div data-oembed=\"" + url + "\" data-oembed-type=\"" + type.ToLower() + "\" data-oembed-provider=\"" + provider.ToLower () + "\">" + html + "</div>");
+				var providerAttr = provider != null ? ("\" data-oembed-provider=\"" + provider.ToLower () + "\"") : "";
+				return ("<div data-oembed=\"" + url + "\" data-oembed-type=\"" + type.ToLower() + "\"" + providerAttr + ">" + html + "</div>");
 			}
 
 			public static Embed Parse(JToken json) {
 				JObject oembedJson = (JObject)json["oembed"];
 				String type = (string)oembedJson["type"];
-				String provider = (string)oembedJson["provider_name"];
+				String provider = oembedJson["provider_name"] != null ? (string)oembedJson["provider_name"] : null;
 				String url = (string)oembedJson["embed_url"];
 				int? width = oembedJson["width"] != null ? (int?)oembedJson["width"] : null;
 				int? height = oembedJson["height"] != null ? (int?)oembedJson["height"] : null;

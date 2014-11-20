@@ -32,6 +32,15 @@ namespace prismic
 				return slugs;
 			}
 		}
+		public String Slug {
+			get {
+				if (slugs.Count > 0) {
+					return slugs [0];
+				} else {
+					return "-";
+				}
+			}
+		}
 		private String type;
 		public String Type {
 			get {

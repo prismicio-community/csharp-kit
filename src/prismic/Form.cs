@@ -166,6 +166,10 @@ namespace prismic
      * @return the current form, in order to chain those calls
      */
 			public SearchForm Set(String field, String value) {
+				if (value == null) {
+					// null value, do nothing
+					return this;
+				}
 				Field fieldDesc = form.Fields[field];
 				if(fieldDesc == null) {
 					throw new ArgumentException("Unknown field " + field); 

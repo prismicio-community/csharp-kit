@@ -1,12 +1,19 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="nuget/build.fsx">
+  <MonoDevelop.Ide.Workbench ActiveDocument="prismic.tests/FragmentsTests.cs">
     <Files>
       <File FileName="prismic/Cache.cs" Line="1" Column="1" />
       <File FileName="prismic/Api.cs" Line="1" Column="1" />
       <File FileName="prismic/Properties/AssemblyInfo.cs" Line="35" Column="35" />
       <File FileName="prismic.tests/packages.config" Line="12" Column="12" />
       <File FileName="nuget/build.fsx" Line="30" Column="30" />
+      <File FileName="prismic.tests/ApiTest.cs" Line="1" Column="1" />
+      <File FileName="prismic/Document.cs" Line="29" Column="29" />
+      <File FileName="prismic/Logger.cs" Line="47" Column="47" />
+      <File FileName="prismic/DocumentLinkResolver.cs" Line="2" Column="2" />
+      <File FileName="prismic/HtmlSerializer.cs" Line="1" Column="1" />
+      <File FileName="prismic/Error.cs" Line="1" Column="1" />
+      <File FileName="prismic.tests/FragmentsTests.cs" Line="12" Column="12" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
