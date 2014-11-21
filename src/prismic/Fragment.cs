@@ -556,7 +556,6 @@ namespace prismic
 
 		public static class FragmentParser {
 			public static Fragment Parse(String type, JToken json) {
-				Console.WriteLine ("Fragment parse for type " + type);
 				switch (type) {
 				case "StructuredText":
 					return StructuredText.Parse (json);

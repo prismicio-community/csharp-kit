@@ -14,8 +14,10 @@ namespace prismic
 			}
 		}
 		private int page;
-		public int getPage() {
-			return this.page;
+		public int Page {
+			get {
+				return this.page;
+			}
 		}
 
 		private int results_per_page;

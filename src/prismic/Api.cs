@@ -92,6 +92,7 @@ namespace prismic
 					}
 				}
 			);*/
+			logger.log ("DEBUG", "Fetching URL: " + url);
 			Task<JToken> stringTask = HttpClient.fetch (url, logger, cache);
 			Task<Api> result = stringTask.Select<JToken, Api> (json => {
 				ApiData apiData = ApiData.Parse (json);
