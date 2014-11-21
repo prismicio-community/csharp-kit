@@ -11,6 +11,8 @@ namespace prismic
 {
 	public class Api
 	{
+		public const string PREVIEW_COOKIE = "io.prismic.preview";
+		public const string EXPERIMENT_COOKIE = "io.prismic.experiment";
 
 		private ApiData apiData;
 		private String accessToken;
