@@ -138,7 +138,7 @@ namespace prismic
 		*                (usually the home page of your site)
 		* @return the URL you should redirect the user to preview the requested change
 		*/
-		public async Task<String> previewSession(String token, DocumentLinkResolver linkResolver, String defaultUrl) {
+		public async Task<String> PreviewSession(String token, DocumentLinkResolver linkResolver, String defaultUrl) {
 			var tokenJson = await HttpClient.fetch(token, logger, cache);
 			var mainDocumentId = tokenJson["mainDocument"];
 			if (mainDocumentId == null) {

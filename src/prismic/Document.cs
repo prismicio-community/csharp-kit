@@ -1,5 +1,6 @@
 ﻿using System;
 
+using System.Web;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
@@ -73,7 +74,7 @@ namespace prismic
 			var type = (string)json["type"];
 
 			ISet<String> tags = new HashSet<String>(json ["tags"].Select (r => (string)r));
-			IList<String> slugs = json ["slugs"].Select (r => (string)r).ToList ();
+			IList<String> slugs = json ["slugs"].Select (r => HttpUtility.UrlDecode((string)r)).ToList ();
 			IList<LinkedDocument> linkedDocuments = new List<LinkedDocument> ();
 			if (json ["linked_documents"] != null) {
 				linkedDocuments = json ["linked_documents"].Select (r => LinkedDocument.Parse ((JObject)r)).ToList ();
