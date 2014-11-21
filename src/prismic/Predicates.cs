@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace prismic
@@ -47,14 +48,17 @@ namespace prismic
 		}
 
 		private static String serializeField(Object value) {
-			if (value is System.Collections.IEnumerable) {
-				return "[" + String.Join(",", (System.Collections.IEnumerable)value) + "]";
+			if (value is String) {
+				return ("\"" + value + "\"");
+			} else if (value is System.Collections.IEnumerable) {
+				IEnumerable<string> serializedItems = ((System.Collections.IEnumerable)value).Cast<object>().Select( item =>
+					serializeField(item)
+				);
+				return "[" + String.Join(",", serializedItems) + "]";
 			} else if (value is Predicates.Month) {
 				return ("\"" + capitalize(((Predicates.Month) value).ToString()) + "\"");
-			} else if (value is Predicates.DayOfWeek) {
-				return ("\"" + capitalize(((Predicates.DayOfWeek) value).ToString()) + "\"");
-			} else if (value is String) {
-				return ("\"" + value + "\"");
+			} else if (value is System.DayOfWeek) {
+				return ("\"" + capitalize(((System.DayOfWeek) value).ToString()) + "\"");
 			} else if (value is DateTime) {
 				return (((DateTime) value) - new DateTime(1970, 1, 1)).TotalMilliseconds.ToString();
 			} else {
@@ -70,15 +74,9 @@ namespace prismic
 
 	public class Predicates {
 
-		public enum DayOfWeek {
-			MONDAY, TUESDAY, WEDNESDAY,
-			THURSDAY, FRIDAY, SATURDAY,
-			SUNDAY
-		}
-
 		public enum Month {
-			JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE,
-			JULY, AUGUST, SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER
+			January, February, March, April, May, June,
+			July, August, September, October, November, December
 		}
 
 		public static IPredicate at(String fragment, String value) {
@@ -102,7 +100,7 @@ namespace prismic
 		}
 
 		public static IPredicate lt(String fragment, int lowerBound) {
-			return lt(fragment, lowerBound);
+			return new Predicate("number.lt", fragment, lowerBound);
 		}
 
 		public static IPredicate gt(String fragment, Double upperBound) {
@@ -110,11 +108,11 @@ namespace prismic
 		}
 
 		public static IPredicate gt(String fragment, int upperBound) {
-			return gt(fragment, upperBound);
+			return new Predicate("number.gt", fragment, (Double)upperBound);
 		}
 
 		public static IPredicate inRange(String fragment, int lowerBound, int upperBound) {
-			return inRange(fragment, lowerBound, upperBound);
+			return new Predicate("number.inRange", fragment, (Double)lowerBound, (Double)upperBound);
 		}
 
 		public static IPredicate inRange(String fragment, Double lowerBound, Double upperBound) {

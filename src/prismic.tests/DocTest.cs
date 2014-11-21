@@ -143,9 +143,9 @@ namespace prismic.tests
 			var doc = response.Results[0];
 			// startgist:57e8cda4c83cadf7f7d0:prismic-getNumber.cs
 			// Number predicates
-			var gt = "[[:d = number.gt(my.product.price, 10)]]";
-			var lt = "[[:d = number.lt(my.product.price, 20)]]";
-			var inRange = "[[:d = number.inRange(my.product.price, 10, 20)]]";
+			var gt = Predicates.gt("my.product.price", 10);
+			var lt = Predicates.lt("my.product.price", 20);
+			var inRange = Predicates.inRange("my.product.price", 10, 20);
 
 			// Accessing number fields
 			double price = doc.GetNumber("product.price").Value;
@@ -182,22 +182,22 @@ namespace prismic.tests
 			var doc = response.Result.Results[0];
 			// startgist:653bcba6211a9b71429d:prismic-dateTimestamp.cs
 			// Date and Timestamp predicates
-			var dateBefore = "[[:d = date.before(my.product.releaseDate, \"2014-6-1\")]]";
-			var dateAfter = "[[:d = date.after(my.product.releaseDate, \"2014-1-1\")]]";
-			var dateBetween = "[[:d = date.between(my.product.releaseDate, \"2014-1-1\", \"2014-6-1\")]]";
-			var dayOfMonth = "[[:d = date.day-of-month(my.product.releaseDate, 14)]]";
-			var dayOfMonthAfter = "[[:d = date.day-of-month-after(my.product.releaseDate, 14)]]";
-			var dayOfMonthBefore = "[[:d = date.day-of-month-before(my.product.releaseDate, 14)]]";
-			var dayOfWeek = "[[:d = date.day-of-week(my.product.releaseDate, \"Tuesday\")]]";
-			var dayOfWeekAfter = "[[:d = date.day-of-week-after(my.product.releaseDate, \"Wednesday\")]]";
-			var dayOfWeekBefore = "[[:d = date.day-of-week-before(my.product.releaseDate, \"Wednesday\")]]";
-			var month = "[[:d = date.month(my.product.releaseDate, \"June\")]]";
-			var monthBefore = "[[:d = date.month-before(my.product.releaseDate, \"June\")]]";
-			var monthAfter = "[[:d = date.month-after(my.product.releaseDate, \"June\")]]";
-			var year = "[[:d = date.year(my.product.releaseDate, 2014)]]";
-			var hour = "[[:d = date.hour(my.product.releaseDate, 12)]]";
-			var hourBefore = "[[:d = date.hour-before(my.product.releaseDate, 12)]]";
-			var hourAfter = "[[:d = date.hour-after(my.product.releaseDate, 12)]]";
+			var dateBefore = Predicates.dateBefore("my.product.releaseDate", new DateTime(2014, 6, 1));
+			var dateAfter = Predicates.dateAfter("my.product.releaseDate", new DateTime(2014, 1, 1));
+			var dateBetween = Predicates.dateBetween("my.product.releaseDate", new DateTime(2014, 1, 1), new DateTime(2014, 6, 1));
+			var dayOfMonth = Predicates.dayOfMonth("my.product.releaseDate", 14);
+			var dayOfMonthAfter = Predicates.dayOfMonthAfter("my.product.releaseDate", 14);
+			var dayOfMonthBefore = Predicates.dayOfMonthBefore("my.product.releaseDate", 14);
+			var dayOfWeek = Predicates.dayOfWeek("my.product.releaseDate", DayOfWeek.Tuesday);
+			var dayOfWeekAfter = Predicates.dayOfWeekAfter("my.product.releaseDate", DayOfWeek.Wednesday);
+			var dayOfWeekBefore = Predicates.dayOfWeekBefore("my.product.releaseDate", DayOfWeek.Wednesday);
+			var month = Predicates.month("my.product.releaseDate", Predicates.Month.June);
+			var monthBefore = Predicates.monthBefore("my.product.releaseDate", Predicates.Month.June);
+			var monthAfter = Predicates.monthAfter("my.product.releaseDate", Predicates.Month.June);
+			var year = Predicates.year("my.product.releaseDate", 2014);
+			var hour = Predicates.hour("my.product.releaseDate", 12);
+			var hourBefore = Predicates.hourBefore("my.product.releaseDate", 12);
+			var hourAfter = Predicates.hourAfter("my.product.releaseDate", 12);
 
 			// Accessing Date and Timestamp fields
 			DateTime date = doc.GetDate("blog-post.date").Value;
@@ -354,7 +354,7 @@ namespace prismic.tests
 				}
 			);
 			// This Api will use the custom cache object
-			var api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api", cache, null);
+			var api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api", cache);
 			// endgist
 		}
 

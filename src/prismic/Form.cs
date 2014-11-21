@@ -377,6 +377,7 @@ namespace prismic
 						}
 					}
 					api.Logger.log ("DEBUG", "Fetching URL: " + url);
+					Console.WriteLine ("Fetching URL: " + url);
 					return HttpClient.fetch(url, api.Logger, api.Cache).Select(json => {
 						return Response.Parse(json);
 					});

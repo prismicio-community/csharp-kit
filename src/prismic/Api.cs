@@ -101,6 +101,10 @@ namespace prismic
 			return result;
 		}
 
+		public static Task<Api> Get(String url, ICache cache) {
+			return Get(url, null, cache, new NoLogger());
+		}
+
 		public static Task<Api> Get(String url, ICache cache, ILogger logger) {
 			return Get(url, null, cache, logger);
 		}
@@ -125,7 +129,7 @@ namespace prismic
 		* @return the usable API object
 		*/
 		public static Task<Api> Get(String url) {
-			return Get(url, null);
+			return Get(url, null, new DefaultCache(), new NoLogger());
 		}
 
 

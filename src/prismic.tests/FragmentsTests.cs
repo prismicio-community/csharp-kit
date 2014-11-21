@@ -174,17 +174,5 @@ namespace prismic.tests
 			Assert.AreEqual(expect, html);
 		}
 
-		[Test ()]
-		public void ShouldAccessStructuredTextEmbed()
-		{
-			var url = "https://lesbonneschoses-vcerzcwaaohojzo.prismic.io";
-			Api api = (prismic.Api.Get(url)).Result;
-			var form = api.Form("everything").Ref(api.Master).Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbm"")]]");
-
-			var document = form.Submit().Result.Results.First();
-			var maybeText = document.GetStructuredText ("blog-post.body");
-			Assert.AreEqual (maybeText, "");
-		}
-
 	}
 }
