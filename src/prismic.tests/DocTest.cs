@@ -12,13 +12,11 @@ namespace prismic.tests
 	public class DocTest
 	{
 		[Test ()]
-		public void ApiTest ()
+		public async Task ApiTest ()
 		{
 			// startgist:c023234afbc20303f792:prismic-api.cs
 			// Fetching the API is an asynchronous process
-			Task<Api> task = prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
-			// But you can get it synchronously by calling .Result
-			Api api = task.Result;
+			Api api = await prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
 			// endgist
 			Assert.IsNotNull (api);
 		}
@@ -34,52 +32,52 @@ namespace prismic.tests
 		}
 
 		[Test ()]
-		public void ReferencesTest ()
+		public async Task ReferencesTest ()
 		{
 			// startgist:7b8defb1e1057ad27494:prismic-references.cs
 			var previewToken = "MC5VbDdXQmtuTTB6Z0hNWHF3.c--_vVbvv73vv73vv73vv71EA--_vS_vv73vv70T77-9Ke-_ve-_vWfvv70ebO-_ve-_ve-_vQN377-9ce-_vRfvv70";
-			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api", previewToken).Result;
+			Api api = await prismic.Api.Get("https://lesbonneschoses.prismic.io/api", previewToken);
 			Console.WriteLine ("API OK");
 			var stPatrickRef = api.Ref("St-Patrick specials");
 			Console.WriteLine ("StPar = " + stPatrickRef);
 			// Now we'll use this reference for all our calls
-			var response = api.Form("everything")
+			Response response = await api.Form("everything")
 				.Ref(stPatrickRef)
 				.Query (@"[[:d = at(document.type, ""product"")]]")
 				.Submit();
 			// The documents object contains a Response object with all documents of type "product"
 			// including the new "Saint-Patrick's Cupcake"
 			// endgist
-			Assert.AreEqual(17, response.Result.Results.Count());
+			Assert.AreEqual(17, response.Results.Count());
 		}
 
 		[Test ()]
-		public void SimpleQueryTest ()
+		public async Task SimpleQueryTest ()
 		{
 			// startgist:6b01f5bd50568045f9a0:prismic-simplequery.cs
-			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api").Result;
+			Api api = await prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
 			// Just like Api.Get, fetching a Response is asynchronous
-			Task<Response> response = api
+			Response response = await api
 				.Form("everything")
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.type, ""product"")]]")
 				.Submit();
 			// The response object contains all documents of type "product", paginated
 			// endgist
-			Assert.AreEqual (16, response.Result.Results.Count());
+			Assert.AreEqual (16, response.Results.Count());
 		}
 
 		[Test ()]
-		public void OrderingsTest ()
+		public async Task OrderingsTest ()
 		{
 			// startgist:6437bcf0207f170dace9:prismic-orderings.cs
-			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api").Result;
-			var response = api.Form("everything")
+			Api api = await prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
+			var response = await api.Form("everything")
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.type, ""product"")]]")
 				.PageSize(100)
 				.Orderings("[my.product.price desc]")
-				.Submit().Result;
+				.Submit();
 			// The products are now ordered by price, highest first
 			var results = response.Results;
 			// endgist
@@ -87,17 +85,17 @@ namespace prismic.tests
 		}
 
 		[Test ()]
-		public void PredicatesTest ()
+		public async Task PredicatesTest ()
 		{
 			// startgist:dbd1a1f4056ae7bf9959:prismic-predicates.cs
-			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api").Result;
-			var response = api
+			Api api = await prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
+			var response = await api
 				.Form("everything")
 				.Ref(api.Master)
 				.Query (Predicates.at("document.type", "blog-post"), Predicates.dateAfter("my.blog-post.date", DateTime.Now))
 				.Submit();
 			// endgist
-			Assert.AreEqual (0, response.Result.Results.Count());
+			Assert.AreEqual (0, response.Results.Count());
 		}
 
 		[Test ()]
@@ -118,13 +116,13 @@ namespace prismic.tests
 		}
 
 		[Test ()]
-		public void GetTextTest ()
+		public async Task GetTextTest ()
 		{
-			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api").Result;
-			var response = api.Form("everything")
+			Api api = await prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
+			var response = await api.Form("everything")
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbl"")]]")
-				.Submit().Result;
+				.Submit();
 			var doc = response.Results[0];
 			// startgist:7869828eaa8c1b8555d3:prismic-getText.cs
 			var author = doc.GetText("blog-post.author");
@@ -133,13 +131,13 @@ namespace prismic.tests
 		}
 
 		[Test ()]
-		public void GetNumberTest()
+		public async Task GetNumberTest()
 		{
-			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api").Result;
-			var response = api.Form("everything")
+			Api api = await prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
+			var response = await api.Form("everything")
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbO"")]]")
-				.Submit().Result;
+				.Submit();
 			var doc = response.Results[0];
 			// startgist:57e8cda4c83cadf7f7d0:prismic-getNumber.cs
 			// Number predicates
@@ -154,13 +152,13 @@ namespace prismic.tests
 		}
 
 		[Test ()]
-		public void ImagesTest()
+		public async Task ImagesTest()
 		{
-			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api").Result;
-			var response = api.Form("everything")
+			Api api = await prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
+			var response = await api.Form("everything")
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbO"")]]")
-				.Submit().Result;
+				.Submit();
 			var doc = response.Results[0];
 			// startgist:2ba6c72a80cf9d2af15e:prismic-images.cs
 			// Accessing image fields
@@ -171,15 +169,15 @@ namespace prismic.tests
 		}
 
 		[Test ()]
-		public void DateTimestampTest()
+		public async Task DateTimestampTest()
 		{
-			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api").Result;
+			Api api = await prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
 			Console.WriteLine ("DateTimestampTest, got API " + api);
-			var response = api.Form("everything")
+			var response = await api.Form("everything")
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbl"")]]")
 				.Submit();
-			var doc = response.Result.Results[0];
+			var doc = response.Results[0];
 			// startgist:653bcba6211a9b71429d:prismic-dateTimestamp.cs
 			// Date and Timestamp predicates
 			var dateBefore = Predicates.dateBefore("my.product.releaseDate", new DateTime(2014, 6, 1));
@@ -289,16 +287,16 @@ namespace prismic.tests
 		}
 
 		[Test ()]
-		public void AsHtmlTest ()
+		public async Task AsHtmlTest ()
 		{
-			var api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api").Result;
-			var response = api
+			var api = await prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
+			var response = await api
 				.Form("everything")
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbX"")]]")
 				.Submit();
 			// startgist:097067bd2495233520bb:prismic-asHtml.cs
-			var document = response.Result.Results.First ();
+			var document = response.Results.First ();
 			var resolver =
 				prismic.DocumentLinkResolver.For (l => String.Format ("http://localhost/{0}/{1}", l.Type, l.Id));
 			var html = document.GetStructuredText ("blog-post.body").AsHtml(resolver);
@@ -307,16 +305,16 @@ namespace prismic.tests
 		}
 
 		[Test ()]
-		public void HtmlSerializerTest ()
+		public async Task HtmlSerializerTest ()
 		{
-			var api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api").Result;
-			var response = api
+			var api = await prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
+			var response = await api
 				.Form("everything")
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbX"")]]")
 				.Submit();
 			// startgist:b5f2de0fb813b52a14a9:prismic-htmlSerializer.cs
-			var document = response.Result.Results.First ();
+			var document = response.Results.First ();
 			var resolver =
 				prismic.DocumentLinkResolver.For (l => String.Format ("http://localhost/{0}/{1}", l.Type, l.Id));
 			var serializer = prismic.HtmlSerializer.For ((elt, body) => {

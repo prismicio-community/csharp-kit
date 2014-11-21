@@ -6,7 +6,6 @@ using System.Net;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
-using prismic.extensions;
 
 namespace prismic
 {
@@ -80,7 +79,7 @@ namespace prismic
 		* @param logger instance of a class that implements the {@link Logger} interface, and will handle the logging
 		* @return the usable API object
 		*/
-		public static Task<Api> Get(String endpoint, String accessToken, ICache cache, ILogger logger) {
+		public static async Task<Api> Get(String endpoint, String accessToken, ICache cache, ILogger logger) {
 			String url = (accessToken == null ? endpoint : (endpoint + "?access_token=" + HttpUtility.UrlEncode(accessToken)));
 
 			/* TODO Reactive cache JsonNode json = cache.getOrSet(
@@ -93,12 +92,9 @@ namespace prismic
 				}
 			);*/
 			logger.log ("DEBUG", "Fetching URL: " + url);
-			Task<JToken> stringTask = HttpClient.fetch (url, logger, cache);
-			Task<Api> result = stringTask.Select<JToken, Api> (json => {
-				ApiData apiData = ApiData.Parse (json);
-				return new Api (apiData, accessToken, cache, logger);
-			});
-			return result;
+			JToken json = await HttpClient.fetch (url, logger, cache);
+			ApiData apiData = ApiData.Parse (json);
+			return new Api (apiData, accessToken, cache, logger);
 		}
 
 		public static Task<Api> Get(String url, ICache cache) {
@@ -132,6 +128,29 @@ namespace prismic
 			return Get(url, null, new DefaultCache(), new NoLogger());
 		}
 
+		/**
+		* Return the URL to display a given preview
+		* @param token as received from Prismic server to identify the content to preview
+		* @param linkResolver the link resolver to build URL for your site
+		* @param defaultUrl the URL to default to return if the preview doesn't correspond to a document
+		*                (usually the home page of your site)
+		* @return the URL you should redirect the user to preview the requested change
+		*/
+		public async Task<String> previewSession(String token, DocumentLinkResolver linkResolver, String defaultUrl) {
+			var tokenJson = await HttpClient.fetch(token, logger, cache);
+			var mainDocumentId = tokenJson["mainDocument"];
+			if (mainDocumentId == null) {
+				return (defaultUrl);
+			}
+			var resp = await Form ("everything")
+				.Query (Predicates.at ("document.id", mainDocumentId.ToString ()))
+				.Ref (token)
+				.Submit ();
+			if (resp.Results.Count == 0) {
+				return defaultUrl;
+			}
+			return linkResolver.Resolve (resp.Results[0]);
+		}
 
 	}
 
