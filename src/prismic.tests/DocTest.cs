@@ -16,7 +16,7 @@ namespace prismic.tests
 		{
 			// startgist:c023234afbc20303f792:prismic-api.cs
 			// Fetching the API is an asynchronous process
-			Api api = await prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
+			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
 			// endgist
 			Assert.IsNotNull (api);
 		}
@@ -27,7 +27,7 @@ namespace prismic.tests
 		{
 			// startgist:a6f1067b28cc9dca7a82:prismic-apiPrivate.cs
 			// This will fail because the token is invalid, but this is how to access a private API
-			Api api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api", "MC5-XXXXXXX-vRfvv70").Result;
+			Api api = prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api", "MC5-XXXXXXX-vRfvv70").Result;
 			// endgist
 		}
 
@@ -36,7 +36,7 @@ namespace prismic.tests
 		{
 			// startgist:7b8defb1e1057ad27494:prismic-references.cs
 			var previewToken = "MC5VbDdXQmtuTTB6Z0hNWHF3.c--_vVbvv73vv73vv73vv71EA--_vS_vv73vv70T77-9Ke-_ve-_vWfvv70ebO-_ve-_ve-_vQN377-9ce-_vRfvv70";
-			Api api = await prismic.Api.Get("https://lesbonneschoses.prismic.io/api", previewToken);
+			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api", previewToken);
 			Console.WriteLine ("API OK");
 			var stPatrickRef = api.Ref("St-Patrick specials");
 			Console.WriteLine ("StPar = " + stPatrickRef);
@@ -55,7 +55,7 @@ namespace prismic.tests
 		public async Task SimpleQueryTest ()
 		{
 			// startgist:6b01f5bd50568045f9a0:prismic-simplequery.cs
-			Api api = await prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
+			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
 			// Just like Api.Get, fetching a Response is asynchronous
 			Response response = await api
 				.Form("everything")
@@ -71,7 +71,7 @@ namespace prismic.tests
 		public async Task OrderingsTest ()
 		{
 			// startgist:6437bcf0207f170dace9:prismic-orderings.cs
-			Api api = await prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
+			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
 			var response = await api.Form("everything")
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.type, ""product"")]]")
@@ -88,7 +88,7 @@ namespace prismic.tests
 		public async Task PredicatesTest ()
 		{
 			// startgist:dbd1a1f4056ae7bf9959:prismic-predicates.cs
-			Api api = await prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
+			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
 			var response = await api
 				.Form("everything")
 				.Ref(api.Master)
@@ -118,7 +118,7 @@ namespace prismic.tests
 		[Test ()]
 		public async Task GetTextTest ()
 		{
-			Api api = await prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
+			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
 			var response = await api.Form("everything")
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbl"")]]")
@@ -133,7 +133,7 @@ namespace prismic.tests
 		[Test ()]
 		public async Task GetNumberTest()
 		{
-			Api api = await prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
+			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
 			var response = await api.Form("everything")
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbO"")]]")
@@ -154,7 +154,7 @@ namespace prismic.tests
 		[Test ()]
 		public async Task ImagesTest()
 		{
-			Api api = await prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
+			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
 			var response = await api.Form("everything")
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbO"")]]")
@@ -165,13 +165,13 @@ namespace prismic.tests
 			fragments.Image.View imageView = doc.GetImageView("product.image", "main");
 			String url = imageView.Url;
 			// endgist
-			Assert.AreEqual(url, "https://prismic-io.s3.amazonaws.com/lesbonneschoses/f606ad513fcc2a73b909817119b84d6fd0d61a6d.png");
+			Assert.AreEqual(url, "https://lesbonneschoses.cdn.prismic.io/lesbonneschoses/f606ad513fcc2a73b909817119b84d6fd0d61a6d.png");
 		}
 
 		[Test ()]
 		public async Task DateTimestampTest()
 		{
-			Api api = await prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
+			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
 			Console.WriteLine ("DateTimestampTest, got API " + api);
 			var response = await api.Form("everything")
 				.Ref(api.Master)
@@ -289,7 +289,7 @@ namespace prismic.tests
 		[Test ()]
 		public async Task AsHtmlTest ()
 		{
-			var api = await prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
+			var api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
 			var response = await api
 				.Form("everything")
 				.Ref(api.Master)
@@ -307,7 +307,7 @@ namespace prismic.tests
 		[Test ()]
 		public async Task HtmlSerializerTest ()
 		{
-			var api = await prismic.Api.Get("https://lesbonneschoses.prismic.io/api");
+			var api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
 			var response = await api
 				.Form("everything")
 				.Ref(api.Master)
@@ -352,7 +352,7 @@ namespace prismic.tests
 				}
 			);
 			// This Api will use the custom cache object
-			var api = prismic.Api.Get("https://lesbonneschoses.prismic.io/api", cache);
+			var api = prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api", cache);
 			// endgist
 		}
 

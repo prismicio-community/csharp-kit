@@ -2,7 +2,17 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
   <MonoDevelop.Ide.Workbench ActiveDocument="prismic/Fragment.cs">
     <Files>
-      <File FileName="prismic/Fragment.cs" Line="25" Column="25" />
+      <File FileName="prismic/Fragment.cs" Line="1" Column="1" />
+      <File FileName="prismic/Api.cs" Line="25" Column="25" />
+      <File FileName="prismic/Form.cs" Line="1" Column="1" />
+      <File FileName="prismic/Response.cs" Line="30" Column="30" />
+      <File FileName="prismic.tests/DocTest.cs" Line="46" Column="46" />
+      <File FileName="prismic/Predicates.cs" Line="81" Column="81" />
+      <File FileName="prismic.tests/PredicatesTest.cs" Line="64" Column="64" />
+      <File FileName="prismic.tests/FragmentsTests.cs" Line="3" Column="3" />
+      <File FileName="prismic/HttpClient.cs" Line="26" Column="26" />
+      <File FileName="prismic/Extensions.cs" Line="1" Column="1" />
+      <File FileName="prismic/Document.cs" Line="18" Column="18" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
