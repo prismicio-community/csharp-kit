@@ -15,6 +15,12 @@ namespace prismic
 				return id;
 			}
 		}
+		private String uid;
+		public String Uid {
+			get {
+				return uid;
+			}
+		}
 		private String href;
 		public String Href {
 			get {
@@ -55,8 +61,9 @@ namespace prismic
 			}
 		}
 
-		public Document(String id, String type, String href, ISet<String> tags, IList<String> slugs, IList<LinkedDocument> linkedDocuments, IDictionary<String,Fragment> fragments): base(fragments) {
+		public Document(String id, String uid, String type, String href, ISet<String> tags, IList<String> slugs, IList<LinkedDocument> linkedDocuments, IDictionary<String,Fragment> fragments): base(fragments) {
 			this.id = id;
+			this.uid = uid;
 			this.type = type;
 			this.href = href;
 			this.tags = tags;
@@ -70,6 +77,7 @@ namespace prismic
 
 		public static Document Parse(JToken json) {
 			var id = (string)json["id"];
+			var uid = (string)json["uid"];
 			var href = (string)json["href"];
 			var type = (string)json["type"];
 
@@ -104,7 +112,7 @@ namespace prismic
 				}
 			}
 
-			return new Document(id, type, href, tags, slugs, linkedDocuments, fragments);
+			return new Document(id, uid, type, href, tags, slugs, linkedDocuments, fragments);
 		}
 
 
