@@ -47,7 +47,6 @@
     <Compile Include="HttpClient.cs" />
     <Compile Include="Error.cs" />
     <Compile Include="Fragment.cs" />
-    <Compile Include="LinkedDocument.cs" />
     <Compile Include="WithFragments.cs" />
     <Compile Include="DocumentLinkResolver.cs" />
     <Compile Include="GroupDoc.cs" />

@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
+using prismic.fragments;
 
 namespace prismic
 {
@@ -184,6 +185,36 @@ namespace prismic
 				html += ("</section>\n");
 			}
 			return html.Trim();
+		}
+
+		public IList<DocumentLink> LinkedDocuments() {
+			var result = new List<DocumentLink>();
+			foreach(Fragment fragment in Fragments.Values) {
+				if (fragment is fragments.DocumentLink) {
+					result.Add ((fragments.DocumentLink)fragment);
+				} else if (fragment is fragments.StructuredText) {
+					var text = (fragments.StructuredText)fragment;
+					foreach (fragments.StructuredText.Block block in text.Blocks) {
+						if (block is fragments.StructuredText.TextBlock) {
+							var spans = ((fragments.StructuredText.TextBlock)block).Spans;
+							foreach (fragments.StructuredText.Span span in spans) {
+								if (span is fragments.StructuredText.Hyperlink) {
+									var link = ((fragments.StructuredText.Hyperlink)span).Link;
+									if (link is fragments.DocumentLink) {
+										result.Add ((fragments.DocumentLink)link);
+									}
+								}
+							}
+						}
+					}
+				} else if (fragment is fragments.Group) {
+					var group = (fragments.Group)fragment;
+					foreach (GroupDoc doc in group.GroupDocs) {
+						result.AddRange (doc.LinkedDocuments());
+					}
+				}
+			}
+			return result;
 		}
 
 	}

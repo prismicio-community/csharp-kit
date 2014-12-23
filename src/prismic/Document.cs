@@ -54,21 +54,14 @@ namespace prismic
 				return type;
 			}
 		}
-		private IList<LinkedDocument> linkedDocuments;
-		public IList<LinkedDocument> LinkedDocuments {
-			get {
-				return linkedDocuments;
-			}
-		}
 
-		public Document(String id, String uid, String type, String href, ISet<String> tags, IList<String> slugs, IList<LinkedDocument> linkedDocuments, IDictionary<String,Fragment> fragments): base(fragments) {
+		public Document(String id, String uid, String type, String href, ISet<String> tags, IList<String> slugs, IDictionary<String,Fragment> fragments): base(fragments) {
 			this.id = id;
 			this.uid = uid;
 			this.type = type;
 			this.href = href;
 			this.tags = tags;
 			this.slugs = slugs;
-			this.linkedDocuments = linkedDocuments;
 		}
 
 		public fragments.DocumentLink AsDocumentLink() {
@@ -119,14 +112,10 @@ namespace prismic
 
 			ISet<String> tags = new HashSet<String>(json ["tags"].Select (r => (string)r));
 			IList<String> slugs = json ["slugs"].Select (r => HttpUtility.UrlDecode((string)r)).ToList ();
-			IList<LinkedDocument> linkedDocuments = new List<LinkedDocument> ();
-			if (json ["linked_documents"] != null) {
-				linkedDocuments = json ["linked_documents"].Select (r => LinkedDocument.Parse ((JObject)r)).ToList ();
-			}
 
 			IDictionary<String, Fragment> fragments = parseFragments (json);
 
-			return new Document(id, uid, type, href, tags, slugs, linkedDocuments, fragments);
+			return new Document(id, uid, type, href, tags, slugs, fragments);
 		}
 
 
