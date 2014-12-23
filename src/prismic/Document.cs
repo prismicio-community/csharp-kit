@@ -72,23 +72,20 @@ namespace prismic
 		}
 
 		public fragments.DocumentLink AsDocumentLink() {
-			return new fragments.DocumentLink(id, type, tags, slugs[0], false);
+			return new fragments.DocumentLink(id, type, tags, slugs[0], this.Fragments, false);
 		}
 
-		public static Document Parse(JToken json) {
-			var id = (string)json["id"];
-			var uid = (string)json["uid"];
-			var href = (string)json["href"];
+		public static IDictionary<String, Fragment> parseFragments(JToken json) {
+			IDictionary<String, Fragment> fragments = new Dictionary<String, Fragment>();
+
+			if (json == null) {
+				return fragments;
+			}
 			var type = (string)json["type"];
 
-			ISet<String> tags = new HashSet<String>(json ["tags"].Select (r => (string)r));
-			IList<String> slugs = json ["slugs"].Select (r => HttpUtility.UrlDecode((string)r)).ToList ();
-			IList<LinkedDocument> linkedDocuments = new List<LinkedDocument> ();
-			if (json ["linked_documents"] != null) {
-				linkedDocuments = json ["linked_documents"].Select (r => LinkedDocument.Parse ((JObject)r)).ToList ();
+			if (json ["data"] == null) {
+				return fragments;
 			}
-
-			IDictionary<String, Fragment> fragments = new Dictionary<String, Fragment>();
 			foreach (KeyValuePair<String, JToken> field in ((JObject)json ["data"][type])) {
 				if (field.Value is JArray) {
 					var i = 0;
@@ -111,6 +108,23 @@ namespace prismic
 					}
 				}
 			}
+			return fragments;
+		}
+
+		public static Document Parse(JToken json) {
+			var id = (string)json["id"];
+			var uid = (string)json["uid"];
+			var href = (string)json["href"];
+			var type = (string)json["type"];
+
+			ISet<String> tags = new HashSet<String>(json ["tags"].Select (r => (string)r));
+			IList<String> slugs = json ["slugs"].Select (r => HttpUtility.UrlDecode((string)r)).ToList ();
+			IList<LinkedDocument> linkedDocuments = new List<LinkedDocument> ();
+			if (json ["linked_documents"] != null) {
+				linkedDocuments = json ["linked_documents"].Select (r => LinkedDocument.Parse ((JObject)r)).ToList ();
+			}
+
+			IDictionary<String, Fragment> fragments = parseFragments (json);
 
 			return new Document(id, uid, type, href, tags, slugs, linkedDocuments, fragments);
 		}

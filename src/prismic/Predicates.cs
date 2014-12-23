@@ -87,6 +87,10 @@ namespace prismic
 			return new Predicate("any", fragment, values);
 		}
 
+		public static IPredicate @in(String fragment, IEnumerable<String> values) {
+			return new Predicate("in", fragment, values);
+		}
+
 		public static IPredicate fulltext(String fragment, String value) {
 			return new Predicate("fulltext", fragment, value);
 		}

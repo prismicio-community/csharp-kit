@@ -307,6 +307,45 @@ namespace prismic
 				return Set("orderings", orderings);
 			}
 
+			/**
+     * Start the results after the id passed in parameter. Useful to get the documment following
+     * a reference document for example.
+     *
+     * @param orderings the orderings
+     * @return the current form, in order to chain those calls
+     */
+			public SearchForm Start(String id) {
+				return Set ("start", id);
+			}
+
+			/**
+     * Restrict the document fragments to the set of fields specified.
+     *
+     * @param fields the fields to return
+     * @return the current form, in order to chain those calls
+     */
+			public SearchForm Fetch(params String[] fields) {
+				if (fields.Length == 0) {
+					return this; // Noop
+				} else {
+					return Set("fetch", String.Join(",", fields));
+				}
+			}
+
+			/**
+     * Include the specified fragment in the details of DocumentLink
+     *
+     * @param fields the fields to return
+     * @return the current form, in order to chain those calls
+     */
+			public SearchForm FetchLinks(params String[] fields) {
+				if (fields.Length == 0) {
+					return this; // Noop
+				} else {
+					return Set("fetchLinks", String.Join(",", fields));
+				}
+			}
+
 			// Temporary hack for Backward compatibility
 			private String strip(String q) {
 				if(q == null) return "";

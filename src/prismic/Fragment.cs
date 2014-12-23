@@ -286,7 +286,7 @@ namespace prismic
 
 		}
 
-		public class DocumentLink: Link {
+		public class DocumentLink: WithFragments, Link {
 			private String id;
 			public String Id {
 				get {
@@ -318,7 +318,7 @@ namespace prismic
 				}
 			}
 
-			public DocumentLink(String id, String type, ISet<String> tags, String slug, Boolean broken) {
+			public DocumentLink(String id, String type, ISet<String> tags, String slug, IDictionary<String,Fragment> fragments, Boolean broken): base(fragments) {
 				this.id = id;
 				this.type = type;
 				this.tags = tags;
@@ -330,7 +330,7 @@ namespace prismic
 				return resolver.Resolve (this);
 			}
 
-			public String AsHtml(DocumentLinkResolver linkResolver) {
+			public new String AsHtml(DocumentLinkResolver linkResolver) {
 				return ("<a " + (linkResolver.GetTitle(this) == null ? "" : "title=\"" + linkResolver.GetTitle(this) + "\" ") + "href=\"" + linkResolver.Resolve(this) + "\">" + slug + "</a>");
 			}
 
@@ -345,7 +345,8 @@ namespace prismic
 					tags = new HashSet<String>(json ["tags"].Select (r => (string)r));
 				else
 					tags = new HashSet<String> ();
-				return new DocumentLink(id, type, tags, slug, broken);
+				IDictionary<String, Fragment> fragments = Document.parseFragments (json["document"]);
+				return new DocumentLink(id, type, tags, slug, fragments, broken);
 			}
 
 		}

@@ -174,5 +174,25 @@ namespace prismic.tests
 			Assert.AreEqual(expect, html);
 		}
 
+		[Test ()]
+		public void ShouldFetchLinksFragments() {
+			var url = "https://lesbonneschoses.prismic.io/api";
+			Api api = prismic.Api.Get(url).Result;
+			var form = api.Form("everything")
+				.FetchLinks("blog-post.author")
+				.Ref(api.Master)
+				.Query (Predicates.at("document.id", "UlfoxUnM0wkXYXbt"));
+
+			var document = form.Submit().Result.Results.First();
+
+			var link = (prismic.fragments.DocumentLink)document.GetLink("blog-post.relatedpost[0]");
+			Console.WriteLine ("Got the link: " + link.Fragments.Count);
+			Assert.AreEqual(
+				"John M. Martelle, Fine Pastry Magazine",
+				link.GetText("blog-post.author")
+			);
+		}
+
+
 	}
 }
