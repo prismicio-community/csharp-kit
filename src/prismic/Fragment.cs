@@ -293,7 +293,15 @@ namespace prismic
 					return id;
 				}
 			}
-			private String type;
+            private String uid;
+            public String Uid
+            {
+                get
+                {
+                    return uid;
+                }
+            }
+            private String type;
 			public String Type {
 				get {
 					return type;
@@ -318,8 +326,9 @@ namespace prismic
 				}
 			}
 
-			public DocumentLink(String id, String type, ISet<String> tags, String slug, IDictionary<String,Fragment> fragments, Boolean broken): base(fragments) {
+			public DocumentLink(String id, String uid, String type, ISet<String> tags, String slug, IDictionary<String,Fragment> fragments, Boolean broken): base(fragments) {
 				this.id = id;
+                this.uid = uid;
 				this.type = type;
 				this.tags = tags;
 				this.slug = slug;
@@ -335,18 +344,21 @@ namespace prismic
 			}
 
 			public static DocumentLink Parse(JToken json) {
-				var document = (JObject)json["document"];
-				var broken = (Boolean)json["isBroken"];
-				var id = (string)document["id"];
-				var type = (string)document["type"];
-				var slug = (string)document["slug"];
+				JObject document = (JObject)json["document"];
+			    Boolean broken = (Boolean)json["isBroken"];
+				string id = (string)document["id"];
+				string type = (string)document["type"];
+				string slug = (string)document["slug"];
+                string uid = null;
+                if (document["uid"] != null)
+                    uid = (string)document["uid"];
 				ISet<String> tags;
 				if (json["tags"] != null)
 					tags = new HashSet<String>(json ["tags"].Select (r => (string)r));
 				else
 					tags = new HashSet<String> ();
 				IDictionary<String, Fragment> fragments = Document.parseFragments (json["document"]);
-				return new DocumentLink(id, type, tags, slug, fragments, broken);
+				return new DocumentLink(id, uid, type, tags, slug, fragments, broken);
 			}
 
 		}

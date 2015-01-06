@@ -182,7 +182,7 @@ namespace prismic
 			foreach(KeyValuePair<String,Fragment> fragment in Fragments) {
 				html += ("<section data-field=\"" + fragment.Key + "\">");
 				html += GetHtml(fragment.Key, linkResolver, htmlSerializer);
-				html += ("</section>\n");
+				html += ("</section>");
 			}
 			return html.Trim();
 		}

@@ -65,7 +65,7 @@ namespace prismic
 		}
 
 		public fragments.DocumentLink AsDocumentLink() {
-			return new fragments.DocumentLink(id, type, tags, slugs[0], this.Fragments, false);
+			return new fragments.DocumentLink(id, uid, type, tags, slugs[0], this.Fragments, false);
 		}
 
 		public static IDictionary<String, Fragment> parseFragments(JToken json) {

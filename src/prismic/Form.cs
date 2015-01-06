@@ -190,22 +190,25 @@ namespace prismic
 				return this;
 			}
 
-			/**
-     * A simple helper to set numeric value; see set(String,String).
-     * @param field the name of the field to set
-     * @param value target value
-     * @return the current form, in order to chain those calls
-     */
-			public SearchForm Set(String field, int value) {
-				Field fieldDesc = form.Fields[field];
-				if(fieldDesc == null) {
-					throw new ArgumentException("Unknown field " + field); 
-				}
-				if("Integer" != fieldDesc.Type) {
-					throw new ArgumentException("Cannot set an Integer value to field " + field + " of type " + fieldDesc.Type); 
-				}
-				return Set(field, value.ToString());
-			}
+            /**
+             * A simple helper to set numeric value; see set(String,String).
+             * @param field the name of the field to set
+             * @param value target value
+             * @return the current form, in order to chain those calls
+             */
+            public SearchForm Set(String field, int value)
+            {
+                Field fieldDesc = form.Fields[field];
+                if (fieldDesc == null)
+                {
+                    throw new ArgumentException("Unknown field " + field);
+                }
+                if ("Integer" != fieldDesc.Type)
+                {
+                    throw new ArgumentException("Cannot set an Integer value to field " + field + " of type " + fieldDesc.Type);
+                }
+                return Set(field, value.ToString());
+            }
 
 			/**
      * Allows to set the ref on which you wish to be performing the query.
