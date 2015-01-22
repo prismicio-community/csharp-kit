@@ -13,3 +13,6 @@
 * UID
 * Fragments in all document-like classes
 
+#### New in 1.0.12 (Release 2015/01/22)
+* Fix in FileLink.Url
+
