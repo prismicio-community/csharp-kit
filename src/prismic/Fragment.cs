@@ -215,7 +215,7 @@ namespace prismic
 			private String url;
 			public String Url {
 				get {
-					return Url;
+					return url;
 				}
 			}
 			private String kind;

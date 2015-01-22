@@ -9,3 +9,7 @@
 * Use async/await
 * Preview helper
 
+#### New in 1.0.11 (Release 2015/01/06)
+* UID
+* Fragments in all document-like classes
+

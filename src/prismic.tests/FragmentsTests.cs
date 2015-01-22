@@ -11,7 +11,7 @@ namespace prismic.tests
 	public class FragmentsTests
 	{
 		[Test ()]
-        public async Task ShouldAccessGroupField()
+		public async Task ShouldAccessGroupField()
 		{
 			var url = "https://micro.prismic.io/api";
 			Api api = await prismic.Api.Get(url);

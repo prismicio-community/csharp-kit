@@ -1,12 +1,13 @@
-﻿<Properties>
+﻿<Properties StartupItem="prismic/prismicio.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="prismic/Document.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="prismic.tests/FragmentsTests.cs">
     <Files>
       <File FileName="prismic/Fragment.cs" Line="1" Column="1" />
       <File FileName="prismic/DocumentLinkResolver.cs" Line="1" Column="1" />
-      <File FileName="prismic/LinkedDocument.cs" Line="1" Column="1" />
       <File FileName="prismic/WithFragments.cs" Line="1" Column="1" />
       <File FileName="prismic/Document.cs" Line="1" Column="1" />
+      <File FileName="prismic.tests/ApiTest.cs" Line="12" Column="12" />
+      <File FileName="prismic.tests/FragmentsTests.cs" Line="3" Column="3" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
