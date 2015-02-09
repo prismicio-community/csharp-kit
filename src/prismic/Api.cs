@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Web;
 using System.Net;
+using System.Net.Http;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
@@ -14,6 +15,12 @@ namespace prismic
 		public const string PREVIEW_COOKIE = "io.prismic.preview";
 		public const string EXPERIMENT_COOKIE = "io.prismic.experiment";
 
+		private PrismicHttpClient prismicHttpClient;
+		public PrismicHttpClient PrismicHttpClient {
+			get {
+				return prismicHttpClient;
+			}
+		}
 		private ApiData apiData;
 		private String accessToken;
 		public String AccessToken {
@@ -42,11 +49,12 @@ namespace prismic
 			}
 		}
 
-		public Api(ApiData apiData, String accessToken, ICache cache, ILogger logger) {
+		public Api(ApiData apiData, String accessToken, ICache cache, ILogger logger, PrismicHttpClient client) {
 			this.apiData = apiData;
 			this.accessToken = accessToken;
 			this.cache = cache;
 			this.logger = logger;
+			this.prismicHttpClient = client;
 		}
 
 		public Ref Ref(String label) {
@@ -81,7 +89,7 @@ namespace prismic
 		* @param logger instance of a class that implements the {@link Logger} interface, and will handle the logging
 		* @return the usable API object
 		*/
-		public static async Task<Api> Get(String endpoint, String accessToken, ICache cache, ILogger logger) {
+		public static async Task<Api> Get(String endpoint, String accessToken, ICache cache, ILogger logger, HttpClient client) {
 			String url = (accessToken == null ? endpoint : (endpoint + "?access_token=" + HttpUtility.UrlEncode(accessToken)));
 
 			/* TODO Reactive cache JsonNode json = cache.getOrSet(
@@ -93,10 +101,14 @@ namespace prismic
 					}
 				}
 			);*/
-			logger.log ("DEBUG", "Fetching URL: " + url);
-			JToken json = await HttpClient.fetch (url, logger, cache);
+			PrismicHttpClient prismicHttpClient = new PrismicHttpClient (client);
+			JToken json = await prismicHttpClient.fetch (url, logger, cache);
 			ApiData apiData = ApiData.Parse (json);
-			return new Api (apiData, accessToken, cache, logger);
+			return new Api (apiData, accessToken, cache, logger, prismicHttpClient);
+		}
+
+		public static Task<Api> Get(String endpoint, String accessToken, ICache cache, ILogger logger) {
+			return Get (endpoint, accessToken, cache, logger, null);
 		}
 
 		public static Task<Api> Get(String url, ICache cache) {
@@ -119,6 +131,10 @@ namespace prismic
 			return Get(url, accessToken, new DefaultCache(), new NoLogger());
 		}
 
+		public static Task<Api> Get(String url, String accessToken, HttpClient client) {
+			return Get(url, accessToken, new DefaultCache(), new NoLogger(), client);
+		}
+
 		/**
 		* Entry point to get an {@link Api} object.
 		* Example: <code>API api = API.get("https://lesbonneschoses.prismic.io/api");</code>
@@ -130,6 +146,10 @@ namespace prismic
 			return Get(url, null, new DefaultCache(), new NoLogger());
 		}
 
+		public static Task<Api> Get(String url, HttpClient client) {
+			return Get(url, null, new DefaultCache(), new NoLogger(), client);
+		}
+
 		/**
 		* Return the URL to display a given preview
 		* @param token as received from Prismic server to identify the content to preview
@@ -139,7 +159,7 @@ namespace prismic
 		* @return the URL you should redirect the user to preview the requested change
 		*/
 		public async Task<String> PreviewSession(String token, DocumentLinkResolver linkResolver, String defaultUrl) {
-			var tokenJson = await HttpClient.fetch(token, logger, cache);
+			var tokenJson = await this.prismicHttpClient.fetch(token, logger, cache);
 			var mainDocumentId = tokenJson["mainDocument"];
 			if (mainDocumentId == null) {
 				return (defaultUrl);

@@ -419,7 +419,7 @@ namespace prismic
 					}
 					api.Logger.log ("DEBUG", "Fetching URL: " + url);
 					Console.WriteLine ("Fetching URL: " + url);
-					var json = await HttpClient.fetch (url, api.Logger, api.Cache);
+					var json = await api.PrismicHttpClient.fetch (url, api.Logger, api.Cache);
 					return Response.Parse(json);
 				} else {
 					throw new Error(Error.ErrorCode.UNEXPECTED, "Form type not supported");

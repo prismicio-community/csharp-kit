@@ -11,10 +11,25 @@ using Newtonsoft.Json.Linq;
 
 namespace prismic
 {
-	public static class HttpClient
+	public class PrismicHttpClient
 	{
+		private HttpClient client;
 
-		public static async Task<JToken> fetch(string url, ILogger logger, ICache cache)
+		public PrismicHttpClient()
+		{
+			this.client = new HttpClient ();
+		}
+
+		public PrismicHttpClient(HttpClient client)
+		{
+			if (client == null) {
+				this.client = new HttpClient ();
+			} else {
+				this.client = client;
+			}
+		}
+
+		public async Task<JToken> fetch(string url, ILogger logger, ICache cache)
 		{
 			JToken fromCache = cache.Get (url);
 			if (fromCache != null) {
@@ -26,9 +41,8 @@ namespace prismic
 
 		private static Regex maxAgeRe = new Regex(@"max-age=(\d+)");
 
-		private static async Task<JToken> _fetch(string url, ILogger logger, ICache cache) {
-			var client = new System.Net.Http.HttpClient ();
-			var response = await client.GetAsync(url);
+		private async Task<JToken> _fetch(string url, ILogger logger, ICache cache) {
+			var response = await this.client.GetAsync(url);
 			var body = await response.Content.ReadAsStringAsync();
 			switch (response.StatusCode) {
 			case HttpStatusCode.OK:
@@ -37,7 +51,6 @@ namespace prismic
 				var maxAge = maxAgeRe.Match (maxAgeValue);
 				if (maxAge.Success) {
 					long ttl = long.Parse (maxAge.Groups [1].Value);
-					Console.WriteLine ("Got a ttl of: " + ttl);
 					cache.Set (url, ttl, json);
 				}
 				return json;

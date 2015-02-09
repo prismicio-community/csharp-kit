@@ -18,7 +18,7 @@ namespace prismic.tests
 			var form = api.Form("everything").Ref(api.Master).Query (@"[[:d = at(document.type, ""docchapter"")]]");
 
 			var response = await form.Submit();
-            var document = response.Results.First();
+			var document = response.Results.First();
 			var group = document.GetGroup ("docchapter.docs");
 			Assert.IsNotNull (group, "group was not found");
 

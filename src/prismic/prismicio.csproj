@@ -44,7 +44,6 @@
     <Compile Include="Predicates.cs" />
     <Compile Include="Response.cs" />
     <Compile Include="Document.cs" />
-    <Compile Include="HttpClient.cs" />
     <Compile Include="Error.cs" />
     <Compile Include="Fragment.cs" />
     <Compile Include="WithFragments.cs" />
@@ -53,6 +52,7 @@
     <Compile Include="HtmlSerializer.cs" />
     <Compile Include="StructuredText.cs" />
     <Compile Include="Cache.cs" />
+    <Compile Include="PrismicHttpClient.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
