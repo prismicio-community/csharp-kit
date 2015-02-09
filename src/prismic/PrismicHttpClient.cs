@@ -1,5 +1,6 @@
 ﻿using System;
 
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.IO;
@@ -47,7 +48,12 @@ namespace prismic
 			switch (response.StatusCode) {
 			case HttpStatusCode.OK:
 				var json = JToken.Parse (body);
-				var maxAgeValue = ""; // TODO response.Headers.GetValues ("max-age").FirstOrDefault ();
+				var maxAgeValue = "";
+				IEnumerable<string> maxAgeValues;
+				if (response.Headers.TryGetValues("max-age", out maxAgeValues))
+				{
+					maxAgeValue = maxAgeValues.FirstOrDefault();
+				}
 				var maxAge = maxAgeRe.Match (maxAgeValue);
 				if (maxAge.Success) {
 					long ttl = long.Parse (maxAge.Groups [1].Value);

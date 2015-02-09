@@ -92,19 +92,15 @@ namespace prismic
 		public static async Task<Api> Get(String endpoint, String accessToken, ICache cache, ILogger logger, HttpClient client) {
 			String url = (accessToken == null ? endpoint : (endpoint + "?access_token=" + HttpUtility.UrlEncode(accessToken)));
 
-			/* TODO Reactive cache JsonNode json = cache.getOrSet(
-				url,
-				5000L,
-				new Cache.Callback() {
-					public JsonNode execute() {
-						return HttpClient.fetch(url, logger, null);
-					}
-				}
-			);*/
-			PrismicHttpClient prismicHttpClient = new PrismicHttpClient (client);
-			JToken json = await prismicHttpClient.fetch (url, logger, cache);
-			ApiData apiData = ApiData.Parse (json);
-			return new Api (apiData, accessToken, cache, logger, prismicHttpClient);
+			PrismicHttpClient prismicHttpClient = new PrismicHttpClient(client);
+			JToken json = cache.Get(url);
+			if (json == null)
+			{
+				json = await prismicHttpClient.fetch(url, logger, cache);
+				cache.Set(url, 5000L, json);
+			}
+			ApiData apiData = ApiData.Parse(json);
+			return new Api(apiData, accessToken, cache, logger, prismicHttpClient);
 		}
 
 		public static Task<Api> Get(String endpoint, String accessToken, ICache cache, ILogger logger) {
