@@ -16,3 +16,7 @@
 #### New in 1.0.13 (Release 2015/01/22)
 * Fix in FileLink.Url
 
+#### New in 1.1.0 (Release 2015/02/09)
+* Allow to pass a custom HttpClient to customize things like proxy
+* Fixes in the cache logic
+
