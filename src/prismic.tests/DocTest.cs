@@ -128,7 +128,7 @@ namespace prismic.tests
 			// startgist:7869828eaa8c1b8555d3:prismic-getText.cs
 			var author = doc.GetText("blog-post.author");
 			// endgist
-			Assert.AreEqual(author, "John M. Martelle, Fine Pastry Magazine"); // gisthide
+			Assert.AreEqual("John M. Martelle, Fine Pastry Magazine", author); // gisthide
 		}
 
 		[Test ()]
@@ -149,7 +149,7 @@ namespace prismic.tests
 			// Accessing number fields
 			double price = doc.GetNumber("product.price", new CultureInfo("en-US")).Value;
 			// endgist
-			Assert.AreEqual(price, 2.5);
+            Assert.AreEqual(2.5, price);
 		}
 
         [Test()]
@@ -163,8 +163,8 @@ namespace prismic.tests
             var doc = response.Results[0];
             
             decimal price = doc.GetDecimal("product.price", new CultureInfo("en-US")).Value;
-            
-            Assert.AreEqual(price, 2.5);
+
+            Assert.AreEqual(2.5, price);
         }
 
 		[Test ()]
@@ -181,7 +181,7 @@ namespace prismic.tests
 			fragments.Image.View imageView = doc.GetImageView("product.image", "main");
 			String url = imageView.Url;
 			// endgist
-			Assert.AreEqual(url, "https://lesbonneschoses.cdn.prismic.io/lesbonneschoses/f606ad513fcc2a73b909817119b84d6fd0d61a6d.png");
+            Assert.AreEqual("https://lesbonneschoses.cdn.prismic.io/lesbonneschoses/f606ad513fcc2a73b909817119b84d6fd0d61a6d.png", url);
 		}
 
 		[Test ()]
@@ -221,7 +221,7 @@ namespace prismic.tests
 				int updateHour = updateTime.Value.Hour;
 			}
 			// endgist
-			Assert.AreEqual(dateYear, 2013);
+            Assert.AreEqual(2013, dateYear);
 		}
 
 		[Test ()]
@@ -244,7 +244,7 @@ namespace prismic.tests
 			}
 			// endgist
 			var firstDesc = group.GroupDocs [0].GetStructuredText ("desc");
-			Assert.AreEqual(firstDesc.AsHtml(resolver), "<p>A detailed step by step point of view on how installing happens.</p>");
+            Assert.AreEqual("<p>A detailed step by step point of view on how installing happens.</p>", firstDesc.AsHtml(resolver));
 		}
 
 		[Test ()]
@@ -299,7 +299,7 @@ namespace prismic.tests
 			fragments.GeoPoint place = document.GetGeoPoint("article.location");
             var coordinates = place.Latitude.ToString(new CultureInfo("en-US")) + "," + place.Longitude.ToString(new CultureInfo("en-US"));
 			// endgist
-			Assert.AreEqual(coordinates, "48.877108,2.333879");
+            Assert.AreEqual("48.877108,2.333879", coordinates);
 		}
 
 		[Test ()]
