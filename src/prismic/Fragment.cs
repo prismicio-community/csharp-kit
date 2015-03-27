@@ -50,7 +50,37 @@ namespace prismic
 			public static Number Parse(JToken json) {
 				return new Number (Double.Parse ((string)json));
 			}
+
+            public static Number Parse(string json, IFormatProvider format)
+            {
+                return new Number(Double.Parse(json, format));
+            }
 		}
+
+        public class Decimal : Fragment
+        {
+            private readonly decimal value;
+            public decimal Value
+            {
+                get
+                {
+                    return value;
+                }
+            }
+            public Decimal(decimal value)
+            {
+                this.value = value;
+            }
+            public String AsHtml()
+            {
+                return ("<span class=\"number\">" + value + "</span>");
+            }
+            public static Decimal Parse(string value, IFormatProvider provider)
+            {
+                var v = Convert.ToDecimal(value, provider);
+                return new Decimal(v);
+            }
+        }
 
 		public class Image: Fragment {
 
@@ -591,7 +621,7 @@ namespace prismic
 				case "Timestamp":
 					return Timestamp.Parse (json);
 				case "Number":
-					return Number.Parse (json);
+					return Text.Parse (json);
 				case "Color":
 					return Color.Parse (json);
 				case "Embed":

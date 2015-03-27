@@ -3,7 +3,10 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
+using System.Globalization;
+using System.Threading;
 using prismic.fragments;
+using Decimal = prismic.fragments.Decimal;
 
 namespace prismic
 {
@@ -46,16 +49,16 @@ namespace prismic
 
 		public String GetText(String field) {
 			Fragment frag = Get (field);
-			if (frag is fragments.Text) {
+			
+            if (frag is fragments.Text) {
 				return ((fragments.Text)frag).Value;
 			}
-			if (frag is fragments.Number) {
-				return ((fragments.Number)frag).Value.ToString ();
-			}
-			if (frag is fragments.Color) {
+			
+            if (frag is fragments.Color) {
 				return ((fragments.Color)frag).Hex;
 			}
-			if (frag is fragments.StructuredText) {
+			
+            if (frag is fragments.StructuredText) {
 				var result = "";
 				foreach (fragments.StructuredText.Block block in ((fragments.StructuredText)frag).Blocks) {
 					if (block is fragments.StructuredText.TextBlock) {
@@ -64,16 +67,27 @@ namespace prismic
 				}
 				return result;
 			}
-			if (frag is fragments.Number) {
-				return ((fragments.Number)frag).Value.ToString ();
-			}
-			return null;
+			
+            return null;
 		}
 
-		public fragments.Number GetNumber(String field) {
-			Fragment frag = Get (field);
-			return frag is fragments.Number ? (fragments.Number)frag : null;
+        public fragments.Number GetNumber(String field, IFormatProvider format = null)
+        {
+            if (format == null)
+                format = Thread.CurrentThread.CurrentCulture;
+            
+            var frag = Get (field) as Text;
+		    return Number.Parse(frag.Value, format);
 		}
+
+        public fragments.Decimal GetDecimal(String field, IFormatProvider format = null)
+        {
+            if (format == null)
+                format = Thread.CurrentThread.CurrentCulture;
+            
+            var frag = Get(field) as Text;
+            return Decimal.Parse(frag.Value, format);
+        }
 
 		public fragments.Image.View GetImageView(String field, String view) {
 			var image = GetImage (field);

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Web.Routing;
 
 namespace prismic
 {
@@ -60,7 +62,11 @@ namespace prismic
 			} else if (value is System.DayOfWeek) {
 				return ("\"" + capitalize(((System.DayOfWeek) value).ToString()) + "\"");
 			} else if (value is DateTime) {
-				return (((DateTime) value) - new DateTime(1970, 1, 1)).TotalMilliseconds.ToString();
+				return (((DateTime) value) - new DateTime(1970, 1, 1)).TotalMilliseconds.ToString(new CultureInfo("en-US"));
+            } else if (value is Double) {
+				return ((double)value).ToString(new CultureInfo("en-US"));
+            } else if (value is Decimal) {
+				return ((decimal)value).ToString(new CultureInfo("en-US"));
 			} else {
 				return value.ToString();
 			}
