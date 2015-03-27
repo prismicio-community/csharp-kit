@@ -1,5 +1,7 @@
 ## .NET development kit for prismic.io
 
+[![nuget](https://img.shields.io/nuget/v/Prismicio.svg)](https://www.nuget.org/packages/prismicio/)
+
 [![Build Status](https://api.travis-ci.org/prismicio/csharp-kit.png)](https://travis-ci.org/prismicio/csharp-kit)
 
 ### Getting started
