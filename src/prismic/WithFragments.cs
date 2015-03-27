@@ -77,6 +77,10 @@ namespace prismic
                 format = Thread.CurrentThread.CurrentCulture;
             
             var frag = Get (field) as Text;
+
+            if (frag == null)
+                return null;
+
 		    return Number.Parse(frag.Value, format);
 		}
 
@@ -86,6 +90,10 @@ namespace prismic
                 format = Thread.CurrentThread.CurrentCulture;
             
             var frag = Get(field) as Text;
+
+            if (frag == null)
+                return null;
+
             return Decimal.Parse(frag.Value, format);
         }
 
