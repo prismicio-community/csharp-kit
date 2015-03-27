@@ -20,3 +20,8 @@
 * Allow to pass a custom HttpClient to customize things like proxy
 * Fixes in the cache logic
 
+### New in 1.1.1 (Release 2015/03/27)
+* Changed the way numeric values are handled when converting to fragments to allow for specific culture parsing
+* Added GetDecimal method to return Decimal fragment which is better suited to handle currencies instead of Double
+* Fixed some failing tests on non en-US culture
+
