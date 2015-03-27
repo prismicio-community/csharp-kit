@@ -51,9 +51,9 @@ namespace prismic
 				return new Number (Double.Parse ((string)json));
 			}
 
-            public static Number Parse(string json)
+            public static Number Parse(string json, IFormatProvider format)
             {
-                return new Number(Double.Parse(json));
+                return new Number(Double.Parse(json, format));
             }
 		}
 

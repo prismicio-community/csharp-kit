@@ -147,7 +147,7 @@ namespace prismic.tests
 			var inRange = Predicates.inRange("my.product.price", 10, 20);
 
 			// Accessing number fields
-			double price = doc.GetNumber("product.price").Value;
+			double price = doc.GetNumber("product.price", new CultureInfo("en-US")).Value;
 			// endgist
 			Assert.AreEqual(price, 2.5);
 		}
@@ -161,15 +161,9 @@ namespace prismic.tests
                 .Query(@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbO"")]]")
                 .Submit();
             var doc = response.Results[0];
-            // startgist:57e8cda4c83cadf7f7d0:prismic-getNumber.cs
-            // Number predicates
-            var gt = Predicates.gt("my.product.price", 10);
-            var lt = Predicates.lt("my.product.price", 20);
-            var inRange = Predicates.inRange("my.product.price", 10, 20);
-
-            // Accessing number fields
+            
             decimal price = doc.GetDecimal("product.price", new CultureInfo("en-US")).Value;
-            // endgist
+            
             Assert.AreEqual(price, 2.5);
         }
 
@@ -303,7 +297,7 @@ namespace prismic.tests
 
 			// Accessing GeoPoint fragments
 			fragments.GeoPoint place = document.GetGeoPoint("article.location");
-			var coordinates = place.Latitude + "," + place.Longitude;
+            var coordinates = place.Latitude.ToString(new CultureInfo("en-US")) + "," + place.Longitude.ToString(new CultureInfo("en-US"));
 			// endgist
 			Assert.AreEqual(coordinates, "48.877108,2.333879");
 		}

@@ -71,12 +71,16 @@ namespace prismic
             return null;
 		}
 
-		public fragments.Number GetNumber(String field) {
-			var frag = Get (field) as Text;
-		    return Number.Parse(frag.Value);
+        public fragments.Number GetNumber(String field, IFormatProvider format = null)
+        {
+            if (format == null)
+                format = Thread.CurrentThread.CurrentCulture;
+            
+            var frag = Get (field) as Text;
+		    return Number.Parse(frag.Value, format);
 		}
 
-        public fragments.Decimal GetDecimal(String field, IFormatProvider format)
+        public fragments.Decimal GetDecimal(String field, IFormatProvider format = null)
         {
             if (format == null)
                 format = Thread.CurrentThread.CurrentCulture;
