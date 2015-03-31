@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 
 namespace prismic
 {
-	namespace extensions {
-		public static class Task {
+    namespace extensions {
+        public static class Task {
 			///<summary>Transforms a task's result, or propagates its exception or cancellation.</summary>
 			public static Task<TOut> Select<TIn, TOut>(this Task<TIn> task, Func<TIn, TOut> projection) {
 				var r = new TaskCompletionSource<TOut>();

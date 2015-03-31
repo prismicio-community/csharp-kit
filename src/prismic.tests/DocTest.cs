@@ -14,7 +14,7 @@ namespace prismic.tests
 		[Test ()]
 		public async Task ApiTest ()
 		{
-			// startgist:c023234afbc20303f792:prismic-api.cs
+			// startgist:30e5810c1c9c50a37f39:prismic-api.cs
 			// Fetching the API is an asynchronous process
 			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
 			// endgist
@@ -25,7 +25,7 @@ namespace prismic.tests
 		[ExpectedException(typeof(AggregateException))]
         public void PrivateApiTest()
 		{
-			// startgist:a6f1067b28cc9dca7a82:prismic-apiPrivate.cs
+			// startgist:cc56a498cac2ba43d96c:prismic-apiPrivate.cs
 			// This will fail because the token is invalid, but this is how to access a private API
 			Api api = prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api", "MC5-XXXXXXX-vRfvv70").Result;
 			// endgist
@@ -34,7 +34,7 @@ namespace prismic.tests
 		[Test ()]
 		public async Task ReferencesTest ()
 		{
-			// startgist:7b8defb1e1057ad27494:prismic-references.cs
+			// startgist:ce58be224dda1a3c080a:prismic-references.cs
 			var previewToken = "MC5VbDdXQmtuTTB6Z0hNWHF3.c--_vVbvv73vv73vv73vv71EA--_vS_vv73vv70T77-9Ke-_ve-_vWfvv70ebO-_ve-_ve-_vQN377-9ce-_vRfvv70";
 			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api", previewToken);
 			Console.WriteLine ("API OK");
@@ -54,7 +54,7 @@ namespace prismic.tests
 		[Test ()]
 		public async Task SimpleQueryTest ()
 		{
-			// startgist:6b01f5bd50568045f9a0:prismic-simplequery.cs
+			// startgist:e3a75d3b157ed11e60ff:prismic-simplequery.cs
 			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
 			// Just like Api.Get, fetching a Response is asynchronous
 			Response response = await api
@@ -70,7 +70,7 @@ namespace prismic.tests
 		[Test ()]
 		public async Task OrderingsTest ()
 		{
-			// startgist:6437bcf0207f170dace9:prismic-orderings.cs
+			// startgist:2835cc08041b530da0e3:prismic-orderings.cs
 			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
 			var response = await api.Form("everything")
 				.Ref(api.Master)
@@ -87,7 +87,7 @@ namespace prismic.tests
 		[Test ()]
 		public async Task PredicatesTest ()
 		{
-			// startgist:dbd1a1f4056ae7bf9959:prismic-predicates.cs
+			// startgist:16caadec7671853d77f0:prismic-predicates.cs
 			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
 			var response = await api
 				.Form("everything")
@@ -101,7 +101,7 @@ namespace prismic.tests
 		[Test ()]
 		public void AllPredicatesTest ()
 		{
-			// startgist:26e651e93de58bdf7165:prismic-allPredicates.cs
+			// startgist:e65ee8392a8b6c8aedc4:prismic-allPredicates.cs
 			// "at" predicate: equality of a fragment to a value.
 			var at = Predicates.at("document.type", "article");
 			// "any" predicate: equality of a fragment to a value.
@@ -124,7 +124,7 @@ namespace prismic.tests
 				.Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbl"")]]")
 				.Submit();
 			var doc = response.Results[0];
-			// startgist:7869828eaa8c1b8555d3:prismic-getText.cs
+			// startgist:15c8532139ffcb369b95:prismic-getText.cs
 			var author = doc.GetText("blog-post.author");
 			// endgist
 			Assert.AreEqual(author, "John M. Martelle, Fine Pastry Magazine"); // gisthide
@@ -139,7 +139,7 @@ namespace prismic.tests
 				.Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbO"")]]")
 				.Submit();
 			var doc = response.Results[0];
-			// startgist:57e8cda4c83cadf7f7d0:prismic-getNumber.cs
+			// startgist:1a6c8386fd678572d8b0:prismic-getNumber.cs
 			// Number predicates
 			var gt = Predicates.gt("my.product.price", 10);
 			var lt = Predicates.lt("my.product.price", 20);
@@ -160,7 +160,7 @@ namespace prismic.tests
 				.Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbO"")]]")
 				.Submit();
 			var doc = response.Results[0];
-			// startgist:2ba6c72a80cf9d2af15e:prismic-images.cs
+			// startgist:4e94efd4d09576b05930:prismic-images.cs
 			// Accessing image fields
 			fragments.Image.View imageView = doc.GetImageView("product.image", "main");
 			String url = imageView.Url;
@@ -178,7 +178,7 @@ namespace prismic.tests
 				.Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbl"")]]")
 				.Submit();
 			var doc = response.Results[0];
-			// startgist:653bcba6211a9b71429d:prismic-dateTimestamp.cs
+			// startgist:cc12f51851d59e24c956:prismic-dateTimestamp.cs
 			// Date and Timestamp predicates
 			var dateBefore = Predicates.dateBefore("my.product.releaseDate", new DateTime(2014, 6, 1));
 			var dateAfter = Predicates.dateAfter("my.product.releaseDate", new DateTime(2014, 1, 1));
@@ -216,7 +216,7 @@ namespace prismic.tests
 
 			var json = "{\"id\":\"abcd\",\"type\":\"article\",\"href\":\"\",\"slugs\":[],\"tags\":[],\"data\":{\"article\":{\"documents\":{\"type\":\"Group\",\"value\":[{\"linktodoc\":{\"type\":\"Link.document\",\"value\":{\"document\":{\"id\":\"UrDejAEAAFwMyrW9\",\"type\":\"doc\",\"tags\":[],\"slug\":\"installing-meta-micro\"},\"isBroken\":false}},\"desc\":{\"type\":\"StructuredText\",\"value\":[{\"type\":\"paragraph\",\"text\":\"A detailed step by step point of view on how installing happens.\",\"spans\":[]}]}},{\"linktodoc\":{\"type\":\"Link.document\",\"value\":{\"document\":{\"id\":\"UrDmKgEAALwMyrXA\",\"type\":\"doc\",\"tags\":[],\"slug\":\"using-meta-micro\"},\"isBroken\":false}}}]}}}}";
 			var document = Document.Parse(JObject.Parse(json));
-			// startgist:b5b40c40a696911081d7:prismic-group.cs
+			// startgist:5926b0f6454f25e70350:prismic-group.cs
 			var group = document.GetGroup("article.documents");
 			foreach (GroupDoc doc in group.GroupDocs) {
 				try {
@@ -236,7 +236,7 @@ namespace prismic.tests
 		{
 			var json = "{\"id\":\"abcd\",\"type\":\"article\",\"href\":\"\",\"slugs\":[],\"tags\":[],\"data\":{\"article\":{\"source\":{\"type\":\"Link.document\",\"value\":{\"document\":{\"id\":\"UlfoxUnM0wkXYXbE\",\"type\":\"product\",\"tags\":[\"Macaron\"],\"slug\":\"dark-chocolate-macaron\"},\"isBroken\":false}}}}}";
 			var document = Document.Parse(JObject.Parse(json));
-			// startgist:f439d465a87cbddb2737:prismic-link.cs
+			// startgist:ef7313f73b0a9488fb47:prismic-link.cs
 			var resolver =
 				prismic.DocumentLinkResolver.For (l => String.Format ("http://localhost/{0}/{1}", l.Id, l.Slug));
 			var source = document.GetLink("article.source");
@@ -250,7 +250,7 @@ namespace prismic.tests
 		{
 			var json = "{\"id\":\"abcd\",\"type\":\"article\",\"href\":\"\",\"slugs\":[],\"tags\":[],\"data\":{\"article\":{\"video\":{\"type\":\"Embed\",\"value\":{\"oembed\":{\"provider_url\":\"http://www.youtube.com/\",\"type\":\"video\",\"thumbnail_height\":360,\"height\":270,\"thumbnail_url\":\"http://i1.ytimg.com/vi/baGfM6dBzs8/hqdefault.jpg\",\"width\":480,\"provider_name\":\"YouTube\",\"html\":\"<iframe width=\\\"480\\\" height=\\\"270\\\" src=\\\"http://www.youtube.com/embed/baGfM6dBzs8?feature=oembed\\\" frameborder=\\\"0\\\" allowfullscreen></iframe>\",\"author_name\":\"Siobhan Wilson\",\"version\":\"1.0\",\"author_url\":\"http://www.youtube.com/user/siobhanwilsonsongs\",\"thumbnail_width\":480,\"title\":\"Siobhan Wilson - All Dressed Up\",\"embed_url\":\"https://www.youtube.com/watch?v=baGfM6dBzs8\"}}}}}}";
 			var document = Document.Parse(JObject.Parse(json));
-			// startgist:a0a1846d443b2fa39097:prismic-embed.cs
+			// startgist:dabf36e591c93029440a:prismic-embed.cs
 			var video = document.GetEmbed ("article.video");
 			// Html is the code to include to embed the object, and depends on the embedded service
 			var html = video.Html;
@@ -263,7 +263,7 @@ namespace prismic.tests
 		{
 			var json = "{\"id\":\"abcd\",\"type\":\"article\",\"href\":\"\",\"slugs\":[],\"tags\":[],\"data\":{\"article\":{\"background\":{\"type\":\"Color\",\"value\":\"#000000\"}}}}";
 			var document = Document.Parse(JObject.Parse(json));
-			// startgist:0d0fa9849ae5ff7c921c:prismic-color.cs
+			// startgist:87cc65a8d1d02f4b4342:prismic-color.cs
 			var bgcolor = document.GetColor("article.background");
 			var hex = bgcolor.Hex;
 			// endgist
@@ -275,7 +275,7 @@ namespace prismic.tests
 		{
 			var json = "{\"id\":\"abcd\",\"type\":\"article\",\"href\":\"\",\"slugs\":[],\"tags\":[],\"data\":{\"article\":{\"location\":{\"type\":\"GeoPoint\",\"value\":{\"latitude\":48.877108,\"longitude\":2.333879}}}}}";
 			var document = Document.Parse(JObject.Parse(json));
-			// startgist:ffd5197f8b1f3c9b302c:prismic-geopoint.cs
+			// startgist:afd2b8109ce21af4564c:prismic-geopoint.cs
 			// "near" predicate for GeoPoint fragments
 			var near = "[[:d = geopoint.near(my.store.location, 48.8768767, 2.3338802, 10)]]";
 
@@ -295,7 +295,7 @@ namespace prismic.tests
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbX"")]]")
 				.Submit();
-			// startgist:097067bd2495233520bb:prismic-asHtml.cs
+			// startgist:90c0de35cd9a363bb60b:prismic-asHtml.cs
 			var document = response.Results.First ();
 			var resolver =
 				prismic.DocumentLinkResolver.For (l => String.Format ("http://localhost/{0}/{1}", l.Type, l.Id));
@@ -313,7 +313,7 @@ namespace prismic.tests
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbX"")]]")
 				.Submit();
-			// startgist:b5f2de0fb813b52a14a9:prismic-htmlSerializer.cs
+			// startgist:99a0a66b6dfe2b9ce78c:prismic-htmlSerializer.cs
 			var document = response.Results.First ();
 			var resolver =
 				prismic.DocumentLinkResolver.For (l => String.Format ("http://localhost/{0}/{1}", l.Type, l.Id));
@@ -341,7 +341,7 @@ namespace prismic.tests
 		[Test()]
 		public void CacheTest()
 		{
-			// startgist:9307922348c5ce1ef34c:prismic-cache.cs
+			// startgist:9711e4670aaa97c975c8:prismic-cache.cs
 			// TODO
 			var cache = LambdaCache.For (
 				(key, value, ttl) => {
