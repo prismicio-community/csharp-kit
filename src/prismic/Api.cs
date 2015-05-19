@@ -48,6 +48,21 @@ namespace prismic
 				return apiData.Forms;
 			}
 		}
+		public IDictionary<String, String> Bookmarks {
+			get {
+				return apiData.Bookmarks;
+			}
+		}
+		public IDictionary<String, String> Types {
+			get {
+				return apiData.Types;
+			}
+		}
+		public IList<String> Tags {
+			get {
+				return apiData.Tags;
+			}
+		}
 
 		public Api(ApiData apiData, String accessToken, ICache cache, ILogger logger, PrismicHttpClient client) {
 			this.apiData = apiData;
