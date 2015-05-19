@@ -20,3 +20,6 @@
 * Allow to pass a custom HttpClient to customize things like proxy
 * Fixes in the cache logic
 
+#### New in 1.1.1 (Release 2015/05/19)
+* Expose bookmarks, types and tags on the Api object
+
