@@ -477,6 +477,72 @@ namespace prismic
 
 		}
 
+		public class Slice
+		{
+			private string sliceType;
+			public string SliceType {
+				get { return sliceType; }
+			}
+			private string label;
+			public string Label {
+				get { return label; }
+			}
+			private Fragment value;
+			public Fragment Value {
+				get { return value; }
+			}
+
+			public Slice(string sliceType, string label, Fragment value) {
+				this.sliceType = sliceType;
+				this.label = label;
+				this.value = value;
+			}
+
+			public string AsHtml(DocumentLinkResolver resolver) {
+				var className = "slice";
+				if (this.label != null) className += (" " + this.label);
+				return "<div data-slicetype=\"" + this.sliceType + "\" class=\"" + className + "\">" +
+					WithFragments.GetHtml(this.value, resolver, null) +
+					"</div>";
+			}
+
+		}
+
+		public class SliceZone : Fragment
+		{
+			private IList<Slice> slices;
+			public IList<Slice> Slices
+			{
+				get { return slices; }
+			}
+
+			public SliceZone(IList<Slice> slices)
+			{
+				this.slices = slices;
+			}
+
+			public String AsHtml(DocumentLinkResolver linkResolver)
+			{
+				return this.slices.Aggregate("", (html, slice) => html + slice.AsHtml(linkResolver));
+			}
+
+			public static SliceZone Parse(JToken json)
+			{
+				var slices = new List<Slice>();
+				foreach (JToken sliceJson in (JArray)json)
+				{
+					String sliceType = (string)sliceJson["slice_type"];
+					String label = (string)sliceJson["label"];
+					JToken fragJson = sliceJson["value"];
+					String fragmentType = (string)fragJson["type"];
+					JToken fragmentValue = fragJson["value"];
+					Fragment value = FragmentParser.Parse(fragmentType, fragmentValue);
+					slices.Add(new Slice(sliceType, label, value));
+				}
+				return new SliceZone(slices);
+			}
+		}
+
 		public class Group: Fragment {
 			private IList<GroupDoc> groupDocs;
 			public IList<GroupDoc> GroupDocs {
@@ -599,7 +665,9 @@ namespace prismic
 				case "GeoPoint":
 					return GeoPoint.Parse (json);
 				case "Group":
-					return Group.Parse (json);
+					return Group.Parse(json);
+				case "SliceZone":
+					return SliceZone.Parse(json);
 				default:
 					return null;
 				}

@@ -70,12 +70,20 @@ namespace prismic
 			return null;
 		}
 
-		public fragments.Number GetNumber(String field) {
-			Fragment frag = Get (field);
+		public fragments.Number GetNumber(String field)
+		{
+			Fragment frag = Get(field);
 			return frag is fragments.Number ? (fragments.Number)frag : null;
 		}
 
-		public fragments.Image.View GetImageView(String field, String view) {
+		public fragments.SliceZone GetSliceZone(String field)
+		{
+			Fragment frag = Get(field);
+			return frag is fragments.SliceZone ? (fragments.SliceZone)frag : null;
+		}
+
+		public fragments.Image.View GetImageView(String field, String view)
+		{
 			var image = GetImage (field);
 			if (image != null)
 				return image.GetView (view);
@@ -88,10 +96,6 @@ namespace prismic
 		}
 
 		public fragments.Link GetLink(String field) {
-			Console.WriteLine ("Get link for " + field);
-			foreach (String key in Fragments.Keys) {
-				Console.WriteLine ("Available = " + key);
-			}
 			Fragment frag = Get (field);
 			return frag is fragments.Link ? (fragments.Link)frag : null;
 		}
@@ -137,6 +141,10 @@ namespace prismic
 
 		public String GetHtml(String field, DocumentLinkResolver resolver, HtmlSerializer serializer) {
 			Fragment fragment = Get(field);
+			return WithFragments.GetHtml(fragment, resolver, serializer);
+		}
+
+		public static String GetHtml(Fragment fragment, DocumentLinkResolver resolver, HtmlSerializer serializer) {
 			if (fragment == null)
 				return "";
 			if (fragment is fragments.StructuredText) {
@@ -169,6 +177,10 @@ namespace prismic
 			else if(fragment is fragments.Group) {
 				return ((fragments.Group)fragment).AsHtml(resolver);
 			}
+			else if (fragment is fragments.SliceZone) {
+				return ((fragments.SliceZone)fragment).AsHtml(resolver);
+			}
+
 			return "";
 
 		}
