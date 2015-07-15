@@ -1,14 +1,14 @@
 ﻿<Properties StartupItem="prismic/prismicio.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="prismic/Form.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="prismic/Fragment.cs">
     <Files>
-      <File FileName="prismic/Fragment.cs" Line="1" Column="1" />
+      <File FileName="prismic/Fragment.cs" Line="518" Column="4" />
       <File FileName="prismic/DocumentLinkResolver.cs" Line="1" Column="1" />
       <File FileName="prismic/WithFragments.cs" Line="1" Column="1" />
       <File FileName="prismic/Document.cs" Line="1" Column="1" />
       <File FileName="prismic.tests/ApiTest.cs" Line="1" Column="1" />
       <File FileName="prismic.tests/FragmentsTests.cs" Line="1" Column="1" />
-      <File FileName="prismic/Api.cs" Line="46" Column="43" />
+      <File FileName="prismic/Api.cs" Line="1" Column="1" />
       <File FileName="prismic/PrismicHttpClient.cs" Line="1" Column="1" />
       <File FileName="prismic/Form.cs" Line="28" Column="6" />
       <File FileName="prismic.tests/DocTest.cs" Line="1" Column="1" />
