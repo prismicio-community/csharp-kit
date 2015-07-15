@@ -23,3 +23,6 @@
 #### New in 1.1.1 (Release 2015/05/19)
 * Expose bookmarks, types and tags on the Api object
 
+#### New in 1.2.0 (Release 2015/07/15)
+* Content slices support
+
