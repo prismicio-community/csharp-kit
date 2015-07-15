@@ -147,7 +147,7 @@ namespace prismic.tests
 		public void ShouldAccessAndSerializeSlices()
 		{
 			var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-			var path = string.Format("{0}\\fixtures\\slices.json", directory);
+			var path = string.Format("{0}{1}fixtures{1}slices.json", directory, Path.DirectorySeparatorChar);
 			string text = System.IO.File.ReadAllText(path);
 			var json = JToken.Parse(text);
 			var document = Document.Parse(json);
