@@ -483,24 +483,24 @@ namespace prismic
 			public string SliceType {
 				get { return sliceType; }
 			}
-			private string label;
-			public string Label {
-				get { return label; }
+			private string sliceLabel;
+			public string SliceLabel {
+				get { return sliceLabel; }
 			}
 			private Fragment value;
 			public Fragment Value {
 				get { return value; }
 			}
 
-			public Slice(string sliceType, string label, Fragment value) {
+			public Slice(string sliceType, string sliceLabel, Fragment value) {
 				this.sliceType = sliceType;
-				this.label = label;
+				this.sliceLabel = sliceLabel;
 				this.value = value;
 			}
 
 			public string AsHtml(DocumentLinkResolver resolver) {
 				var className = "slice";
-				if (this.label != null) className += (" " + this.label);
+				if (this.sliceLabel != null) className += (" " + this.sliceLabel);
 				return "<div data-slicetype=\"" + this.sliceType + "\" class=\"" + className + "\">" +
 					WithFragments.GetHtml(this.value, resolver, null) +
 					"</div>";
@@ -532,7 +532,7 @@ namespace prismic
 				foreach (JToken sliceJson in (JArray)json)
 				{
 					String sliceType = (string)sliceJson["slice_type"];
-					String label = (string)sliceJson["label"];
+					String label = (string)sliceJson["slice_label"];
 					JToken fragJson = sliceJson["value"];
 					String fragmentType = (string)fragJson["type"];
 					JToken fragmentValue = fragJson["value"];

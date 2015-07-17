@@ -26,3 +26,6 @@
 #### New in 1.2.0 (Release 2015/07/15)
 * Content slices support
 
+#### New in 1.2.1 (Release 2015/07/17)
+* Fix slices label
+
