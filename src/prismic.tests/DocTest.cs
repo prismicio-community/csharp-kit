@@ -147,7 +147,7 @@ namespace prismic.tests
             var inRange = Predicates.inRange("my.product.price", 10, 20);
 
             // Accessing number fields
-            double price = doc.GetNumber("product.price", new CultureInfo("en-US")).Value;
+            decimal price = doc.GetNumber("product.price", new CultureInfo("en-US")).Value;
             // endgist
             Assert.AreEqual(2.5, price);
         }
@@ -163,36 +163,6 @@ namespace prismic.tests
             var doc = response.Results[0];
 
             var price = doc.GetNumber("product.price_null", new CultureInfo("en-US"));
-            Assert.IsNull(price);
-        }
-
-        [Test()]
-        public async Task GetDecimalTest()
-        {
-            Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
-            var response = await api.Form("everything")
-                .Ref(api.Master)
-                .Query(@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbO"")]]")
-                .Submit();
-            var doc = response.Results[0];
-
-            decimal price = doc.GetDecimal("product.price", new CultureInfo("en-US")).Value;
-
-            Assert.AreEqual(2.5, price);
-        }
-
-        [Test()]
-        public async Task GetDecimalNullTest()
-        {
-            Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
-            var response = await api.Form("everything")
-                .Ref(api.Master)
-                .Query(@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbO"")]]")
-                .Submit();
-            var doc = response.Results[0];
-
-            var price = doc.GetDecimal("product.price_null", new CultureInfo("en-US"));
-
             Assert.IsNull(price);
         }
 

@@ -34,30 +34,7 @@ namespace prismic
 			}
 		}
 
-		public class Number: Fragment {
-			private Double value;
-			public Double Value {
-				get {
-					return value;
-				}
-			}
-			public Number(Double value) {
-				this.value = value;
-			}
-			public String AsHtml() {
-				return ("<span class=\"number\">" + value + "</span>");
-			}
-			public static Number Parse(JToken json) {
-				return new Number (Double.Parse ((string)json));
-			}
-
-            public static Number Parse(string json, IFormatProvider format)
-            {
-                return new Number(Double.Parse(json, format));
-            }
-		}
-
-        public class Decimal : Fragment
+        public class Number : Fragment
         {
             private readonly decimal value;
             public decimal Value
@@ -67,7 +44,7 @@ namespace prismic
                     return value;
                 }
             }
-            public Decimal(decimal value)
+            public Number(decimal value)
             {
                 this.value = value;
             }
@@ -75,10 +52,10 @@ namespace prismic
             {
                 return ("<span class=\"number\">" + value + "</span>");
             }
-            public static Decimal Parse(string value, IFormatProvider provider)
+            public static Number Parse(string value, IFormatProvider provider)
             {
                 var v = Convert.ToDecimal(value, provider);
-                return new Decimal(v);
+                return new Number(v);
             }
         }
 
