@@ -35,20 +35,27 @@ namespace prismic
 		}
 
 		public class Number: Fragment {
-			private Double value;
-			public Double Value {
+
+            private static readonly CultureInfo _defaultCultureInfo = new CultureInfo("en-US");
+			private Decimal value;
+			public Decimal Value {
 				get {
 					return value;
 				}
 			}
-			public Number(Double value) {
+			public Number(Decimal value) {
 				this.value = value;
 			}
 			public String AsHtml() {
 				return ("<span class=\"number\">" + value + "</span>");
 			}
-			public static Number Parse(JToken json) {
-				return new Number (Double.Parse ((string)json));
+			public static Number Parse(JToken json, CultureInfo ci = null)
+			{
+			    if(ci == null)
+                    ci = _defaultCultureInfo;
+
+                var v = Convert.ToDecimal((string) json, ci);
+                return new Number (v);
 			}
 		}
 
@@ -609,7 +616,9 @@ namespace prismic
 
 		public class GeoPoint: Fragment {
 			private Double latitude;
-			public Double Latitude {
+            private static readonly CultureInfo _defaultCultureInfo = new CultureInfo("en-US");
+
+            public Double Latitude {
 				get { return latitude; }
 			}
 			private Double longitude;
@@ -624,8 +633,8 @@ namespace prismic
 
 			public static GeoPoint Parse(JToken json) {
 				try {
-					Double latitude = (Double)json["latitude"];
-					Double longitude = (Double)json["longitude"];
+					Double latitude = Double.Parse((string)json["latitude"], _defaultCultureInfo);
+				    Double longitude = Double.Parse((string) json["longitude"], _defaultCultureInfo);
 					return new GeoPoint(latitude, longitude);
 				} catch(Exception) {
 					return null;
