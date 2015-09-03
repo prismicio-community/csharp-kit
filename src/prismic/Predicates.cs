@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace prismic
 {
@@ -11,7 +12,8 @@ namespace prismic
 
 	public class Predicate: IPredicate {
 
-		private String name;
+        private static readonly CultureInfo _defaultCultureInfo = new CultureInfo("en-US");
+        private String name;
 		private String fragment;
 		private Object value1;
 		private Object value2;
@@ -60,8 +62,17 @@ namespace prismic
 			} else if (value is System.DayOfWeek) {
 				return ("\"" + capitalize(((System.DayOfWeek) value).ToString()) + "\"");
 			} else if (value is DateTime) {
-				return (((DateTime) value) - new DateTime(1970, 1, 1)).TotalMilliseconds.ToString();
-			} else {
+				return (((DateTime) value) - new DateTime(1970, 1, 1)).TotalMilliseconds.ToString(_defaultCultureInfo);
+            }
+            else if (value is Double)
+            {
+                return ((Double)value).ToString(_defaultCultureInfo);
+            }
+            else if (value is Decimal)
+            {
+                return ((Decimal)value).ToString(_defaultCultureInfo);
+            }
+            else {
 				return value.ToString();
 			}
 		}

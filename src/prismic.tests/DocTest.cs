@@ -146,7 +146,7 @@ namespace prismic.tests
 			var inRange = Predicates.inRange("my.product.price", 10, 20);
 
 			// Accessing number fields
-			double price = doc.GetNumber("product.price").Value;
+			decimal price = doc.GetNumber("product.price").Value;
 			// endgist
 			Assert.AreEqual(price, 2.5);
 		}
@@ -283,7 +283,8 @@ namespace prismic.tests
 			fragments.GeoPoint place = document.GetGeoPoint("article.location");
 			var coordinates = place.Latitude + "," + place.Longitude;
 			// endgist
-			Assert.AreEqual(coordinates, "48.877108,2.333879");
+			Assert.AreEqual(place.Latitude, 48.877108);
+            Assert.AreEqual(place.Longitude, 2.333879);
 		}
 
 		[Test ()]
