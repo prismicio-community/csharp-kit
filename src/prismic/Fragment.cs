@@ -335,7 +335,7 @@ namespace prismic
 
 			public DocumentLink(String id, String uid, String type, ISet<String> tags, String slug, IDictionary<String,Fragment> fragments, Boolean broken): base(fragments) {
 				this.id = id;
-                this.uid = uid;
+				this.uid = uid;
 				this.type = type;
 				this.tags = tags;
 				this.slug = slug;
@@ -352,7 +352,7 @@ namespace prismic
 
 			public static DocumentLink Parse(JToken json) {
 				JObject document = (JObject)json["document"];
-			    Boolean broken = (Boolean)json["isBroken"];
+				Boolean broken = (Boolean)json["isBroken"];
 				string id = (string)document["id"];
 				string type = (string)document["type"];
 				string slug = (string)document["slug"];
@@ -476,8 +476,8 @@ namespace prismic
 				String type = (string)oembedJson["type"];
 				String provider = oembedJson["provider_name"] != null ? (string)oembedJson["provider_name"] : null;
 				String url = (string)oembedJson["embed_url"];
-				int? width = oembedJson["width"] != null ? (int?)oembedJson["width"] : null;
-				int? height = oembedJson["height"] != null ? (int?)oembedJson["height"] : null;
+				int? width = (oembedJson["width"] != null && oembedJson["width"].Type == JTokenType.Integer) ? (int?)oembedJson["width"] : null;
+				int? height = (oembedJson["height"] != null  && oembedJson["height"].Type == JTokenType.Integer) ? (int?)oembedJson["height"] : null;
 				String html = (string)oembedJson["html"];
 				return new Embed(type, provider, url, width, height, html, oembedJson);
 			}

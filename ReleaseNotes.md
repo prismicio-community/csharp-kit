@@ -29,3 +29,7 @@
 #### New in 1.2.1 (Release 2015/07/17)
 * Fix slices label
 
+#### New in 1.3.0 (Release 2015/09/16)
+* Fix oembed parsing
+* Change Number fragment from Double to Decimal
+

@@ -49,6 +49,9 @@
     <None Include="fixtures\slices.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="fixtures\soundcloud.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\prismic\prismicio.csproj">

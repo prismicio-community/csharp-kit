@@ -32,7 +32,7 @@ namespace prismic.tests
 		}
 
 		[Test ()]
-        public async Task ShouldSerializeGroupToHTML()
+		public async Task ShouldSerializeGroupToHTML()
 		{
 			var url = "https://micro.prismic.io/api";
 			Api api = await prismic.Api.Get(url);
@@ -52,7 +52,7 @@ namespace prismic.tests
 		}
 
 		[Test ()]
-        public async Task ShouldAccessMediaLink()
+		public async Task ShouldAccessMediaLink()
 		{
 			var url = "https://test-public.prismic.io/api";
 			Api api = await prismic.Api.Get(url);
@@ -66,7 +66,7 @@ namespace prismic.tests
 		}
 
 		[Test ()]
-        public async Task ShouldAccessFirstLinkInMultipleDocumentLink()
+		public async Task ShouldAccessFirstLinkInMultipleDocumentLink()
 		{
 			var url = "https://lesbonneschoses.prismic.io/api";
 			Api api = await prismic.Api.Get(url);
@@ -78,7 +78,7 @@ namespace prismic.tests
 		}
 
 		[Test ()]
-        public async Task ShouldSerializeHTMLWithCustomOutput()
+		public async Task ShouldSerializeHTMLWithCustomOutput()
 		{
 			var resolver = prismic.DocumentLinkResolver.For (l => String.Format ("http://localhost/{0}/{1}", l.Type, l.Id));
 			var serializer = prismic.HtmlSerializer.For ((elt, body) => {
@@ -118,7 +118,7 @@ namespace prismic.tests
 		}
 
 		[Test ()]
-        public async Task ShouldFindAllLinksInMultipleDocumentLink()
+		public async Task ShouldFindAllLinksInMultipleDocumentLink()
 		{
 			var url = "https://lesbonneschoses.prismic.io/api";
 			Api api = await prismic.Api.Get(url);
@@ -132,7 +132,7 @@ namespace prismic.tests
 		}
 
 		[Test ()]
-        public async Task ShouldAccessStructuredText()
+		public async Task ShouldAccessStructuredText()
 		{
 			var url = "https://lesbonneschoses.prismic.io/api";
 			Api api = await prismic.Api.Get(url);
@@ -162,7 +162,7 @@ namespace prismic.tests
 		}
 
 		[Test ()]
-        public async Task ShouldQueryWithPredicate()
+		public async Task ShouldQueryWithPredicate()
 		{
 			var url = "https://lesbonneschoses.prismic.io/api";
 			Api api = await prismic.Api.Get(url);
@@ -174,7 +174,7 @@ namespace prismic.tests
 		}
 
 		[Test ()]
-        public async Task ShouldAccessImage()
+		public async Task ShouldAccessImage()
 		{
 			var url = "https://test-public.prismic.io/api";
 			Api api = await prismic.Api.Get(url);
@@ -194,15 +194,15 @@ namespace prismic.tests
 		}
 
 		[Test ()]
-        public async Task ShouldFetchLinksFragments()
-        {
+		public async Task ShouldFetchLinksFragments()
+		{
 			var url = "https://lesbonneschoses.prismic.io/api";
 			Api api = await prismic.Api.Get(url);
 			var response = await api.Form("everything")
 				.FetchLinks("blog-post.author")
 				.Ref(api.Master)
 				.Query (Predicates.at("document.id", "UlfoxUnM0wkXYXbt"))
-                .Submit();
+				.Submit();
 
 			var document = response.Results.First();
 
@@ -212,6 +212,21 @@ namespace prismic.tests
 				"John M. Martelle, Fine Pastry Magazine",
 				link.GetText("blog-post.author")
 			);
+		}
+
+		[Test ()]
+		public void ShouldParseOEmbed()
+		{
+			var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+			var path = string.Format("{0}{1}fixtures{1}soundcloud.json", directory, Path.DirectorySeparatorChar);
+			string text = System.IO.File.ReadAllText(path);
+			var json = JToken.Parse(text);
+			var structuredText = prismic.fragments.StructuredText.Parse(json);
+			prismic.fragments.StructuredText.Embed soundcloud = (prismic.fragments.StructuredText.Embed)structuredText.Blocks [0];
+			prismic.fragments.StructuredText.Embed youtube = (prismic.fragments.StructuredText.Embed)structuredText.Blocks [1];
+
+			Assert.IsNull (soundcloud.Obj.Width);
+			Assert.AreEqual (youtube.Obj.Width, 480);
 		}
 
 	}

@@ -23,7 +23,7 @@ namespace prismic.tests
 
 		[Test ()]
 		[ExpectedException(typeof(AggregateException))]
-        public void PrivateApiTest()
+		public void PrivateApiTest()
 		{
 			// startgist:cc56a498cac2ba43d96c:prismic-apiPrivate.cs
 			// This will fail because the token is invalid, but this is how to access a private API

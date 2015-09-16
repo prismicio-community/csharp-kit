@@ -1,0 +1,39 @@
+﻿[
+	{
+		type: "embed",
+		oembed: {
+			version: 1,
+			type: "rich",
+			provider_name: "SoundCloud",
+			provider_url: "http://soundcloud.com",
+			height: 400,
+			width: "100%",
+			title: "Ólafur Arnalds - Poland by Erased Tapes Records",
+			description: "Icelandic composer Ólafur Arnalds set to release his first Hollywood film score. Ólafur Arnalds’ original motion picture soundtrack for Sam Levinson’s feature film debut ‘Another Happy Day’, starring Ellen Barkin and Demi Moore, will see a worldwide release via UK modern classical label Erased Tapes Records on February 27, 2012. PRE-ORDER it on CD/Vinyl/Digital now from: http://erasedtapes.com/store/index/ERATP038 IN HIS OWN WORDS: ‘In mid-December 2010 I was on a holiday in China when I received an email from Sam Levinson about the film. We got on the phone at like 4 in the morning Beijing time and ended up talking all through the night, instantly connecting. He told me that they had been listening to my music while making the film, so the film was already very influenced by my music. However, it was not until Ellen Barkin – the beautiful force that she is – had pestered the producers for a week, calling them every day about how I am the right one for this film, that they finally gave in. The only catch was that it had to be done two weeks later, in the first week of January. So I ended up scoring nonstop all throughout Christmas, making my mother mad in the process.’ - Ólafur Arnalds CONTEXT: Born in the suburban Icelandic town of Mosfellsbær, a few kilometres outside of Reykjavík, the 24-year old composer has always enjoyed pushing boundaries with both his studio work and his live-shows. Through relentless touring and determination this young artist has steadily gained recognition worldwide and continues his mission to lure an indie-generation of pop and rock fans into an emotive world of beguiling electronic chamber music and delicate classical arrangements. 'The indie kid who knows the score’ – Guardian’s Observer 'An artist who can exert power with the lightest of touches’ – BBC Music TRACK LISTING: 1. The Land Of Nod 2. Through The Screen 3. Before The Calm 4. Lynn's Theme 5. Alice Enters 6. The Wait 7. A Family Stroll 8. Poland 9. Out To Sea 10. Autumn Day 11. Everything Must Change OFFICIAL WEBSITES: OLAFURARNALDS.COM ERASEDTAPES.COM",
+			thumbnail_url: "http://i1.sndcdn.com/artworks-000016285032-dvirxh-t500x500.jpg",
+			html: "<iframe width=\"100%\" height=\"400\" scrolling=\"no\" frameborder=\"no\" src=\"https://w.soundcloud.com/player/?visual=true&url=https%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F32431542&show_artwork=true\"></iframe>",
+			author_name: "Erased Tapes Records",
+			author_url: "https://soundcloud.com/erasedtapes",
+			embed_url: "http://soundcloud.com/erasedtapes/olafur-arnalds-poland"
+		}
+	}, {
+		type: "embed",
+		oembed: {
+			author_url: "https://www.youtube.com/user/OpeningsAndEDs",
+			thumbnail_url: "https://i.ytimg.com/vi/XMXgHfHxKVM/hqdefault.jpg",
+			version: "1.0",
+			author_name: "Etri Khor",
+			html: "<iframe width=\"480\" height=\"270\" src=\"https://www.youtube.com/embed/XMXgHfHxKVM?feature=oembed\" frameborder=\"0\" allowfullscreen></iframe>",
+			provider_url: "https://www.youtube.com/",
+			width: 480,
+			thumbnail_height: 360,
+			height: 270,
+			type: "video",
+			title: "Shingeki no Kyojin 進撃の巨人 OP / Opening - \"Guren no Yumiya\" - Linked Horizon",
+			thumbnail_width: 480,
+			provider_name: "YouTube",
+			embed_url: "https://www.youtube.com/watch?v=XMXgHfHxKVM"
+		}
+	}
+]
+
