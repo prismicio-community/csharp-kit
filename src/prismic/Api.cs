@@ -63,6 +63,12 @@ namespace prismic
 				return apiData.Tags;
 			}
 		}
+		
+		public Experiments Experiments {
+			get {
+				return apiData.Experiments;
+			}
+		}
 
 		public Api(ApiData apiData, String accessToken, ICache cache, ILogger logger, PrismicHttpClient client) {
 			this.apiData = apiData;
