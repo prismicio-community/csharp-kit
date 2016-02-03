@@ -33,3 +33,6 @@
 * Fix oembed parsing
 * Change Number fragment from Double to Decimal
 
+#### New in 1.3.1 (Release 2015/09/16)
+* Expose Experiments in API
+
