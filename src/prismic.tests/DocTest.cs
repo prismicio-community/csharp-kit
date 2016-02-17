@@ -58,8 +58,6 @@ namespace prismic.tests
 			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
 			// Just like Api.Get, fetching a Response is asynchronous
 			Response response = await api
-				.Form("everything")
-				.Ref(api.Master)
 				.Query (@"[[:d = at(document.type, ""product"")]]")
 				.Submit();
 			// The response object contains all documents of type "product", paginated
@@ -72,8 +70,7 @@ namespace prismic.tests
 		{
 			// startgist:2835cc08041b530da0e3:prismic-orderings.cs
 			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
-			var response = await api.Form("everything")
-				.Ref(api.Master)
+			var response = await api
 				.Query (@"[[:d = at(document.type, ""product"")]]")
 				.PageSize(100)
 				.Orderings("[my.product.price desc]")
@@ -90,8 +87,6 @@ namespace prismic.tests
 			// startgist:16caadec7671853d77f0:prismic-predicates.cs
 			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
 			var response = await api
-				.Form("everything")
-				.Ref(api.Master)
 				.Query (Predicates.at("document.type", "blog-post"), Predicates.dateAfter("my.blog-post.date", DateTime.Now))
 				.Submit();
 			// endgist
