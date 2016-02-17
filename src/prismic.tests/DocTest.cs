@@ -37,13 +37,11 @@ namespace prismic.tests
 			// startgist:ce58be224dda1a3c080a:prismic-references.cs
 			var previewToken = "MC5VbDdXQmtuTTB6Z0hNWHF3.c--_vVbvv73vv73vv73vv71EA--_vS_vv73vv70T77-9Ke-_ve-_vWfvv70ebO-_ve-_ve-_vQN377-9ce-_vRfvv70";
 			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api", previewToken);
-			Console.WriteLine ("API OK");
 			var stPatrickRef = api.Ref("St-Patrick specials");
-			Console.WriteLine ("StPar = " + stPatrickRef);
 			// Now we'll use this reference for all our calls
-			Response response = await api.Form("everything")
-				.Ref(stPatrickRef)
+			Response response = await api
 				.Query (@"[[:d = at(document.type, ""product"")]]")
+				.Ref(stPatrickRef)
 				.Submit();
 			// The documents object contains a Response object with all documents of type "product"
 			// including the new "Saint-Patrick's Cupcake"
