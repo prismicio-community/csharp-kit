@@ -1,31 +1,56 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "prismicio", "prismic\prismicio.csproj", "{D952F249-33CE-4A07-BD96-08A78B25BEFC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "prismicio.tests", "prismic.tests\prismicio.tests.csproj", "{B25D378E-732E-4364-A6F0-E523EE1713DE}"
-EndProject
+# Visual Studio 15
+VisualStudioVersion = 15.0.26206.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{1FC70BEF-B74C-4FA1-BC1E-F8D4AC1D44EE}"
 	ProjectSection(SolutionItems) = preProject
-		nuget\prismic.nuspec = nuget\prismic.nuspec
 		nuget\build.fsx = nuget\build.fsx
 		nuget\build.sh = nuget\build.sh
+		nuget\prismic.nuspec = nuget\prismic.nuspec
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "prismicio", "prismic\prismicio.csproj", "{624DDAF4-44BC-46D6-A82F-EB1DA12DF81D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "prismicio.tests", "prismic.tests\prismicio.tests.csproj", "{13741C8B-55F8-4D26-94AD-577AD879CC85}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B25D378E-732E-4364-A6F0-E523EE1713DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B25D378E-732E-4364-A6F0-E523EE1713DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B25D378E-732E-4364-A6F0-E523EE1713DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B25D378E-732E-4364-A6F0-E523EE1713DE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D952F249-33CE-4A07-BD96-08A78B25BEFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D952F249-33CE-4A07-BD96-08A78B25BEFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D952F249-33CE-4A07-BD96-08A78B25BEFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D952F249-33CE-4A07-BD96-08A78B25BEFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{624DDAF4-44BC-46D6-A82F-EB1DA12DF81D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{624DDAF4-44BC-46D6-A82F-EB1DA12DF81D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{624DDAF4-44BC-46D6-A82F-EB1DA12DF81D}.Debug|x64.ActiveCfg = Debug|x64
+		{624DDAF4-44BC-46D6-A82F-EB1DA12DF81D}.Debug|x64.Build.0 = Debug|x64
+		{624DDAF4-44BC-46D6-A82F-EB1DA12DF81D}.Debug|x86.ActiveCfg = Debug|x86
+		{624DDAF4-44BC-46D6-A82F-EB1DA12DF81D}.Debug|x86.Build.0 = Debug|x86
+		{624DDAF4-44BC-46D6-A82F-EB1DA12DF81D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{624DDAF4-44BC-46D6-A82F-EB1DA12DF81D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{624DDAF4-44BC-46D6-A82F-EB1DA12DF81D}.Release|x64.ActiveCfg = Release|x64
+		{624DDAF4-44BC-46D6-A82F-EB1DA12DF81D}.Release|x64.Build.0 = Release|x64
+		{624DDAF4-44BC-46D6-A82F-EB1DA12DF81D}.Release|x86.ActiveCfg = Release|x86
+		{624DDAF4-44BC-46D6-A82F-EB1DA12DF81D}.Release|x86.Build.0 = Release|x86
+		{13741C8B-55F8-4D26-94AD-577AD879CC85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13741C8B-55F8-4D26-94AD-577AD879CC85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13741C8B-55F8-4D26-94AD-577AD879CC85}.Debug|x64.ActiveCfg = Debug|x64
+		{13741C8B-55F8-4D26-94AD-577AD879CC85}.Debug|x64.Build.0 = Debug|x64
+		{13741C8B-55F8-4D26-94AD-577AD879CC85}.Debug|x86.ActiveCfg = Debug|x86
+		{13741C8B-55F8-4D26-94AD-577AD879CC85}.Debug|x86.Build.0 = Debug|x86
+		{13741C8B-55F8-4D26-94AD-577AD879CC85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13741C8B-55F8-4D26-94AD-577AD879CC85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13741C8B-55F8-4D26-94AD-577AD879CC85}.Release|x64.ActiveCfg = Release|x64
+		{13741C8B-55F8-4D26-94AD-577AD879CC85}.Release|x64.Build.0 = Release|x64
+		{13741C8B-55F8-4D26-94AD-577AD879CC85}.Release|x86.ActiveCfg = Release|x86
+		{13741C8B-55F8-4D26-94AD-577AD879CC85}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = prismic\prismicio.csproj

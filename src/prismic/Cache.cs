@@ -61,14 +61,16 @@ namespace prismic
 
 		public DefaultCache(): this(100) {}
 
-		[MethodImpl(MethodImplOptions.Synchronized)]
+        //TODO:
+		//[MethodImpl(MethodImplOptions.Synchronized)]
 		public void Set (string key, long ttl, JToken item) {
 			this.data [key] = new CacheEntry (item, ttl);
 			this.lruPriority.AddLast (key);
 			this.cleanup ();
 		}
 
-		[MethodImpl(MethodImplOptions.Synchronized)]
+        // TODO
+		//[MethodImpl(MethodImplOptions.Synchronized)]
 		public JToken Get(string key) {
 			CacheEntry result = null;
 			data.TryGetValue (key, out result);

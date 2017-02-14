@@ -1,7 +1,6 @@
 ﻿using System;
 
 using System.Collections.Generic;
-using System.Web;
 using System.Net;
 using System.Net.Http;
 using System.Linq;
@@ -111,17 +110,20 @@ namespace prismic
 		* @return the usable API object
 		*/
 		public static async Task<Api> Get(String endpoint, String accessToken, ICache cache, ILogger logger, HttpClient client) {
-			String url = (accessToken == null ? endpoint : (endpoint + "?access_token=" + HttpUtility.UrlEncode(accessToken)));
+			String url = (accessToken == null ? endpoint : (endpoint + "?access_token=" + WebUtility.UrlEncode(accessToken)));
 
 			PrismicHttpClient prismicHttpClient = new PrismicHttpClient(client);
 			JToken json = cache.Get(url);
-			if (json == null)
+
+            if (json == null)
 			{
 				json = await prismicHttpClient.fetch(url, logger, cache);
 				cache.Set(url, 5000L, json);
 			}
-			ApiData apiData = ApiData.Parse(json);
-			return new Api(apiData, accessToken, cache, logger, prismicHttpClient);
+
+            ApiData apiData = ApiData.Parse(json);
+
+            return new Api(apiData, accessToken, cache, logger, prismicHttpClient);
 		}
 
 		public static Task<Api> Get(String endpoint, String accessToken, ICache cache, ILogger logger) {

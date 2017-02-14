@@ -1,7 +1,6 @@
 ﻿using System;
 
 using System.Collections.Generic;
-using System.Web;
 using System.Net;
 using System.Linq;
 using System.Threading.Tasks;
@@ -413,7 +412,7 @@ namespace prismic
 							url += sep;
 							url += d.Key;
 							url += "=";
-							url += HttpUtility.UrlEncode(v);
+							url += WebUtility.UrlEncode(v);
 							sep = "&";
 						}
 					}

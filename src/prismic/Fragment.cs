@@ -5,7 +5,7 @@ using System.Linq;
 using System.Globalization;
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
-using System.Web;
+using System.Net;
 
 namespace prismic
 {
@@ -26,7 +26,7 @@ namespace prismic
 				this.value = value;
 			}
 			public String AsHtml() {
-				return ("<span class=\"text\">" + HttpUtility.HtmlEncode(value) + "</span>");
+				return ("<span class=\"text\">" + WebUtility.HtmlEncode(value) + "</span>");
 			}
 
 			public static Text Parse(JToken json) {

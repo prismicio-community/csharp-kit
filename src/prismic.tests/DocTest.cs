@@ -1,42 +1,41 @@
-﻿using NUnit.Framework;
-using prismic;
-using System;
+﻿using System;
 using System.Linq;
-using System.ComponentModel;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
 
 namespace prismic.tests
 {
-	[TestFixture ()]
+    [TestClass]
 	public class DocTest
-	{
-		[Test ()]
+    {
+        private readonly string ApiUrl = "https://lesbonneschoses.cdn.prismic.io/api";
+
+        [TestMethod]
 		public async Task ApiTest ()
 		{
 			// startgist:30e5810c1c9c50a37f39:prismic-api.cs
 			// Fetching the API is an asynchronous process
-			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
+			Api api = await Api.Get(ApiUrl);
 			// endgist
 			Assert.IsNotNull (api);
 		}
 
-		[Test ()]
-		[ExpectedException(typeof(AggregateException))]
+		[TestMethod]
 		public void PrivateApiTest()
 		{
 			// startgist:cc56a498cac2ba43d96c:prismic-apiPrivate.cs
 			// This will fail because the token is invalid, but this is how to access a private API
-			Api api = prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api", "MC5-XXXXXXX-vRfvv70").Result;
+			Assert.ThrowsExceptionAsync<AggregateException>(()=>Api.Get(ApiUrl, "MC5-XXXXXXX-vRfvv70"));
 			// endgist
 		}
 
-		[Test ()]
+		[TestMethod]
 		public async Task ReferencesTest ()
 		{
 			// startgist:ce58be224dda1a3c080a:prismic-references.cs
 			var previewToken = "MC5VbDdXQmtuTTB6Z0hNWHF3.c--_vVbvv73vv73vv73vv71EA--_vS_vv73vv70T77-9Ke-_ve-_vWfvv70ebO-_ve-_ve-_vQN377-9ce-_vRfvv70";
-			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api", previewToken);
+			Api api = await Api.Get(ApiUrl, previewToken);
 			Console.WriteLine ("API OK");
 			var stPatrickRef = api.Ref("St-Patrick specials");
 			Console.WriteLine ("StPar = " + stPatrickRef);
@@ -51,11 +50,11 @@ namespace prismic.tests
 			Assert.AreEqual(17, response.Results.Count());
 		}
 
-		[Test ()]
+		[TestMethod]
 		public async Task SimpleQueryTest ()
 		{
 			// startgist:e3a75d3b157ed11e60ff:prismic-simplequery.cs
-			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
+			Api api = await prismic.Api.Get(ApiUrl);
 			// Just like Api.Get, fetching a Response is asynchronous
 			Response response = await api
 				.Form("everything")
@@ -67,11 +66,11 @@ namespace prismic.tests
 			Assert.AreEqual (16, response.Results.Count());
 		}
 
-		[Test ()]
+		[TestMethod]
 		public async Task OrderingsTest ()
 		{
 			// startgist:2835cc08041b530da0e3:prismic-orderings.cs
-			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
+			Api api = await prismic.Api.Get(ApiUrl);
 			var response = await api.Form("everything")
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.type, ""product"")]]")
@@ -84,11 +83,11 @@ namespace prismic.tests
 			Assert.AreEqual(100, response.ResultsPerPage);
 		}
 
-		[Test ()]
+		[TestMethod]
 		public async Task PredicatesTest ()
 		{
 			// startgist:16caadec7671853d77f0:prismic-predicates.cs
-			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
+			Api api = await Api.Get(ApiUrl);
 			var response = await api
 				.Form("everything")
 				.Ref(api.Master)
@@ -98,7 +97,7 @@ namespace prismic.tests
 			Assert.AreEqual (0, response.Results.Count());
 		}
 
-		[Test ()]
+		[TestMethod]
 		public void AllPredicatesTest ()
 		{
 			// startgist:e65ee8392a8b6c8aedc4:prismic-allPredicates.cs
@@ -115,10 +114,10 @@ namespace prismic.tests
 			// endgist
 		}
 
-		[Test ()]
+		[TestMethod]
 		public async Task GetTextTest ()
 		{
-			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
+			Api api = await prismic.Api.Get(ApiUrl);
 			var response = await api.Form("everything")
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbl"")]]")
@@ -130,10 +129,10 @@ namespace prismic.tests
 			Assert.AreEqual(author, "John M. Martelle, Fine Pastry Magazine"); // gisthide
 		}
 
-		[Test ()]
+		[TestMethod]
 		public async Task GetNumberTest()
 		{
-			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
+			Api api = await prismic.Api.Get(ApiUrl);
 			var response = await api.Form("everything")
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbO"")]]")
@@ -151,10 +150,10 @@ namespace prismic.tests
 			Assert.AreEqual(price, 2.5);
 		}
 
-		[Test ()]
+		[TestMethod]
 		public async Task ImagesTest()
 		{
-			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
+			Api api = await prismic.Api.Get(ApiUrl);
 			var response = await api.Form("everything")
 				.Ref(api.Master)
 				.Query (@"[[:d = at(document.id, ""UlfoxUnM0wkXYXbO"")]]")
@@ -168,10 +167,10 @@ namespace prismic.tests
 			Assert.AreEqual(url, "https://lesbonneschoses.cdn.prismic.io/lesbonneschoses/f606ad513fcc2a73b909817119b84d6fd0d61a6d.png");
 		}
 
-		[Test ()]
+		[TestMethod]
 		public async Task DateTimestampTest()
 		{
-			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
+			Api api = await prismic.Api.Get(ApiUrl);
 			Console.WriteLine ("DateTimestampTest, got API " + api);
 			var response = await api.Form("everything")
 				.Ref(api.Master)
@@ -208,7 +207,7 @@ namespace prismic.tests
 			Assert.AreEqual(dateYear, 2013);
 		}
 
-		[Test ()]
+		[TestMethod]
 		public void GroupTest()
 		{
 			var resolver =
@@ -222,7 +221,7 @@ namespace prismic.tests
 				try {
 					fragments.StructuredText desc = doc.GetStructuredText("desc");
 					fragments.Link link = doc.GetLink("linktodoc");
-				} catch (Exception e) {
+				} catch (Exception) {
 					// Missing key
 				}
 			}
@@ -231,7 +230,7 @@ namespace prismic.tests
 			Assert.AreEqual(firstDesc.AsHtml(resolver), "<p>A detailed step by step point of view on how installing happens.</p>");
 		}
 
-		[Test ()]
+		[TestMethod]
 		public void LinkTest()
 		{
 			var json = "{\"id\":\"abcd\",\"type\":\"article\",\"href\":\"\",\"slugs\":[],\"tags\":[],\"data\":{\"article\":{\"source\":{\"type\":\"Link.document\",\"value\":{\"document\":{\"id\":\"UlfoxUnM0wkXYXbE\",\"type\":\"product\",\"tags\":[\"Macaron\"],\"slug\":\"dark-chocolate-macaron\"},\"isBroken\":false}}}}}";
@@ -245,7 +244,7 @@ namespace prismic.tests
 			Assert.AreEqual("http://localhost/UlfoxUnM0wkXYXbE/dark-chocolate-macaron", url);
 		}
 
-		[Test ()]
+		[TestMethod]
 		public void EmbedTest()
 		{
 			var json = "{\"id\":\"abcd\",\"type\":\"article\",\"href\":\"\",\"slugs\":[],\"tags\":[],\"data\":{\"article\":{\"video\":{\"type\":\"Embed\",\"value\":{\"oembed\":{\"provider_url\":\"http://www.youtube.com/\",\"type\":\"video\",\"thumbnail_height\":360,\"height\":270,\"thumbnail_url\":\"http://i1.ytimg.com/vi/baGfM6dBzs8/hqdefault.jpg\",\"width\":480,\"provider_name\":\"YouTube\",\"html\":\"<iframe width=\\\"480\\\" height=\\\"270\\\" src=\\\"http://www.youtube.com/embed/baGfM6dBzs8?feature=oembed\\\" frameborder=\\\"0\\\" allowfullscreen></iframe>\",\"author_name\":\"Siobhan Wilson\",\"version\":\"1.0\",\"author_url\":\"http://www.youtube.com/user/siobhanwilsonsongs\",\"thumbnail_width\":480,\"title\":\"Siobhan Wilson - All Dressed Up\",\"embed_url\":\"https://www.youtube.com/watch?v=baGfM6dBzs8\"}}}}}}";
@@ -258,7 +257,7 @@ namespace prismic.tests
 			Assert.AreEqual("<iframe width=\"480\" height=\"270\" src=\"http://www.youtube.com/embed/baGfM6dBzs8?feature=oembed\" frameborder=\"0\" allowfullscreen></iframe>", html);
 		}
 
-		[Test()]
+		[TestMethod]
 		public void ColorTest()
 		{
 			var json = "{\"id\":\"abcd\",\"type\":\"article\",\"href\":\"\",\"slugs\":[],\"tags\":[],\"data\":{\"article\":{\"background\":{\"type\":\"Color\",\"value\":\"#000000\"}}}}";
@@ -270,27 +269,30 @@ namespace prismic.tests
 			Assert.AreEqual("#000000", hex);
 		}
 
-		[Test()]
+		[TestMethod]
 		public void GeopointTest()
 		{
 			var json = "{\"id\":\"abcd\",\"type\":\"article\",\"href\":\"\",\"slugs\":[],\"tags\":[],\"data\":{\"article\":{\"location\":{\"type\":\"GeoPoint\",\"value\":{\"latitude\":48.877108,\"longitude\":2.333879}}}}}";
 			var document = Document.Parse(JObject.Parse(json));
-			// startgist:afd2b8109ce21af4564c:prismic-geopoint.cs
-			// "near" predicate for GeoPoint fragments
-			var near = "[[:d = geopoint.near(my.store.location, 48.8768767, 2.3338802, 10)]]";
+
+#pragma warning disable CS0219 // Variable is assigned but its value is never used
+            // startgist:afd2b8109ce21af4564c:prismic-geopoint.cs
+            // "near" predicate for GeoPoint fragments
+            var near = "[[:d = geopoint.near(my.store.location, 48.8768767, 2.3338802, 10)]]";
 
 			// Accessing GeoPoint fragments
 			fragments.GeoPoint place = document.GetGeoPoint("article.location");
 			var coordinates = place.Latitude + "," + place.Longitude;
-			// endgist
-			Assert.AreEqual(place.Latitude, 48.877108);
+            // endgist
+#pragma warning restore CS0219 // Variable is assigned but its value is never used
+            Assert.AreEqual(place.Latitude, 48.877108);
             Assert.AreEqual(place.Longitude, 2.333879);
 		}
 
-		[Test ()]
+		[TestMethod]
 		public async Task AsHtmlTest ()
 		{
-			var api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
+			var api = await prismic.Api.Get(ApiUrl);
 			var response = await api
 				.Form("everything")
 				.Ref(api.Master)
@@ -299,16 +301,16 @@ namespace prismic.tests
 			// startgist:90c0de35cd9a363bb60b:prismic-asHtml.cs
 			var document = response.Results.First ();
 			var resolver =
-				prismic.DocumentLinkResolver.For (l => String.Format ("http://localhost/{0}/{1}", l.Type, l.Id));
+                DocumentLinkResolver.For (l => String.Format ("http://localhost/{0}/{1}", l.Type, l.Id));
 			var html = document.GetStructuredText ("blog-post.body").AsHtml(resolver);
 			// endgist
 			Assert.IsNotNull (html);
 		}
 
-		[Test ()]
+		[TestMethod]
 		public async Task HtmlSerializerTest ()
 		{
-			var api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
+			var api = await prismic.Api.Get(ApiUrl);
 			var response = await api
 				.Form("everything")
 				.Ref(api.Master)
@@ -339,7 +341,7 @@ namespace prismic.tests
 			Assert.IsNotNull (html);
 		}
 
-		[Test()]
+		[TestMethod]
 		public void CacheTest()
 		{
 			// startgist:9711e4670aaa97c975c8:prismic-cache.cs

@@ -1,18 +1,16 @@
-﻿using NUnit.Framework;
-using prismic;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
-using System.ComponentModel;
 using System.Threading.Tasks;
 using System.IO;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace prismic.tests
 {
-	[TestFixture ()]
+    [TestClass]
 	public class FragmentsTests
 	{
-		[Test ()]
+		[TestMethod]
 		public async Task ShouldAccessGroupField()
 		{
 			var url = "https://micro.prismic.io/api";
@@ -31,7 +29,7 @@ namespace prismic.tests
 			Assert.IsNotNull (link, "link was not found");
 		}
 
-		[Test ()]
+		[TestMethod]
 		public async Task ShouldSerializeGroupToHTML()
 		{
 			var url = "https://micro.prismic.io/api";
@@ -51,7 +49,7 @@ namespace prismic.tests
 			Assert.AreEqual(@"<section data-field=""linktodoc""><a href=""http://localhost/doc/UrDejAEAAFwMyrW9"">installing-meta-micro</a></section><section data-field=""desc""><p>Just testing another field in a group section.</p></section><section data-field=""linktodoc""><a href=""http://localhost/doc/UrDmKgEAALwMyrXA"">using-meta-micro</a></section>", html);
 		}
 
-		[Test ()]
+		[TestMethod]
 		public async Task ShouldAccessMediaLink()
 		{
 			var url = "https://test-public.prismic.io/api";
@@ -65,7 +63,7 @@ namespace prismic.tests
 
 		}
 
-		[Test ()]
+		[TestMethod]
 		public async Task ShouldAccessFirstLinkInMultipleDocumentLink()
 		{
 			var url = "https://lesbonneschoses.prismic.io/api";
@@ -77,7 +75,7 @@ namespace prismic.tests
 			Assert.AreEqual ("paris-saint-lazare", ((fragments.DocumentLink)link).Slug);
 		}
 
-		[Test ()]
+		[TestMethod]
 		public async Task ShouldSerializeHTMLWithCustomOutput()
 		{
 			var resolver = prismic.DocumentLinkResolver.For (l => String.Format ("http://localhost/{0}/{1}", l.Type, l.Id));
@@ -117,7 +115,7 @@ namespace prismic.tests
 				+ "<p>The session is presided by Jean-Michel Pastranova, who then selects the most delightful experiences, to add it to <em>Les Bonnes Choses</em>&#39;s catalogue.</p>", html);
 		}
 
-		[Test ()]
+		[TestMethod]
 		public async Task ShouldFindAllLinksInMultipleDocumentLink()
 		{
 			var url = "https://lesbonneschoses.prismic.io/api";
@@ -131,7 +129,7 @@ namespace prismic.tests
 			Assert.AreEqual ("tokyo-roppongi-hills", ((fragments.DocumentLink)links[1]).Slug);
 		}
 
-		[Test ()]
+		[TestMethod]
 		public async Task ShouldAccessStructuredText()
 		{
 			var url = "https://lesbonneschoses.prismic.io/api";
@@ -143,10 +141,10 @@ namespace prismic.tests
 			Assert.IsNotNull (maybeText);
 		}
 
-		[Test ()]
+		[TestMethod]
 		public void ShouldAccessAndSerializeSlices()
 		{
-			var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+			var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
 			var path = string.Format("{0}{1}fixtures{1}slices.json", directory, Path.DirectorySeparatorChar);
 			string text = System.IO.File.ReadAllText(path);
 			var json = JToken.Parse(text);
@@ -161,7 +159,7 @@ namespace prismic.tests
 				+ "<div data-slicetype=\"text\" class=\"slice\"><p>C&#39;est un bloc content</p></div>");
 		}
 
-		[Test ()]
+		[TestMethod]
 		public async Task ShouldQueryWithPredicate()
 		{
 			var url = "https://lesbonneschoses.prismic.io/api";
@@ -173,7 +171,7 @@ namespace prismic.tests
 			Assert.IsNotNull (maybeText);
 		}
 
-		[Test ()]
+		[TestMethod]
 		public async Task ShouldAccessImage()
 		{
 			var url = "https://test-public.prismic.io/api";
@@ -193,7 +191,7 @@ namespace prismic.tests
 			Assert.AreEqual(expect, html);
 		}
 
-		[Test ()]
+		[TestMethod]
 		public async Task ShouldFetchLinksFragments()
 		{
 			var url = "https://lesbonneschoses.prismic.io/api";
@@ -214,10 +212,10 @@ namespace prismic.tests
 			);
 		}
 
-		[Test ()]
+		[TestMethod]
 		public void ShouldParseOEmbed()
 		{
-			var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+			var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
 			var path = string.Format("{0}{1}fixtures{1}soundcloud.json", directory, Path.DirectorySeparatorChar);
 			string text = System.IO.File.ReadAllText(path);
 			var json = JToken.Parse(text);
