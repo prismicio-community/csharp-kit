@@ -2,7 +2,6 @@
 using Newtonsoft.Json.Linq;
 using System.Linq;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 
 namespace prismic
 {

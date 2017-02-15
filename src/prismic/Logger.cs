@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace prismic
+﻿namespace prismic
 {
 	public interface ILogger
 	{
