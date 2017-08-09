@@ -1,14 +1,14 @@
 using System.Linq;
 using System.Threading.Tasks;
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace prismic.tests
 {
-    [TestFixture()]
+    [TestClass]
     public class SliceZoneParsingTests
     {
 
-        [Test()]
+        [TestMethod]
         public async Task SliceZoneAccess()
         {
             var api = await Api.Get("https://primsic-mapping-integration-tests.prismic.io/api");
