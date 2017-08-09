@@ -42,6 +42,7 @@
     <Compile Include="DocTest.cs" />
     <Compile Include="FragmentsTests.cs" />
     <Compile Include="PredicatesTest.cs" />
+    <Compile Include="SliceZoneParsingTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
