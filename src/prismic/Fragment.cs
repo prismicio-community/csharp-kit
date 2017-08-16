@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +36,7 @@ namespace prismic
 
 		public class Number: Fragment {
 
-            private static readonly CultureInfo _defaultCultureInfo = new CultureInfo("en-US");
+			private static readonly CultureInfo _defaultCultureInfo = new CultureInfo("en-US");
 			private Decimal value;
 			public Decimal Value {
 				get {
@@ -51,11 +51,11 @@ namespace prismic
 			}
 			public static Number Parse(JToken json, CultureInfo ci = null)
 			{
-			    if(ci == null)
-                    ci = _defaultCultureInfo;
+				if(ci == null)
+					ci = _defaultCultureInfo;
 
-                var v = Convert.ToDecimal((string) json, ci);
-                return new Number (v);
+				var v = Convert.ToDecimal((string) json, ci);
+				return new Number (v);
 			}
 		}
 
@@ -300,15 +300,15 @@ namespace prismic
 					return id;
 				}
 			}
-            private String uid;
-            public String Uid
-            {
-                get
-                {
-                    return uid;
-                }
-            }
-            private String type;
+			private String uid;
+			public String Uid
+			{
+				get
+				{
+					return uid;
+				}
+			}
+			private String type;
 			public String Type {
 				get {
 					return type;
@@ -356,9 +356,9 @@ namespace prismic
 				string id = (string)document["id"];
 				string type = (string)document["type"];
 				string slug = (string)document["slug"];
-                string uid = null;
-                if (document["uid"] != null)
-                    uid = (string)document["uid"];
+				string uid = null;
+				if (document["uid"] != null)
+					uid = (string)document["uid"];
 				ISet<String> tags;
 				if (json["tags"] != null)
 					tags = new HashSet<String>(json ["tags"].Select (r => (string)r));
@@ -477,7 +477,7 @@ namespace prismic
 				String provider = oembedJson["provider_name"] != null ? (string)oembedJson["provider_name"] : null;
 				String url = (string)oembedJson["embed_url"];
 				int? width = (oembedJson["width"] != null && oembedJson["width"].Type == JTokenType.Integer) ? (int?)oembedJson["width"] : null;
-				int? height = (oembedJson["height"] != null  && oembedJson["height"].Type == JTokenType.Integer) ? (int?)oembedJson["height"] : null;
+				int? height = (oembedJson["height"] != null	 && oembedJson["height"].Type == JTokenType.Integer) ? (int?)oembedJson["height"] : null;
 				String html = (string)oembedJson["html"];
 				return new Embed(type, provider, url, width, height, html, oembedJson);
 			}
@@ -517,8 +517,8 @@ namespace prismic
 				var className = "slice";
 				if (this.sliceLabel != null) className += (" " + this.sliceLabel);
 				return "<div data-slicetype=\"" + this.sliceType + "\" class=\"" + className + "\">" +
-				       WithFragments.GetHtml(this.value, resolver, null) +
-				       "</div>";
+					   WithFragments.GetHtml(this.value, resolver, null) +
+					   "</div>";
 			}
 
 		}
@@ -552,22 +552,15 @@ namespace prismic
 			}
 
 			public string AsHtml(DocumentLinkResolver resolver) {
-				var className = "composite-slice";
-				if (SliceLabel != null)
+				String className = "slice";
+				if (SliceLabel != null && SliceLabel != "null")
 					className += (" " + SliceLabel);
 
-				var primaryHtml = string.Empty;
-				var groupHtml = string.Empty;
-
-				if (_nonRepeat.Fragments.Any())
-					primaryHtml = string.Join("", _nonRepeat.Fragments.Select(x => WithFragments.GetHtml(x.Value, resolver, null)));
-
-				if (_repeat.GroupDocs.Any())
-				{
-					groupHtml = _repeat.GroupDocs.Aggregate(groupHtml, (current, groupDoc) => current + groupDoc.AsHtml(resolver));
-				}
-
-				return string.Format("<div data-slicetype=\"{0}\" class=\"{1}\">{2}{3}</div>", SliceType, className, primaryHtml, groupHtml);
+				List<GroupDoc> groupDocs = new List<GroupDoc> { _nonRepeat };
+				return "<div data-slicetype=\"" + SliceType + "\" class=\"" + className + "\">" +
+							WithFragments.GetHtml(new Group(groupDocs), resolver, null) +
+							WithFragments.GetHtml(_repeat, resolver, null) +
+					   "</div>";
 			}
 		}
 
@@ -601,34 +594,15 @@ namespace prismic
 						JToken fragmentValue = fragJson["value"];
 						Fragment value = FragmentParser.Parse(fragmentType, fragmentValue);
 						slices.Add(new SimpleSlice(sliceType, label, value));
-						continue;
 					}
-
-					var hasNewSliceFields = false;
-
-					GroupDoc nonRepeat = null;
-					Group repeat = null;
-
-					//Parse new format non-repeating slice zones
-					JObject nonRepeatsJson = (JObject)sliceJson["non-repeat"];
-
-					if (nonRepeatsJson != null)
-					{
-						hasNewSliceFields = true;
-						nonRepeat = GroupDoc.Parse(nonRepeatsJson);
-					}
-
-					//Parse new format repeating slice zones
-					JArray repeatJson = (JArray)sliceJson["repeat"];
-
-					if (repeatJson != null)
-					{
-						hasNewSliceFields = true;
-						repeat = Group.Parse(repeatJson);
-					}
-
-					if (hasNewSliceFields)
+					else {
+						//Parse new format non-repeating slice zones
+						JObject nonRepeatsJson = (JObject)sliceJson["non-repeat"];
+						GroupDoc nonRepeat = GroupDoc.Parse(nonRepeatsJson);
+						JArray repeatJson = (JArray)sliceJson["repeat"];
+						Group repeat = Group.Parse(repeatJson);
 						slices.Add(new CompositeSlice(sliceType, label, repeat, nonRepeat));
+					}
 				}
 				return new SliceZone(slices);
 			}
@@ -700,9 +674,9 @@ namespace prismic
 
 		public class GeoPoint: Fragment {
 			private Double latitude;
-            private static readonly CultureInfo _defaultCultureInfo = new CultureInfo("en-US");
+			private static readonly CultureInfo _defaultCultureInfo = new CultureInfo("en-US");
 
-            public Double Latitude {
+			public Double Latitude {
 				get { return latitude; }
 			}
 			private Double longitude;
@@ -718,7 +692,7 @@ namespace prismic
 			public static GeoPoint Parse(JToken json) {
 				try {
 					Double latitude = Double.Parse((string)json["latitude"], _defaultCultureInfo);
-				    Double longitude = Double.Parse((string) json["longitude"], _defaultCultureInfo);
+					Double longitude = Double.Parse((string) json["longitude"], _defaultCultureInfo);
 					return new GeoPoint(latitude, longitude);
 				} catch(Exception) {
 					return null;
@@ -770,4 +744,3 @@ namespace prismic
 
 	}
 }
-
