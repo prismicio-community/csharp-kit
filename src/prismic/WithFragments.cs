@@ -134,7 +134,7 @@ namespace prismic
 		}
 
 		public String GetHtml(String field, DocumentLinkResolver resolver) {
-			return GetHtml (field, resolver);
+			return GetHtml (field, resolver, null);
 		}
 
 		public String GetHtml(String field, DocumentLinkResolver resolver, HtmlSerializer serializer) {

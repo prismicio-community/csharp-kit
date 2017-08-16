@@ -35,14 +35,12 @@ namespace prismic.tests
 		{
 			// startgist:ce58be224dda1a3c080a:prismic-references.cs
 			var previewToken = "MC5VbDdXQmtuTTB6Z0hNWHF3.c--_vVbvv73vv73vv73vv71EA--_vS_vv73vv70T77-9Ke-_ve-_vWfvv70ebO-_ve-_ve-_vQN377-9ce-_vRfvv70";
-			Api api = await Api.Get(ApiUrl, previewToken);
-			Console.WriteLine ("API OK");
+			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api", previewToken);
 			var stPatrickRef = api.Ref("St-Patrick specials");
-			Console.WriteLine ("StPar = " + stPatrickRef);
 			// Now we'll use this reference for all our calls
-			Response response = await api.Form("everything")
-				.Ref(stPatrickRef)
+			Response response = await api
 				.Query (@"[[:d = at(document.type, ""product"")]]")
+				.Ref(stPatrickRef)
 				.Submit();
 			// The documents object contains a Response object with all documents of type "product"
 			// including the new "Saint-Patrick's Cupcake"
@@ -57,8 +55,6 @@ namespace prismic.tests
 			Api api = await prismic.Api.Get(ApiUrl);
 			// Just like Api.Get, fetching a Response is asynchronous
 			Response response = await api
-				.Form("everything")
-				.Ref(api.Master)
 				.Query (@"[[:d = at(document.type, ""product"")]]")
 				.Submit();
 			// The response object contains all documents of type "product", paginated
@@ -70,9 +66,8 @@ namespace prismic.tests
 		public async Task OrderingsTest ()
 		{
 			// startgist:2835cc08041b530da0e3:prismic-orderings.cs
-			Api api = await prismic.Api.Get(ApiUrl);
-			var response = await api.Form("everything")
-				.Ref(api.Master)
+			Api api = await prismic.Api.Get("https://lesbonneschoses.cdn.prismic.io/api");
+			var response = await api
 				.Query (@"[[:d = at(document.type, ""product"")]]")
 				.PageSize(100)
 				.Orderings("[my.product.price desc]")
@@ -89,8 +84,6 @@ namespace prismic.tests
 			// startgist:16caadec7671853d77f0:prismic-predicates.cs
 			Api api = await Api.Get(ApiUrl);
 			var response = await api
-				.Form("everything")
-				.Ref(api.Master)
 				.Query (Predicates.at("document.type", "blog-post"), Predicates.dateAfter("my.blog-post.date", DateTime.Now))
 				.Submit();
 			// endgist
@@ -164,7 +157,7 @@ namespace prismic.tests
 			fragments.Image.View imageView = doc.GetImageView("product.image", "main");
 			String url = imageView.Url;
 			// endgist
-			Assert.AreEqual(url, "https://lesbonneschoses.cdn.prismic.io/lesbonneschoses/f606ad513fcc2a73b909817119b84d6fd0d61a6d.png");
+			Assert.AreEqual("https://d2aw36oac6sa9o.cloudfront.net/lesbonneschoses/f606ad513fcc2a73b909817119b84d6fd0d61a6d.png", url);
 		}
 
 		[TestMethod]

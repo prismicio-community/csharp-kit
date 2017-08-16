@@ -1,16 +1,16 @@
-﻿using Newtonsoft.Json.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace prismic.tests
 {
-    [TestClass]
+	[TestClass()]
 	public class FragmentsTests
 	{
-		[TestMethod]
+		[TestMethod()]
 		public async Task ShouldAccessGroupField()
 		{
 			var url = "https://micro.prismic.io/api";
@@ -29,7 +29,7 @@ namespace prismic.tests
 			Assert.IsNotNull (link, "link was not found");
 		}
 
-		[TestMethod]
+		[TestMethod()]
 		public async Task ShouldSerializeGroupToHTML()
 		{
 			var url = "https://micro.prismic.io/api";
@@ -49,7 +49,7 @@ namespace prismic.tests
 			Assert.AreEqual(@"<section data-field=""linktodoc""><a href=""http://localhost/doc/UrDejAEAAFwMyrW9"">installing-meta-micro</a></section><section data-field=""desc""><p>Just testing another field in a group section.</p></section><section data-field=""linktodoc""><a href=""http://localhost/doc/UrDmKgEAALwMyrXA"">using-meta-micro</a></section>", html);
 		}
 
-		[TestMethod]
+		[TestMethod()]
 		public async Task ShouldAccessMediaLink()
 		{
 			var url = "https://test-public.prismic.io/api";
@@ -63,7 +63,7 @@ namespace prismic.tests
 
 		}
 
-		[TestMethod]
+		[TestMethod()]
 		public async Task ShouldAccessFirstLinkInMultipleDocumentLink()
 		{
 			var url = "https://lesbonneschoses.prismic.io/api";
@@ -75,7 +75,7 @@ namespace prismic.tests
 			Assert.AreEqual ("paris-saint-lazare", ((fragments.DocumentLink)link).Slug);
 		}
 
-		[TestMethod]
+		[TestMethod()]
 		public async Task ShouldSerializeHTMLWithCustomOutput()
 		{
 			var resolver = prismic.DocumentLinkResolver.For (l => String.Format ("http://localhost/{0}/{1}", l.Type, l.Id));
@@ -115,7 +115,7 @@ namespace prismic.tests
 				+ "<p>The session is presided by Jean-Michel Pastranova, who then selects the most delightful experiences, to add it to <em>Les Bonnes Choses</em>&#39;s catalogue.</p>", html);
 		}
 
-		[TestMethod]
+		[TestMethod()]
 		public async Task ShouldFindAllLinksInMultipleDocumentLink()
 		{
 			var url = "https://lesbonneschoses.prismic.io/api";
@@ -129,7 +129,7 @@ namespace prismic.tests
 			Assert.AreEqual ("tokyo-roppongi-hills", ((fragments.DocumentLink)links[1]).Slug);
 		}
 
-		[TestMethod]
+		[TestMethod()]
 		public async Task ShouldAccessStructuredText()
 		{
 			var url = "https://lesbonneschoses.prismic.io/api";
@@ -141,45 +141,35 @@ namespace prismic.tests
 			Assert.IsNotNull (maybeText);
 		}
 
-		[TestMethod]
-		public void ShouldAccessAndSerializeSlices()
+		[TestMethod()]
+		public void ShouldParseTimestamp()
 		{
 			var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
-			var path = string.Format("{0}{1}fixtures{1}slices.json", directory, Path.DirectorySeparatorChar);
+			var path = string.Format("{0}{1}fixtures{1}fragments.json", directory, Path.DirectorySeparatorChar);
 			string text = System.IO.File.ReadAllText(path);
 			var json = JToken.Parse(text);
 			var document = Document.Parse(json);
-			var resolver =
-				prismic.DocumentLinkResolver.For (l => String.Format ("http://localhost/{0}/{1}", l.Type, l.Id));
-
-			var slices = document.GetSliceZone("article.blocks");
-			Assert.AreEqual(slices.AsHtml(resolver),
-				"<div data-slicetype=\"features\" class=\"slice\"><section data-field=\"illustration\"><img alt=\"\" src=\"https://wroomdev.s3.amazonaws.com/toto/db3775edb44f9818c54baa72bbfc8d3d6394b6ef_hsf_evilsquall.jpg\" width=\"4285\" height=\"709\" /></section>"
-				+ "<section data-field=\"title\"><span class=\"text\">c&#39;est un bloc features</span></section></div>"
-				+ "<div data-slicetype=\"text\" class=\"slice\"><p>C&#39;est un bloc content</p></div>");
+			var timestamp = document.GetTimestamp("article.date");
+			Assert.AreEqual (2016, timestamp.Value.Year);
 		}
 
-		[TestMethod]
+		[TestMethod()]
 		public async Task ShouldQueryWithPredicate()
 		{
 			var url = "https://lesbonneschoses.prismic.io/api";
 			Api api = await prismic.Api.Get(url);
-			var response = await api.Form("everything").Ref(api.Master).Query (Predicates.at("document.id", "UlfoxUnM0wkXYXbX")).Submit();
-
-			var document = response.Results.First();
+			var document = await api.GetByID("UlfoxUnM0wkXYXbX");
 			var maybeText = document.GetStructuredText ("blog-post.body");
 			Assert.IsNotNull (maybeText);
 		}
 
-		[TestMethod]
+		[TestMethod()]
 		public async Task ShouldAccessImage()
 		{
 			var url = "https://test-public.prismic.io/api";
 			Api api = await prismic.Api.Get(url);
-			var response = await api.Form("everything").Ref(api.Master).Query (@"[[:d = at(document.id, ""Uyr9sgEAAGVHNoFZ"")]]").Submit();
-
+			var document = await api.GetByID("Uyr9sgEAAGVHNoFZ");
 			var resolver = prismic.DocumentLinkResolver.For (l => String.Format ("http://localhost/{0}/{1}", l.Type, l.Id));
-			var document = response.Results.First();
 			var maybeImgView = document.GetImageView ("article.illustration", "icon");
 			Assert.IsNotNull (maybeImgView);
 
@@ -191,7 +181,7 @@ namespace prismic.tests
 			Assert.AreEqual(expect, html);
 		}
 
-		[TestMethod]
+		[TestMethod()]
 		public async Task ShouldFetchLinksFragments()
 		{
 			var url = "https://lesbonneschoses.prismic.io/api";
@@ -212,7 +202,7 @@ namespace prismic.tests
 			);
 		}
 
-		[TestMethod]
+		[TestMethod()]
 		public void ShouldParseOEmbed()
 		{
 			var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
