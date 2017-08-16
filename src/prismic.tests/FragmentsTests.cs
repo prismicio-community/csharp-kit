@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using prismic;
 using Newtonsoft.Json.Linq;
 using System;
@@ -6,6 +6,7 @@ using System.Linq;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace prismic.tests
 {
@@ -144,21 +145,15 @@ namespace prismic.tests
 		}
 
 		[Test ()]
-		public void ShouldAccessAndSerializeSlices()
+		public void ShouldParseTimestamp()
 		{
 			var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-			var path = string.Format("{0}{1}fixtures{1}slices.json", directory, Path.DirectorySeparatorChar);
+			var path = string.Format("{0}{1}fixtures{1}fragments.json", directory, Path.DirectorySeparatorChar);
 			string text = System.IO.File.ReadAllText(path);
 			var json = JToken.Parse(text);
 			var document = Document.Parse(json);
-			var resolver =
-				prismic.DocumentLinkResolver.For (l => String.Format ("http://localhost/{0}/{1}", l.Type, l.Id));
-
-			var slices = document.GetSliceZone("article.blocks");
-			Assert.AreEqual(slices.AsHtml(resolver),
-				"<div data-slicetype=\"features\" class=\"slice\"><section data-field=\"illustration\"><img alt=\"\" src=\"https://wroomdev.s3.amazonaws.com/toto/db3775edb44f9818c54baa72bbfc8d3d6394b6ef_hsf_evilsquall.jpg\" width=\"4285\" height=\"709\" /></section>"
-				+ "<section data-field=\"title\"><span class=\"text\">c&#39;est un bloc features</span></section></div>"
-				+ "<div data-slicetype=\"text\" class=\"slice\"><p>C&#39;est un bloc content</p></div>");
+			var timestamp = document.GetTimestamp("article.date");
+			Assert.AreEqual (2016, timestamp.Value.Year);
 		}
 
 		[Test ()]
@@ -166,9 +161,7 @@ namespace prismic.tests
 		{
 			var url = "https://lesbonneschoses.prismic.io/api";
 			Api api = await prismic.Api.Get(url);
-			var response = await api.Form("everything").Ref(api.Master).Query (Predicates.at("document.id", "UlfoxUnM0wkXYXbX")).Submit();
-
-			var document = response.Results.First();
+			var document = await api.GetByID("UlfoxUnM0wkXYXbX");
 			var maybeText = document.GetStructuredText ("blog-post.body");
 			Assert.IsNotNull (maybeText);
 		}
@@ -178,10 +171,8 @@ namespace prismic.tests
 		{
 			var url = "https://test-public.prismic.io/api";
 			Api api = await prismic.Api.Get(url);
-			var response = await api.Form("everything").Ref(api.Master).Query (@"[[:d = at(document.id, ""Uyr9sgEAAGVHNoFZ"")]]").Submit();
-
+			var document = await api.GetByID("Uyr9sgEAAGVHNoFZ");
 			var resolver = prismic.DocumentLinkResolver.For (l => String.Format ("http://localhost/{0}/{1}", l.Type, l.Id));
-			var document = response.Results.First();
 			var maybeImgView = document.GetImageView ("article.illustration", "icon");
 			Assert.IsNotNull (maybeImgView);
 

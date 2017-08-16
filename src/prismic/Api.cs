@@ -167,6 +167,68 @@ namespace prismic
 			return Get(url, null, new DefaultCache(), new NoLogger(), client);
 		}
 
+		public Form.SearchForm Query(String q) {
+			return this.Form ("everything").Ref (this.Master).Query(q);
+		}
+
+		public Form.SearchForm Query(params IPredicate[] predicates) {
+			return this.Form ("everything").Ref (this.Master).Query(predicates);
+		}
+
+		/**
+		 * Retrieve multiple documents from their IDS
+		 */
+		public Form.SearchForm GetByIDs(IEnumerable<String> ids) {
+			return this.Query(Predicates.@in("document.id", ids));
+		}
+
+		/**
+		 * Return the first document matching the predicate
+		 */
+		public async Task<Document> QueryFirst(IPredicate p, String reference = null) {
+			if (reference == null) {
+				reference = this.Master.Reference;
+			}
+			var response = await this.Query (p).Ref (reference).Submit ();
+			var results = response.Results;
+			if (results.Count > 0) {
+				return results[0];
+			} else {
+				return null;
+			}
+		}
+
+		/**
+		 * Retrieve a document by its ID on the given reference
+		 *
+		 * @return the document, or null if it doesn't exist
+		 */
+		public async Task<Document> GetByID(String documentId, String reference = null) {
+			if (reference == null) {
+				reference = this.Master.Reference;
+			}
+			return await QueryFirst(Predicates.at("document.id", documentId), reference);
+		}
+
+		/**
+		 * Retrieve a document by its UID on the given reference
+		 *
+		 * @return the document, or null if it doesn't exist
+		 */
+		public async Task<Document> GetByUID(String documentType, String documentUid, String reference = null) {
+			if (reference == null) {
+				reference = this.Master.Reference;
+			}
+			return await QueryFirst(Predicates.at("my." + documentType + ".uid", documentUid), reference);
+		}
+
+		public async Task<Document> GetBookmark(String bookmark, String reference = null) {
+			if (reference == null) {
+				reference = this.Master.Reference;
+			}
+			return await this.GetByID (this.apiData.Bookmarks [bookmark], reference);
+		}
+
 		/**
 		* Return the URL to display a given preview
 		* @param token as received from Prismic server to identify the content to preview
