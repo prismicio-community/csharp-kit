@@ -484,7 +484,7 @@ namespace prismic
 
 		}
 
-		public interface ISlice : Fragment
+		public interface Slice : Fragment
 		{
 			string SliceType { get; }
 			string SliceLabel { get; }
@@ -492,7 +492,7 @@ namespace prismic
 			string AsHtml(DocumentLinkResolver resolver);
 		}
 
-		public class Slice : ISlice
+		public class SimpleSlice : Slice
 		{
 			private string sliceType;
 			public string SliceType {
@@ -507,7 +507,7 @@ namespace prismic
 				get { return value; }
 			}
 
-			public Slice(string sliceType, string sliceLabel, Fragment value) {
+			public SimpleSlice(string sliceType, string sliceLabel, Fragment value) {
 				this.sliceType = sliceType;
 				this.sliceLabel = sliceLabel;
 				this.value = value;
@@ -523,7 +523,7 @@ namespace prismic
 
 		}
 
-		public class CompositeSlice : ISlice
+		public class CompositeSlice : Slice
 		{
 			private readonly Group _repeat;
 			private readonly GroupDoc _nonRepeat;
@@ -572,13 +572,13 @@ namespace prismic
 		}
 
 		public class SliceZone : Fragment {
-			private IList<ISlice> slices;
-			public IList<ISlice> Slices
+			private IList<Slice> slices;
+			public IList<Slice> Slices
 			{
 				get { return slices; }
 			}
 
-			public SliceZone(IList<ISlice> slices) {
+			public SliceZone(IList<Slice> slices) {
 				this.slices = slices;
 			}
 
@@ -587,7 +587,7 @@ namespace prismic
 			}
 
 			public static SliceZone Parse(JToken json) {
-				var slices = new List<ISlice>();
+				var slices = new List<Slice>();
 				foreach (JToken sliceJson in (JArray)json)
 				{
 					String sliceType = (string)sliceJson["slice_type"];
@@ -600,7 +600,7 @@ namespace prismic
 						string fragmentType = (string)fragJson["type"];
 						JToken fragmentValue = fragJson["value"];
 						Fragment value = FragmentParser.Parse(fragmentType, fragmentValue);
-						slices.Add(new Slice(sliceType, label, value));
+						slices.Add(new SimpleSlice(sliceType, label, value));
 						continue;
 					}
 
