@@ -406,11 +406,7 @@ namespace prismic
 				return ("<time>" + value + "</time>");
 			}
 			public static Timestamp Parse(JToken json) {
-				try {
-					return new Timestamp(DateTime.ParseExact((string)json, "yyyy-MM-dd'T'HH:mm:ssZ", CultureInfo.InvariantCulture));
-				} catch(FormatException) {
-					return null;
-				}
+				return new Timestamp(json.ToObject<DateTime>());
 			}
 		}
 
