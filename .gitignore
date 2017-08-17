@@ -35,7 +35,7 @@ UpgradeLog.*
 [Dd]ebug*/
 [Rr]elease*/
 
-# src/packages/
+src/packages/
 src/Help
 src/nuget/packages/
 src/nuget/packaging/

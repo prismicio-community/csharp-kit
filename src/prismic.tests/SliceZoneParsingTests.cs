@@ -11,9 +11,9 @@ namespace prismic.tests
 	{
 		public static JToken GetFixture(String file)
 		{
-			var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
-			var path = string.Format("{0}{1}fixtures{1}{2}", directory, Path.DirectorySeparatorChar, file);
-			string text = System.IO.File.ReadAllText(path);
+			//var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location);
+			//var path = string.Format("~/fixtures{1}{2}", directory, Path.DirectorySeparatorChar, file);
+			string text = System.IO.File.ReadAllText($"fixtures/{file}");
 			return JToken.Parse(text);
 		}
 

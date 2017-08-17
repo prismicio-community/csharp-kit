@@ -39,3 +39,6 @@
 #### New in 1.4.0 (Release 2016/02/17)
 * New query helpers on the Api object, to prevent having to specify form and ref
 
+#### New in 1.4.1 (Release 2017/08/17)
+* Add support for composite slices
+
