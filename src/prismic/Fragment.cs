@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +36,7 @@ namespace prismic
 
 		public class Number: Fragment {
 
-            private static readonly CultureInfo _defaultCultureInfo = new CultureInfo("en-US");
+			private static readonly CultureInfo _defaultCultureInfo = new CultureInfo("en-US");
 			private Decimal value;
 			public Decimal Value {
 				get {
@@ -51,11 +51,11 @@ namespace prismic
 			}
 			public static Number Parse(JToken json, CultureInfo ci = null)
 			{
-			    if(ci == null)
-                    ci = _defaultCultureInfo;
+				if(ci == null)
+					ci = _defaultCultureInfo;
 
-                var v = Convert.ToDecimal((string) json, ci);
-                return new Number (v);
+				var v = Convert.ToDecimal((string) json, ci);
+				return new Number (v);
 			}
 		}
 
@@ -300,15 +300,15 @@ namespace prismic
 					return id;
 				}
 			}
-            private String uid;
-            public String Uid
-            {
-                get
-                {
-                    return uid;
-                }
-            }
-            private String type;
+			private String uid;
+			public String Uid
+			{
+				get
+				{
+					return uid;
+				}
+			}
+			private String type;
 			public String Type {
 				get {
 					return type;
@@ -356,9 +356,9 @@ namespace prismic
 				string id = (string)document["id"];
 				string type = (string)document["type"];
 				string slug = (string)document["slug"];
-                string uid = null;
-                if (document["uid"] != null)
-                    uid = (string)document["uid"];
+				string uid = null;
+				if (document["uid"] != null)
+					uid = (string)document["uid"];
 				ISet<String> tags;
 				if (json["tags"] != null)
 					tags = new HashSet<String>(json ["tags"].Select (r => (string)r));
@@ -473,14 +473,22 @@ namespace prismic
 				String provider = oembedJson["provider_name"] != null ? (string)oembedJson["provider_name"] : null;
 				String url = (string)oembedJson["embed_url"];
 				int? width = (oembedJson["width"] != null && oembedJson["width"].Type == JTokenType.Integer) ? (int?)oembedJson["width"] : null;
-				int? height = (oembedJson["height"] != null  && oembedJson["height"].Type == JTokenType.Integer) ? (int?)oembedJson["height"] : null;
+				int? height = (oembedJson["height"] != null	 && oembedJson["height"].Type == JTokenType.Integer) ? (int?)oembedJson["height"] : null;
 				String html = (string)oembedJson["html"];
 				return new Embed(type, provider, url, width, height, html, oembedJson);
 			}
 
 		}
 
-		public class Slice
+		public interface Slice : Fragment
+		{
+			string SliceType { get; }
+			string SliceLabel { get; }
+
+			string AsHtml(DocumentLinkResolver resolver);
+		}
+
+		public class SimpleSlice : Slice
 		{
 			private string sliceType;
 			public string SliceType {
@@ -495,7 +503,7 @@ namespace prismic
 				get { return value; }
 			}
 
-			public Slice(string sliceType, string sliceLabel, Fragment value) {
+			public SimpleSlice(string sliceType, string sliceLabel, Fragment value) {
 				this.sliceType = sliceType;
 				this.sliceLabel = sliceLabel;
 				this.value = value;
@@ -505,42 +513,92 @@ namespace prismic
 				var className = "slice";
 				if (this.sliceLabel != null) className += (" " + this.sliceLabel);
 				return "<div data-slicetype=\"" + this.sliceType + "\" class=\"" + className + "\">" +
-					WithFragments.GetHtml(this.value, resolver, null) +
-					"</div>";
+					   WithFragments.GetHtml(this.value, resolver, null) +
+					   "</div>";
 			}
 
 		}
 
-		public class SliceZone : Fragment
+		public class CompositeSlice : Slice
 		{
+			private readonly Group _repeat;
+			private readonly GroupDoc _nonRepeat;
+
+			public string SliceType { get; }
+
+			public string SliceLabel { get; }
+
+			public GroupDoc GetPrimary() {
+				return _nonRepeat;
+			}
+
+			public Group GetItems() {
+				return _repeat;
+			}
+
+			public string Items {
+				get { return SliceLabel; }
+			}
+
+			public CompositeSlice(string sliceType, string label, Group repeat, GroupDoc nonRepeat) {
+				SliceType = sliceType;
+				SliceLabel = label;
+				_repeat = repeat;
+				_nonRepeat = nonRepeat;
+			}
+
+			public string AsHtml(DocumentLinkResolver resolver) {
+				String className = "slice";
+				if (SliceLabel != null && SliceLabel != "null")
+					className += (" " + SliceLabel);
+
+				List<GroupDoc> groupDocs = new List<GroupDoc> { _nonRepeat };
+				return "<div data-slicetype=\"" + SliceType + "\" class=\"" + className + "\">" +
+							WithFragments.GetHtml(new Group(groupDocs), resolver, null) +
+							WithFragments.GetHtml(_repeat, resolver, null) +
+					   "</div>";
+			}
+		}
+
+		public class SliceZone : Fragment {
 			private IList<Slice> slices;
 			public IList<Slice> Slices
 			{
 				get { return slices; }
 			}
 
-			public SliceZone(IList<Slice> slices)
-			{
+			public SliceZone(IList<Slice> slices) {
 				this.slices = slices;
 			}
 
-			public String AsHtml(DocumentLinkResolver linkResolver)
-			{
-				return this.slices.Aggregate("", (html, slice) => html + slice.AsHtml(linkResolver));
+			public String AsHtml(DocumentLinkResolver linkResolver) {
+				return slices.Aggregate("", (html, slice) => html + slice.AsHtml(linkResolver));
 			}
 
-			public static SliceZone Parse(JToken json)
-			{
+			public static SliceZone Parse(JToken json) {
 				var slices = new List<Slice>();
 				foreach (JToken sliceJson in (JArray)json)
 				{
 					String sliceType = (string)sliceJson["slice_type"];
 					String label = (string)sliceJson["slice_label"];
+
+					// Handle Deprecated SliceZones
 					JToken fragJson = sliceJson["value"];
-					String fragmentType = (string)fragJson["type"];
-					JToken fragmentValue = fragJson["value"];
-					Fragment value = FragmentParser.Parse(fragmentType, fragmentValue);
-					slices.Add(new Slice(sliceType, label, value));
+					if (fragJson != null)
+					{
+						string fragmentType = (string)fragJson["type"];
+						JToken fragmentValue = fragJson["value"];
+						Fragment value = FragmentParser.Parse(fragmentType, fragmentValue);
+						slices.Add(new SimpleSlice(sliceType, label, value));
+					}
+					else {
+						//Parse new format non-repeating slice zones
+						JObject nonRepeatsJson = (JObject)sliceJson["non-repeat"];
+						GroupDoc nonRepeat = GroupDoc.Parse(nonRepeatsJson);
+						JArray repeatJson = (JArray)sliceJson["repeat"];
+						Group repeat = Group.Parse(repeatJson);
+						slices.Add(new CompositeSlice(sliceType, label, repeat, nonRepeat));
+					}
 				}
 				return new SliceZone(slices);
 			}
@@ -612,9 +670,9 @@ namespace prismic
 
 		public class GeoPoint: Fragment {
 			private Double latitude;
-            private static readonly CultureInfo _defaultCultureInfo = new CultureInfo("en-US");
+			private static readonly CultureInfo _defaultCultureInfo = new CultureInfo("en-US");
 
-            public Double Latitude {
+			public Double Latitude {
 				get { return latitude; }
 			}
 			private Double longitude;
@@ -630,7 +688,7 @@ namespace prismic
 			public static GeoPoint Parse(JToken json) {
 				try {
 					Double latitude = Double.Parse((string)json["latitude"], _defaultCultureInfo);
-				    Double longitude = Double.Parse((string) json["longitude"], _defaultCultureInfo);
+					Double longitude = Double.Parse((string) json["longitude"], _defaultCultureInfo);
 					return new GeoPoint(latitude, longitude);
 				} catch(Exception) {
 					return null;
@@ -682,4 +740,3 @@ namespace prismic
 
 	}
 }
-

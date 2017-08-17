@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -38,15 +38,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApiTest.cs" />
     <Compile Include="DocTest.cs" />
     <Compile Include="FragmentsTests.cs" />
     <Compile Include="PredicatesTest.cs" />
+    <Compile Include="SliceZoneParsingTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="fixtures\slices.json">
+    <None Include="fixtures\simple_slices.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="fixtures\composite_slices.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="fixtures\soundcloud.json">
