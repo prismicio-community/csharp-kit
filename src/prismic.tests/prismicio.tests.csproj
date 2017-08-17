@@ -38,7 +38,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApiTest.cs" />
     <Compile Include="DocTest.cs" />
     <Compile Include="FragmentsTests.cs" />
     <Compile Include="PredicatesTest.cs" />
