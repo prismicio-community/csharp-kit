@@ -11,18 +11,10 @@ namespace prismic.tests
 	[TestFixture()]
 	public class SliceZoneParsingTests
 	{
-		public static JToken GetFixture(String file)
-		{
-			var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-			var path = string.Format("{0}{1}fixtures{1}{2}", directory, Path.DirectorySeparatorChar, file);
-			string text = System.IO.File.ReadAllText(path);
-			return JToken.Parse(text);
-		}
-
 		[Test ()]
 		public void ShouldParseSimpleSlices()
 		{
-			var document = Document.Parse(GetFixture("simple_slices.json"));
+			var document = Fixtures.GetDocument("simple_slices.json");
 			var resolver = prismic.DocumentLinkResolver.For(doc => String.Format ("http://localhost/{0}/{1}", doc.Type, doc.Id));
 			var slices = document.GetSliceZone("article.blocks");
 
@@ -35,7 +27,7 @@ namespace prismic.tests
 		[Test ()]
 		public void ShouldGetFirstItemOfSimpleSlices()
 		{
-			var document = Document.Parse(GetFixture("simple_slices.json"));
+			var document = Fixtures.GetDocument("simple_slices.json");
 			var sliceZone = document.GetSliceZone("article.blocks");
 			SimpleSlice firstSlice = (prismic.fragments.SimpleSlice)sliceZone.Slices[0];
 			Group group = (Group)firstSlice.Value;
@@ -46,7 +38,7 @@ namespace prismic.tests
 		[Test ()]
 		public void ShouldParseCompositeSlices()
 		{
-			var document = Document.Parse(GetFixture("composite_slices.json"));
+			var document = Fixtures.GetDocument("composite_slices.json");
 			var resolver = DocumentLinkResolver.For(doc => String.Format ("http://localhost/{0}/{1}", doc.Type, doc.Id));
 			var sliceZone = document.GetSliceZone("page.page_content");
 			Assert.AreEqual(sliceZone.AsHtml(resolver),
@@ -59,7 +51,7 @@ namespace prismic.tests
 		[Test ()]
 		public void ShouldGetFirstItemOfCompositeSlices()
 		{
-			var document = Document.Parse(GetFixture("composite_slices.json"));
+			var document = Fixtures.GetDocument("composite_slices.json");
 			var resolver = prismic.DocumentLinkResolver.For(doc => String.Format ("http://localhost/{0}/{1}", doc.Type, doc.Id));
 			SliceZone sliceZone = document.GetSliceZone("page.page_content");
 			CompositeSlice firstSlice = (CompositeSlice)sliceZone.Slices[0];

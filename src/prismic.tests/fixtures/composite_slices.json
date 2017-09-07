@@ -8,7 +8,12 @@
   "last_publication_date": "2017-08-07T12:01:21+0000",
   "slugs": ["new-slices"],
   "lang": "en-us",
-  "alternate_languages": [],
+  "alternate_languages": [{
+    "id": "WV-gECQAACgAYZhx",
+    "uid": "foo-fr",
+    "type": "product",
+    "lang": "fr-fr"
+  }],
   "linked_documents": [],
   "data": {
     "page": {
