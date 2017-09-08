@@ -42,3 +42,5 @@
 #### New in 1.4.1 (Release 2017/08/17)
 * Add support for composite slices
 
+#### New in 1.4.2 (Release 2017/09/08)
+* Add support for localization
