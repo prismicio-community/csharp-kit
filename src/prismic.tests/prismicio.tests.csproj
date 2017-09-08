@@ -42,10 +42,14 @@
     <Compile Include="FragmentsTests.cs" />
     <Compile Include="PredicatesTest.cs" />
     <Compile Include="SliceZoneParsingTests.cs" />
+    <Compile Include="Fixtures.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="fixtures\language.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="fixtures\simple_slices.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

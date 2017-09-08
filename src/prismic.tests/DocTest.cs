@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+﻿﻿﻿using NUnit.Framework;
 using prismic;
 using System;
 using System.Linq;
@@ -11,6 +11,25 @@ namespace prismic.tests
 	[TestFixture ()]
 	public class DocTest
 	{
+		[Test ()]
+		public void DocumentLangTest()
+		{
+			var document = Fixtures.GetDocument("language.json");
+			Assert.AreEqual("de-ch", document.Lang);
+
+			var lang1 = new AlternateLanguage("WZ1iGioAACkA7Kqn", "french", "article", "fr-fr");
+			Assert.AreEqual(lang1.Id, document.AlternateLanguages[0].Id);
+			Assert.AreEqual(lang1.LANG, document.AlternateLanguages[0].LANG);
+			Assert.AreEqual(lang1.TYPE, document.AlternateLanguages[0].TYPE);
+			Assert.AreEqual(lang1.UID, document.AlternateLanguages[0].UID);
+
+			var lang2 = new AlternateLanguage("WZ1iPyoAACkA7KtJ", "spanish", "article", "es-es");
+			Assert.AreEqual(lang2.Id, document.AlternateLanguages[1].Id);
+			Assert.AreEqual(lang2.LANG, document.AlternateLanguages[1].LANG);
+			Assert.AreEqual(lang2.TYPE, document.AlternateLanguages[1].TYPE);
+			Assert.AreEqual(lang2.UID, document.AlternateLanguages[1].UID);
+		}
+
 		[Test ()]
 		public void AllPredicatesTest ()
 		{
@@ -99,7 +118,7 @@ namespace prismic.tests
 			var coordinates = place.Latitude + "," + place.Longitude;
 			// endgist
 			Assert.AreEqual(place.Latitude, 48.877108);
-            Assert.AreEqual(place.Longitude, 2.333879);
+			Assert.AreEqual(place.Longitude, 2.333879);
 		}
 	}
 }
