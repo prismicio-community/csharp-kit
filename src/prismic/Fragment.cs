@@ -405,10 +405,14 @@ namespace prismic
 			public String AsHtml() {
 				return ("<time>" + value + "</time>");
 			}
-			public static Timestamp Parse(JToken json) {
-				return new Timestamp(json.ToObject<DateTime>());
-			}
-		}
+            public static Timestamp Parse(JToken json)
+            {
+                if (((JValue)json).Value == null)
+                    return new Timestamp(DateTime.MinValue);
+                else
+                    return new Timestamp(json.ToObject<DateTime>());
+            }
+        }
 
 		public class Embed: Fragment {
 			private String type;
