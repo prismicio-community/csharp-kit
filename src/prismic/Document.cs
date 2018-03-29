@@ -67,7 +67,12 @@ namespace prismic
 			}
 		}
 
-		public Document(String id, String uid, String type, String href, ISet<String> tags, IList<String> slugs, String lang, IList<AlternateLanguage> alternateLanguages, IDictionary<String,Fragment> fragments): base(fragments) {
+        public DateTime FirstPublishDate { get; }
+	    public DateTime LastPublishDate { get; }
+
+	    public Document(string id, string uid, string type, string href, ISet<string> tags, IList<string> slugs, string lang,
+		    IList<AlternateLanguage> alternateLanguages, IDictionary<string, Fragment> fragments, DateTime firstPublishDate,
+		    DateTime lastPublishDate): base(fragments) {
 			this.id = id;
 			this.uid = uid;
 			this.type = type;
@@ -76,7 +81,9 @@ namespace prismic
 			this.slugs = slugs;
 			this.lang = lang;
 			this.alternateLanguages = alternateLanguages;
-		}
+		    FirstPublishDate = firstPublishDate;
+	        LastPublishDate = lastPublishDate;
+	    }
 
 		public fragments.DocumentLink AsDocumentLink() {
 			return new fragments.DocumentLink(id, uid, type, tags, slugs[0], this.lang, this.Fragments, false);
@@ -124,14 +131,17 @@ namespace prismic
 			var href = (string)json["href"];
 			var type = (string)json["type"];
 			var lang = (string)json["lang"];
-			var alternateLanguageJson = json["alternate_languages"] ?? new JArray();
+		    var firstPublishDate = (DateTime) json["first_publication_date"];
+		    var lastPublishDate = (DateTime)json["last_publication_date"];
+
+            var alternateLanguageJson = json["alternate_languages"] ?? new JArray();
 
 			ISet<String> tags = new HashSet<String>(json ["tags"].Select(r => (string)r));
 			IList<String> slugs = json["slugs"].Select(r => HttpUtility.UrlDecode((string)r)).ToList ();
 			IList<AlternateLanguage> alternateLanguages = alternateLanguageJson.Select(l => AlternateLanguage.parse(l)).ToList ();
 			IDictionary<String, Fragment> frags = parseFragments (json);
 
-			return new Document(id, uid, type, href, tags, slugs, lang, alternateLanguages, frags);
+			return new Document(id, uid, type, href, tags, slugs, lang, alternateLanguages, frags, firstPublishDate, lastPublishDate);
 		}
 
 
