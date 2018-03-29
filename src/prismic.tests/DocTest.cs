@@ -120,5 +120,13 @@ namespace prismic.tests
 			Assert.AreEqual(place.Latitude, 48.877108);
 			Assert.AreEqual(place.Longitude, 2.333879);
 		}
-	}
+
+	    [Test]
+	    public void PublishDateTest()
+	    {
+	        var document = Fixtures.GetDocument("language.json");
+	        Assert.AreEqual(new DateTime(2017, 1, 13, 11, 45, 21, DateTimeKind.Utc), document.FirstPublishDate.Value.ToUniversalTime());
+            Assert.AreEqual(new DateTime(2017, 2, 21, 16, 5, 19, DateTimeKind.Utc), document.LastPublishDate.Value.ToUniversalTime());
+        }
+    }
 }
