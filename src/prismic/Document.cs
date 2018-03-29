@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿using System;
+﻿﻿﻿﻿using System;
 
 using System.Web;
 using System.Collections.Generic;
@@ -67,12 +67,11 @@ namespace prismic
 			}
 		}
 
-        public DateTime? FirstPublishDate { get; }
-	    public DateTime? LastPublishDate { get; }
+		public DateTime? FirstPublicationDate { get; }
+		public DateTime? LastPublicationDate { get; }
 
-	    public Document(string id, string uid, string type, string href, ISet<string> tags, IList<string> slugs, string lang,
-		    IList<AlternateLanguage> alternateLanguages, IDictionary<string, Fragment> fragments, DateTime? firstPublishDate,
-		    DateTime? lastPublishDate): base(fragments) {
+		public Document(string id, string uid, string type, string href, ISet<string> tags, IList<string> slugs, string lang,
+			IList<AlternateLanguage> alternateLanguages, IDictionary<string, Fragment> fragments, DateTime? firstPublicationDate, DateTime? lastPublicationDate): base(fragments) {
 			this.id = id;
 			this.uid = uid;
 			this.type = type;
@@ -81,9 +80,9 @@ namespace prismic
 			this.slugs = slugs;
 			this.lang = lang;
 			this.alternateLanguages = alternateLanguages;
-		    FirstPublishDate = firstPublishDate;
-	        LastPublishDate = lastPublishDate;
-	    }
+			FirstPublicationDate = firstPublicationDate;
+			LastPublicationDate = lastPublicationDate;
+		}
 
 		public fragments.DocumentLink AsDocumentLink() {
 			return new fragments.DocumentLink(id, uid, type, tags, slugs[0], this.lang, this.Fragments, false);
@@ -131,17 +130,16 @@ namespace prismic
 			var href = (string)json["href"];
 			var type = (string)json["type"];
 			var lang = (string)json["lang"];
-		    var firstPublishDate = (DateTime?) json["first_publication_date"];
-		    var lastPublishDate = (DateTime?) json["last_publication_date"];
-
-            var alternateLanguageJson = json["alternate_languages"] ?? new JArray();
+			var firstPublicationDate = (DateTime?) json["first_publication_date"];
+			var lastPublicationDate = (DateTime?)json["last_publication_date"];
+			var alternateLanguageJson = json["alternate_languages"] ?? new JArray();
 
 			ISet<String> tags = new HashSet<String>(json ["tags"].Select(r => (string)r));
 			IList<String> slugs = json["slugs"].Select(r => HttpUtility.UrlDecode((string)r)).ToList ();
 			IList<AlternateLanguage> alternateLanguages = alternateLanguageJson.Select(l => AlternateLanguage.parse(l)).ToList ();
 			IDictionary<String, Fragment> frags = parseFragments (json);
 
-			return new Document(id, uid, type, href, tags, slugs, lang, alternateLanguages, frags, firstPublishDate, lastPublishDate);
+			return new Document(id, uid, type, href, tags, slugs, lang, alternateLanguages, frags, firstPublicationDate, lastPublicationDate);
 		}
 
 
