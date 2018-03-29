@@ -67,12 +67,12 @@ namespace prismic
 			}
 		}
 
-        public DateTime FirstPublishDate { get; }
-	    public DateTime LastPublishDate { get; }
+        public DateTime? FirstPublishDate { get; }
+	    public DateTime? LastPublishDate { get; }
 
 	    public Document(string id, string uid, string type, string href, ISet<string> tags, IList<string> slugs, string lang,
-		    IList<AlternateLanguage> alternateLanguages, IDictionary<string, Fragment> fragments, DateTime firstPublishDate,
-		    DateTime lastPublishDate): base(fragments) {
+		    IList<AlternateLanguage> alternateLanguages, IDictionary<string, Fragment> fragments, DateTime? firstPublishDate,
+		    DateTime? lastPublishDate): base(fragments) {
 			this.id = id;
 			this.uid = uid;
 			this.type = type;
@@ -131,8 +131,8 @@ namespace prismic
 			var href = (string)json["href"];
 			var type = (string)json["type"];
 			var lang = (string)json["lang"];
-		    var firstPublishDate = (DateTime) json["first_publication_date"];
-		    var lastPublishDate = (DateTime)json["last_publication_date"];
+		    var firstPublishDate = (DateTime?) json["first_publication_date"];
+		    var lastPublishDate = (DateTime?) json["last_publication_date"];
 
             var alternateLanguageJson = json["alternate_languages"] ?? new JArray();
 
