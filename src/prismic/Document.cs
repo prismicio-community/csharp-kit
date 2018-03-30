@@ -101,14 +101,21 @@ namespace prismic
 			}
 			foreach (KeyValuePair<String, JToken> field in ((JObject)json ["data"][type])) {
 				if (field.Value is JArray) {
-					var i = 0;
-					foreach (JToken elt in ((JArray)field.Value)) {
-						String fragmentName = type + "." + field.Key + "[" + i++ + "]";
-						String fragmentType = (string)elt["type"];
-						JToken fragmentValue = elt["value"];
-						Fragment fragment = prismic.fragments.FragmentParser.Parse(fragmentType, fragmentValue);
-						if (fragment != null) {
-							fragments[fragmentName] = fragment;
+					var structuredText = prismic.fragments.StructuredText.Parse(field.Value);
+					if (structuredText != null) {
+						fragments[type + "." + field.Key] = structuredText;
+					} else {
+						var i = 0;
+						foreach (JToken elt in ((JArray)field.Value))
+						{
+							String fragmentName = type + "." + field.Key + "[" + i++ + "]";
+							String fragmentType = (string)elt["type"];
+							JToken fragmentValue = elt["value"];
+							Fragment fragment = prismic.fragments.FragmentParser.Parse(fragmentType, fragmentValue);
+							if (fragment != null)
+							{
+								fragments[fragmentName] = fragment;
+							}
 						}
 					}
 				} else {

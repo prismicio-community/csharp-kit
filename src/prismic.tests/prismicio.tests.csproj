@@ -56,6 +56,9 @@
     <None Include="fixtures\composite_slices.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="fixtures\document_store.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="fixtures\soundcloud.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
