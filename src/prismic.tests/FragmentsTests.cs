@@ -90,7 +90,7 @@ namespace prismic.tests
 
 			var html = maybeImgView.AsHtml(resolver);
 
-			var someurl = "https://prismic-io.s3.amazonaws.com/test-public/9f5f4e8a5d95c7259108e9cfdde953b5e60dcbb6.jpg";
+			var someurl = "https://test-public.cdn.prismic.io/test-public/9f5f4e8a5d95c7259108e9cfdde953b5e60dcbb6.jpg";
 			var expect = String.Format (@"<img alt=""some alt text"" src=""{0}"" width=""100"" height=""100"" />", someurl);
 
 			Assert.AreEqual(expect, html);
