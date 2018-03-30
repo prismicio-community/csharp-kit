@@ -533,12 +533,16 @@ namespace prismic
 					fragments.Embed obj = fragments.Embed.Parse(json);
 					return new Embed(obj, label);
 				}
-				return null;
+				throw new System.Exception("Unable to parse block " + json);
 			}
 
 			public static StructuredText Parse(JToken json) {
-				IList<Block> blocks = json.Select (r => ParseBlock(r)).Where(i => i != null).ToList ();
-				return new StructuredText(blocks);
+				try {
+					IList<Block> blocks = json.Select (r => ParseBlock(r)).ToList ();
+					return new StructuredText(blocks);
+				} catch {
+					return null;
+				}
 			}
 
 

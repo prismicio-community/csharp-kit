@@ -102,12 +102,9 @@ namespace prismic
 			foreach (KeyValuePair<String, JToken> field in ((JObject)json ["data"][type])) {
 				if (field.Value is JArray) {
 					var structuredText = prismic.fragments.StructuredText.Parse(field.Value);
-					if (structuredText != null)
-					{
+					if (structuredText != null) {
 						fragments[type + "." + field.Key] = structuredText;
-					}
-					else
-					{
+					} else {
 						var i = 0;
 						foreach (JToken elt in ((JArray)field.Value))
 						{

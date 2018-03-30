@@ -1,4 +1,4 @@
-﻿﻿﻿using NUnit.Framework;
+﻿﻿﻿﻿﻿﻿﻿using NUnit.Framework;
 using prismic;
 using System;
 using System.Linq;
@@ -121,12 +121,27 @@ namespace prismic.tests
 			Assert.AreEqual(place.Longitude, 2.333879);
 		}
 
-	    [Test]
-	    public void PublishDateTest()
-	    {
-	        var document = Fixtures.GetDocument("language.json");
-	        Assert.AreEqual(new DateTime(2017, 1, 13, 11, 45, 21, DateTimeKind.Utc), document.FirstPublicationDate.Value.ToUniversalTime());
-            Assert.AreEqual(new DateTime(2017, 2, 21, 16, 5, 19, DateTimeKind.Utc), document.LastPublicationDate.Value.ToUniversalTime());
-        }
-    }
+
+		[Test]
+		public void PublishDateTest()
+		{
+			var document = Fixtures.GetDocument("language.json");
+			Assert.AreEqual(new DateTime(2017, 1, 13, 11, 45, 21, DateTimeKind.Utc), document.FirstPublicationDate.Value.ToUniversalTime());
+			Assert.AreEqual(new DateTime(2017, 2, 21, 16, 5, 19, DateTimeKind.Utc), document.LastPublicationDate.Value.ToUniversalTime());
+		}
+
+		[Test()]
+		public void FetchLinksTest()
+		{
+			var resolver = prismic.DocumentLinkResolver.For(l => String.Format("http://localhost/{0}/{1}", l.Id, l.Slug));
+			var document = Fixtures.GetDocument("document_store.json");
+			var link = (fragments.DocumentLink) document.GetLink("store.link");
+
+			var text = (fragments.StructuredText)link.Fragments["timestamp.text"];
+			Assert.AreEqual("<p>This is text</p>", text.AsHtml(resolver));
+
+			var description = (fragments.Text)link.Fragments["timestamp.description"];
+			Assert.AreEqual("This is a text", description.Value);
+		}
+	}
 }
