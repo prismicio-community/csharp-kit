@@ -740,7 +740,7 @@ namespace prismic
 				case "SliceZone":
 					return SliceZone.Parse(json);
 				default:
-					return null;
+					return Text.Parse(json.ToString());
 				}
 		}
 
