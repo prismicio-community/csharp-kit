@@ -703,6 +703,33 @@ namespace prismic
 				}
 			}
 		}
+		
+		public class Raw : Fragment
+		{
+		    private readonly JToken value;
+
+		    public JToken Value
+		    {
+			get
+			{
+			    return value;
+			}
+		    }
+		    public Raw(JToken json)
+		    {
+			this.value = json;
+		    }
+
+		    public String AsText()
+		    {
+			return this.value.ToString();
+		    }
+
+		    public static Raw Parse(JToken json)
+		    {
+			return new Raw(json);
+		    }
+		}
 
 		public static class FragmentParser {
 			public static Fragment Parse(String type, JToken json) {
@@ -740,7 +767,7 @@ namespace prismic
 				case "SliceZone":
 					return SliceZone.Parse(json);
 				default:
-					return json != null ? Text.Parse(json.ToString()) : null;
+					return json != null ? Raw.Parse(json) : null;
 				}
 		}
 
