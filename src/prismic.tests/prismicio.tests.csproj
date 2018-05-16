@@ -65,6 +65,10 @@
     <None Include="fixtures\fragments.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="fixtures\rawexample.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\prismic\prismicio.csproj">
