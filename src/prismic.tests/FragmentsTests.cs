@@ -114,11 +114,7 @@ namespace prismic.tests
 		[Test()]
 		public void ShouldAccessRaw()
 		{
-		    var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-		    var path = string.Format("{0}{1}fixtures{1}rawexample.json", directory, Path.DirectorySeparatorChar);
-		    string text = System.IO.File.ReadAllText(path);
-		    var json = JToken.Parse(text);
-		    var document = Document.Parse(json);
+		    var document = Fixtures.GetDocument("rawexample.json");
 		    var authorRaw = document.GetRaw("test_type.author");
 		    var authorsGroup = document.GetGroup("test_type.authors");
 		    var authorRaw2 = authorsGroup.GroupDocs.FirstOrDefault().GetRaw("author_ref");
