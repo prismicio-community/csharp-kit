@@ -111,7 +111,7 @@ namespace prismic.tests
 			Assert.AreEqual (youtube.Obj.Width, 480);
 		}
 		
-		[Test()]
+		/*[Test()]
 		public void ShouldAccessRaw()
 		{
 		    var directory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
@@ -124,7 +124,7 @@ namespace prismic.tests
 		    var authorRaw2 = authorsGroup.GroupDocs.FirstOrDefault().GetRaw("author_ref");
 		    Assert.AreEqual(15, authorRaw.Value.Children().Count());
 		    Assert.AreEqual(15, authorRaw2.Value.Children().Count());
-		}
+		}*/
 
 	}
 }
