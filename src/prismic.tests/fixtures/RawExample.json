@@ -1,0 +1,93 @@
+{
+  "id": "testId",
+  "uid": "testUid",
+  "type": "test_type",
+  "href": null,
+  "https": null,
+  "tags": [],
+  "first_publication_date": "2018-04-19T11:46:42+0000",
+  "last_publication_date": "2018-05-02T13:26:15+0000",
+  "slugs": [
+    "testSlugs"
+  ],
+  "linked_documents": [],
+  "lang": "fi",
+  "alternate_languages": [],
+  "data": {
+    "test_type": {
+      "content_type": {
+        "type": "Select",
+        "value": "Blog"
+      },
+      "author": {
+        "value": {
+          "id": "AuthorId",
+          "langId": "fi",
+          "firstName": "AuthorName",
+          "lastName": "AuthorLastName",
+          "fullName": "AuthorName AuthorLastName",
+          "position": "Author position",
+          "slogan": "slogan",
+          "pictureUrl": null,
+          "https": null,
+          "pictureAlt": null,
+          "readMoreLink": null,
+          "http": null,
+          "email": "email@email.com",
+          "phone": "+1234567890",
+          "tableOfContentsEntries": [
+            "1",
+            "2",
+            "3",
+            "4"
+          ]
+        }
+      },
+      "authors": {
+        "type": "Group",
+        "value": [
+          {
+            "for_test": {
+              "type": "Text",
+              "value": "test1"
+            },
+            "author_ref": {
+              "value": {
+                "id": "AuthorId2",
+                "langId": "fi",
+                "firstName": "AuthorName2",
+                "lastName": "AuthorLastName2",
+                "fullName": "AuthorName2 AuthorLastName2",
+                "position": "Author position2",
+                "slogan": "slogan2",
+                "pictureUrl": null,
+                "https": null,
+                "pictureAlt": null,
+                "readMoreLink": null,
+                "http": null,
+                "email": "email2@email.com",
+                "phone": "+1234567890",
+                "tableOfContentsEntries": [
+                  "1",
+                  "2",
+                  "3",
+                  "4"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "story_ingress": {
+        "type": "StructuredText",
+        "value": [
+          {
+            "type": "paragraph",
+            "text": "Paragraph1",
+            "spans": []
+          }
+        ]
+      }
+    }
+  }
+}
