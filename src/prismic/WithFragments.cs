@@ -134,6 +134,12 @@ namespace prismic
 			Fragment frag = Get (field);
 			return frag is fragments.StructuredText ? (fragments.StructuredText)frag : null;
 		}
+		
+		public fragments.Raw GetRaw(String field)
+		{
+		    Fragment frag = Get(field);
+		    return frag is fragments.Raw ? (fragments.Raw)frag : null;
+		}
 
 		public String GetHtml(String field, DocumentLinkResolver resolver) {
 			return GetHtml (field, resolver, null);

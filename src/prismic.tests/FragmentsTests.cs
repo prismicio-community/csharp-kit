@@ -110,6 +110,17 @@ namespace prismic.tests
 			Assert.IsNull (soundcloud.Obj.Width);
 			Assert.AreEqual (youtube.Obj.Width, 480);
 		}
+		
+		[Test()]
+		public void ShouldAccessRaw()
+		{
+		    var document = Fixtures.GetDocument("rawexample.json");
+		    var authorRaw = document.GetRaw("test_type.author");
+		    var authorsGroup = document.GetGroup("test_type.authors");
+		    var authorRaw2 = authorsGroup.GroupDocs.FirstOrDefault().GetRaw("author_ref");
+		    Assert.AreEqual(15, authorRaw.Value.Children().Count());
+		    Assert.AreEqual(15, authorRaw2.Value.Children().Count());
+		}
 
 	}
 }

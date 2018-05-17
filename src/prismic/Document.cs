@@ -96,6 +96,7 @@ namespace prismic
 			}
 			var type = (string)json["type"];
 
+
 			if (json ["data"] == null) {
 				return fragments;
 			}
