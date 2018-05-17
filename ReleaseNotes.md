@@ -48,3 +48,6 @@
 #### New in 1.4.3 (Release 2018/03/30)
 * Add support for first/last publication date
 * Add support for StructuredText with FetchLinks
+
+#### New in 1.4.4 (Release 2018/01/17)
+* Add partial support for Integration fields
