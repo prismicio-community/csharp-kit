@@ -51,3 +51,6 @@
 
 #### New in 1.4.4 (Release 2018/01/17)
 * Add partial support for Integration fields
+
+#### New in 1.4.5 (Release 2018/05/23)
+* Re-publish last release
