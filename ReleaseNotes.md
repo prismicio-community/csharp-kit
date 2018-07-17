@@ -54,3 +54,6 @@
 
 #### New in 1.4.5 (Release 2018/05/23)
 * Re-publish last release
+
+#### New in 1.4.6 (Release 2018/07/17)
+* Add heading5, heading 6 support
