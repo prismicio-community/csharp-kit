@@ -514,6 +514,12 @@ namespace prismic
 				case "heading4":
 					p = ParseText(json);
 					return new Heading(p.text, p.spans, 4, label);
+				case "heading5":
+					p = ParseText(json);
+					return new Heading(p.text, p.spans, 5, label);
+				case "heading6":
+					p = ParseText(json);
+					return new Heading(p.text, p.spans, 6, label);
 				case "paragraph":
 					p = ParseText(json);
 					return new Paragraph(p.text, p.spans, label);
