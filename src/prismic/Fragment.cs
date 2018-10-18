@@ -199,9 +199,17 @@ namespace prismic
 				}
 			}
 
-			public WebLink(String url, String contentType) {
+		    private String target;
+
+		    public String Target
+		    {
+		        get { return target; }
+		    }
+
+			public WebLink(String url, String contentType, String target) {
 				this.url = url;
 				this.contentType = contentType;
+			    this.target = target;
 			}
 
 			public String GetUrl(DocumentLinkResolver resolver) {
@@ -209,11 +217,11 @@ namespace prismic
 			}
 
 			public String AsHtml() {
-				return ("<a href=\"" + url + "\">" + url + "</a>");
+				return "<a href=\"" + url + "\"" + (!string.IsNullOrEmpty(target) ? " target=\"" + target + "\""  : "") + ">" + url + "</a>";
 			}
 
 			public static WebLink Parse(JToken json) {
-				return new WebLink((string)json["url"], null);
+				return new WebLink((string)json["url"], null, (string)json["target"]);
 			}
 
 		}
