@@ -336,7 +336,7 @@ namespace prismic
 					Hyperlink hyperlink = (Hyperlink)span;
 					if(hyperlink.Link is WebLink) {
 						WebLink webLink = (WebLink)hyperlink.Link;
-						return "<a href=\"" + webLink.Url + "\"" + (!string.IsNullOrEmpty(webLink.Target) ? " target=\"" + webLink.Target + "\"" : "") + ">" + content + "</a>";
+						return "<a href=\"" + webLink.Url + "\"" + (!string.IsNullOrEmpty(webLink.Target) ? " target=\"" + webLink.Target + "\" rel=\"noopener\"" : "") + ">" + content + "</a>";
 					}
 					else if(hyperlink.Link is FileLink) {
 						FileLink fileLink = (FileLink)hyperlink.Link;

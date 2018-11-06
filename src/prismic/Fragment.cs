@@ -217,7 +217,7 @@ namespace prismic
 			}
 
 			public String AsHtml() {
-				return "<a href=\"" + url + "\"" + (!string.IsNullOrEmpty(target) ? " target=\"" + target + "\""  : "") + ">" + url + "</a>";
+				return "<a href=\"" + url + "\"" + (!string.IsNullOrEmpty(target) ? " target=\"" + target + "\" rel=\"noopener\""  : "") + ">" + url + "</a>";
 			}
 
 			public static WebLink Parse(JToken json) {
