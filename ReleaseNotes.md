@@ -57,3 +57,6 @@
 
 #### New in 1.4.6 (Release 2018/07/17)
 * Add heading5, heading 6 support
+
+#### New in 1.4.7 (Release 2018/11/06)
+* Add support for target blank
