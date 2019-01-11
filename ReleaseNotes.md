@@ -60,3 +60,6 @@
 
 #### New in 1.4.7 (Release 2018/11/06)
 * Add support for target blank
+
+#### New in 1.4.9 (Release 2019/01/08)
+* Re-publish package
