@@ -106,10 +106,11 @@ namespace prismic.tests
 			var structuredText = prismic.fragments.StructuredText.Parse(json);
 			prismic.fragments.StructuredText.Embed soundcloud = (prismic.fragments.StructuredText.Embed)structuredText.Blocks [0];
 			prismic.fragments.StructuredText.Embed youtube = (prismic.fragments.StructuredText.Embed)structuredText.Blocks [1];
-
 			Assert.IsNull (soundcloud.Obj.Width);
 			Assert.AreEqual (youtube.Obj.Width, 480);
-		}
+			Assert.AreEqual(youtube.Obj.AsHtml(), "<div data-oembed=\"https://www.youtube.com/watch?v=XMXgHfHxKVM\" data-oembed-type=\"video\" data-oembed-provider=\"youtube\"><iframe width=\"480\" height=\"270\" src=\"https://www.youtube.com/embed/XMXgHfHxKVM?feature=oembed\" frameborder=\"0\" allowfullscreen></iframe></div>");
+
+        }
 		
 		[Test()]
 		public void ShouldAccessRaw()
