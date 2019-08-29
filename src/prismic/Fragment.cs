@@ -479,7 +479,7 @@ namespace prismic
 			}
 
 			public String AsHtml() {
-				var providerAttr = provider != null ? ("\" data-oembed-provider=\"" + provider.ToLower () + "\"") : "";
+				var providerAttr = provider != null ? (" data-oembed-provider=\"" + provider.ToLower () + "\"") : "";
 				return ("<div data-oembed=\"" + url + "\" data-oembed-type=\"" + type.ToLower() + "\"" + providerAttr + ">" + html + "</div>");
 			}
 
