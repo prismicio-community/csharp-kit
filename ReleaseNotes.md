@@ -63,3 +63,5 @@
 
 #### New in 1.4.9 (Release 2019/01/08)
 * Re-publish package
+#### New in 1.5.0 (Release 2019/09/02)
+* Fix OEmbed serialization
