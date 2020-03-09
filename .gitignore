@@ -42,3 +42,4 @@ src/nuget/packaging/
 
 node_modules/
 
+src/.vs
