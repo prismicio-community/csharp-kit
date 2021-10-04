@@ -1,165 +1,153 @@
 ﻿using System;
-
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace prismic
 {
-	public class Experiments {
+    public class Experiments
+    {
+        public IList<Experiment> Draft { get; }
+        public IList<Experiment> Running { get; }
 
-		private IList<Experiment> draft;
-		public IList<Experiment> Draft {
-			get { return draft; }
-		}
-		private IList<Experiment> running;
-		public IList<Experiment> Running {
-			get { return running; }
-		}
+        public Experiments(IList<Experiment> draft, IList<Experiment> running)
+        {
+            Draft = draft;
+            Running = running;
 
-		public Experiments(IList<Experiment> draft, IList<Experiment> running) {
-			this.draft = draft;
-			this.running = running;
-		}
+        }
 
-		/**
+        /**
 		* All experiments, draft and running
 		*/
-		public IList<Experiment> getAll() {
-			var all = new List<Experiment> ();
-			all.AddRange (running.AsEnumerable());
-			all.AddRange (draft.AsEnumerable());
-			return all;
-		}
+        public IList<Experiment> GetAll()
+        {
+            var all = new List<Experiment>();
+            all.AddRange(Running.AsEnumerable());
+            all.AddRange(Draft.AsEnumerable());
+            return all;
+        }
 
-		public IList<Experiment> getDraft() {
-			return draft;
-		}
+        public IList<Experiment> GetDraft() => Draft;
 
-		public IList<Experiment> getRunning() {
-			return running;
-		}
+        public IList<Experiment> GetRunning() => Running;
 
-		/**
-   * First running experiment. To be used as the current running experiment
-   * null if no running experiment.
-   */
-		public Experiment getCurrent() {
-			if (Running.Count > 0) {
-				return Running[0];
-			}
-			return null;
-		}
+        /**
+		* First running experiment. To be used as the current running experiment
+		* null if no running experiment.
+		*/
+        public Experiment GetCurrent()
+        {
+            if (Running.Count > 0)
+            {
+                return Running[0];
+            }
+            return null;
+        }
 
-		/**
-   * Get the current running experiment variation ref from a cookie content
-   */
-		public String refFromCookie(String cookie) {
-			if (cookie == null || "" == cookie) {
-				return null;
-			}
-			String[] splitted = cookie.Trim().Split(new string[] { "%20" }, StringSplitOptions.None);
-			if (splitted.Length >= 2) {
-				Experiment exp = findRunningById(splitted[0]);
-				if (exp == null) {
-					return null;
-				}
-				int varIndex = int.Parse(splitted[1]);
-				if (varIndex > -1 && varIndex < exp.Variations.Count) {
-					return exp.Variations[varIndex].Ref;
-				}
-			}
-			return null;
-		}
+        /**
+		* Get the current running experiment variation ref from a cookie content
+		*/
+        public String RefFromCookie(String cookie)
+        {
+            if (cookie == null || "" == cookie)
+            {
+                return null;
+            }
+            var split = cookie.Trim().Split(new string[] { "%20" }, StringSplitOptions.None);
+            if (split.Length >= 2)
+            {
+                Experiment exp = FindRunningById(split[0]);
+                if (exp == null)
+                {
+                    return null;
+                }
+                var varIndex = int.Parse(split[1]);
+                if (varIndex > -1 && varIndex < exp.Variations.Count)
+                {
+                    return exp.Variations[varIndex].Ref;
+                }
+            }
+            return null;
+        }
 
-		public static Experiments Parse(JToken json) {
-			if (json == null)
-				return null;
-			IList<Experiment> draft = json ["draft"].Select (r => Experiment.Parse ((JObject)r)).ToList ();
-			IList<Experiment> running = json ["running"].Select (r => Experiment.Parse ((JObject)r)).ToList ();
+        public static Experiments Parse(JToken json)
+        {
+            if (json == null)
+                return null;
 
-			return new Experiments(draft, running);
-		}
+            var draft = json["draft"].Select(r => Experiment.Parse((JObject)r)).ToList();
+            var running = json["running"].Select(r => Experiment.Parse((JObject)r)).ToList();
 
-		private Experiment findRunningById(String expId) {
-			if (expId == null) return null;
-			foreach (Experiment exp in this.running) {
-				if (expId == exp.GoogleId) {
-					return exp;
-				}
-			}
-			return null;
-		}
-	}
+            return new Experiments(draft, running);
+        }
 
-	public class Experiment {
-		private String id;
-		public string Id {
-			get { return id; }
-		}
-		private String googleId;
-		public string GoogleId {
-			get { return googleId; }
-		}
-		private String name;
-		public string Name {
-			get { return name; }
-		}
-		private IList<Variation> variations;
-		public IList<Variation> Variations {
-			get { return variations; }
-		}
+        private Experiment FindRunningById(String expId)
+        {
+            if (expId == null)
+                return null;
 
-		public static String COOKIE_NAME = "io.primic.experiment";
+            foreach (Experiment exp in Running)
+            {
+                if (expId == exp.GoogleId)
+                {
+                    return exp;
+                }
+            }
 
-		public Experiment(String id, String googleId, String name, IList<Variation> variations) {
-			this.id = id;
-			this.googleId = googleId;
-			this.name = name;
-			this.variations = variations;
-		}
+            return null;
+        }
+    }
 
-		public static Experiment Parse(JObject json) {
-			String id = (string)json["id"];
-			String googleId = (string)json["googleId"];
-			String name = (string)json["name"];
+    public class Experiment
+    {
+        public string Id { get; }
+        public string GoogleId { get; }
+        public string Name { get; }
+        public IList<Variation> Variations { get; }
+        public static string COOKIE_NAME = "io.prismic.experiment";
 
-			IList<Variation> variations = json ["variations"].Select (v => Variation.Parse ((JObject)v)).ToList ();
+        public Experiment(string id, string googleId, string name, IList<Variation> variations)
+        {
+            Id = id;
+            GoogleId = googleId;
+            Name = name;
+            Variations = variations;
+        }
 
-			return new Experiment(id, googleId, name, variations);
-		}
-	}
+        public static Experiment Parse(JObject json)
+        {
+            var id = (string)json["id"];
+            var googleId = (string)json["googleId"];
+            var name = (string)json["name"];
 
-	public class Variation {
+            IList<Variation> variations = json["variations"].Select(v => Variation.Parse((JObject)v)).ToList();
 
-		private String id;
-		public String Id {
-			get { return id; }
-		}
-		private String reference;
-		public string Ref {
-			get { return reference; }
-		}
-		private String label;
-		public string Label {
-			get { return label; }
-		}
+            return new Experiment(id, googleId, name, variations);
+        }
+    }
 
-		public Variation(String id, String reference, String label) {
-			this.id = id;
-			this.reference = reference;
-			this.label = label;
-		}
+    public class Variation
+    {
+        public string Id { get; }
+        public string Ref { get; }
+        public string Label { get; }
 
-		public static Variation Parse(JObject json) {
-			String id = (string)json["id"];
-			String reference = (string)json["ref"];
-			String label = (string)json["label"];
+        public Variation(string id, string reference, string label)
+        {
+            Id = id;
+            Ref = reference;
+            Label = label;
+        }
 
-			return new Variation(id, reference, label);
-		}
+        public static Variation Parse(JObject json)
+        {
+            string id = (string)json["id"];
+            string reference = (string)json["ref"];
+            string label = (string)json["label"];
 
-	}
-
+            return new Variation(id, reference, label);
+        }
+    }
 }
 

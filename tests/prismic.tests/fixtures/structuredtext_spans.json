@@ -1,0 +1,55 @@
+{
+    "id": "WYOXhx8AAFmveqCe",
+    "uid": null,
+    "type": "test",
+    "href": null,
+    "tags": [],
+    "first_publication_date": "2017-08-03T21:37:25+0000",
+    "last_publication_date": "2019-03-26T09:43:16+0000",
+    "slugs": [],
+    "linked_documents": [],
+    "lang": "en-gb",
+    "alternate_languages": [],
+    "data": {
+        "test": {
+            "text_block": {
+                "type": "StructuredText",
+                "value": [
+                    {
+                        "type": "paragraph",
+                        "text": "🤦‍♂️ 👏🏿 This is a structured text field with a label and an emoji.",
+                        "spans": [
+                            {
+                                "start": 11,
+                                "end": 15,
+                                "type": "label",
+                                "data": {
+                                    "label": "test"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            "wrapped_emoji": {
+                "type": "StructuredText",
+                "value": [
+                    {
+                        "type": "paragraph",
+                        "text": "👏🏿 A label wrapped emoji.",
+                        "spans": [
+                            {
+                                "start": 0,
+                                "end": 4,
+                                "type": "label",
+                                "data": {
+                                    "label": "test"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+}

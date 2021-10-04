@@ -1,0 +1,43 @@
+{
+    "id": "XFMaxREAABy4qOog",
+    "uid": "imagefixturetest",
+    "type": "test",
+    "href": null,
+    "tags": [],
+    "first_publication_date": "2019-02-25T22:25:00+0000",
+    "last_publication_date": "2019-08-31T14:19:57+0000",
+    "slugs": [
+    ],
+    "linked_documents": [],
+    "lang": "en-gb",
+    "alternate_languages": [],
+    "data": {
+        "test": {
+            "image": {
+                "type": "Image",
+                "value": {
+                    "main": {
+                        "dimensions": {
+                            "width": 640,
+                            "height": 362
+                        },
+                        "alt": null,
+                        "copyright": null,
+                        "url": "https://images.prismic.io/test/test.jpg?auto=compress,format"
+                    },
+                    "views": {
+                        "sm": {
+                            "dimensions": {
+                                "width": 10,
+                                "height": 10
+                            },
+                            "alt": null,
+                            "copyright": null,
+                            "url": "https://images.prismic.io/test/test.jpg?auto=compress,format"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -2,206 +2,179 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Collections;
 
 namespace prismic
 {
-	public interface IPredicate
-	{
-		String q();
-	}
+    public interface IPredicate
+    {
+        string Q();
+    }
 
-	public class Predicate: IPredicate {
+    public class Predicate : IPredicate
+    {
 
         private static readonly CultureInfo _defaultCultureInfo = new CultureInfo("en-US");
-        private String name;
-		private String fragment;
-		private Object value1;
-		private Object value2;
-		private Object value3;
+        private readonly string Name;
+        private readonly string Fragment;
+        private readonly object Value1;
+        private readonly object Value2;
+        private readonly object Value3;
 
-		public Predicate(String name, String fragment, Object value1): this(name, fragment, value1, null, null){}
+        public Predicate(string name, string path) : this(name, path, null, null, null) { }
 
-		public Predicate(String name, String fragment, Object value1, Object value2): this(name, fragment, value1, value2, null){}
+        public Predicate(string name, string fragment, object value1) : this(name, fragment, value1, null, null) { }
 
-		public Predicate(String name, String fragment, Object value1, Object value2, Object value3) {
-			this.name = name;
-			this.fragment = fragment;
-			this.value1 = value1;
-			this.value2 = value2;
-			this.value3 = value3;
-		}
+        public Predicate(string name, string fragment, object value1, object value2) : this(name, fragment, value1, value2, null) { }
 
-		public String q() {
-			String result = "[:d = " + this.name + "(";
-			if ("similar" == this.name) {
-				result += ("\"" + this.fragment + "\"");
-			} else {
-				result += this.fragment;
-			}
-			result += ", " + serializeField(value1);
-			if (value2 != null) {
-				result += ", " + serializeField(value2);
-			}
-			if (value3 != null) {
-				result += ", " + serializeField(value3);
-			}
-			result += ")]";
-			return result;
-		}
+        public Predicate(string name, string fragment, object value1, object value2, object value3)
+        {
+            Name = name;
+            Fragment = fragment;
+            Value1 = value1;
+            Value2 = value2;
+            Value3 = value3;
+        }
 
-		private static String serializeField(Object value) {
-			if (value is String) {
-				return ("\"" + value + "\"");
-			} else if (value is System.Collections.IEnumerable) {
-				IEnumerable<string> serializedItems = ((System.Collections.IEnumerable)value).Cast<object>().Select( item =>
-					serializeField(item)
-				);
-				return "[" + String.Join(",", serializedItems) + "]";
-			} else if (value is Predicates.Month) {
-				return ("\"" + capitalize(((Predicates.Month) value).ToString()) + "\"");
-			} else if (value is System.DayOfWeek) {
-				return ("\"" + capitalize(((System.DayOfWeek) value).ToString()) + "\"");
-			} else if (value is DateTime) {
-				return (((DateTime) value) - new DateTime(1970, 1, 1)).TotalMilliseconds.ToString(_defaultCultureInfo);
-            }
-            else if (value is Double)
+        public string Q()
+        {
+            string result = "[:d = " + Name + "(";
+            if ("similar" == Name)
             {
-                return ((Double)value).ToString(_defaultCultureInfo);
+                result += ("\"" + Fragment + "\"");
             }
-            else if (value is Decimal)
+            else
             {
-                return ((Decimal)value).ToString(_defaultCultureInfo);
+                result += Fragment;
             }
-            else {
-				return value.ToString();
-			}
-		}
 
-		private static String capitalize(String line) {
-			if (line == null || "" == line) return "";
-			return line.Substring(0, 1).ToUpper() + line.Substring(1).ToLower();
-		}
-	}
+            var values = string.Join(
+                ", ",
+                new[] { Value1, Value2, Value3 }
+                    .Where(x => x != null)
+                    .Select(SerializeField)
+                    .ToList()
+            );
 
-	public class Predicates {
+            if (!string.IsNullOrWhiteSpace(values))
+                result += $", {values}";
 
-		public enum Month {
-			January, February, March, April, May, June,
-			July, August, September, October, November, December
-		}
+            result += ")]";
+            return result;
+        }
 
-		public static IPredicate at(String fragment, String value) {
-			return new Predicate("at", fragment, value);
-		}
+        private static string SerializeField(object value)
+        {
+            switch (value)
+            {
+                case string s:
+                    return $"\"{value}\"";
 
-		public static IPredicate any(String fragment, IEnumerable<String> values) {
-			return new Predicate("any", fragment, values);
-		}
+                case IEnumerable items:
+                    var serializedItems = items.Cast<object>().Select(item => SerializeField(item));
+                    return $"[{string.Join(",", serializedItems)}]";
 
-		public static IPredicate @in(String fragment, IEnumerable<String> values) {
-			return new Predicate("in", fragment, values);
-		}
+                case Predicates.Months months:
+                    return $"\"{Capitalize(months.ToString())}\"";
 
-		public static IPredicate fulltext(String fragment, String value) {
-			return new Predicate("fulltext", fragment, value);
-		}
+                case DayOfWeek day:
+                    return $"\"{Capitalize(day.ToString())}\"";
 
-		public static IPredicate similar(String documentId, int maxResults) {
-			return new Predicate("similar", documentId, maxResults);
-		}
+                case DateTime dt:
+                    return (dt - new DateTime(1970, 1, 1)).TotalMilliseconds.ToString(_defaultCultureInfo);
 
-		public static IPredicate lt(String fragment, Double lowerBound) {
-			return new Predicate("number.lt", fragment, lowerBound);
-		}
+                case double d:
+                    return d.ToString(_defaultCultureInfo);
 
-		public static IPredicate lt(String fragment, int lowerBound) {
-			return new Predicate("number.lt", fragment, lowerBound);
-		}
+                case decimal d:
+                    return d.ToString(_defaultCultureInfo);
 
-		public static IPredicate gt(String fragment, Double upperBound) {
-			return new Predicate("number.gt", fragment, upperBound);
-		}
+                default:
+                    return value.ToString();
+            }
+        }
 
-		public static IPredicate gt(String fragment, int upperBound) {
-			return new Predicate("number.gt", fragment, (Double)upperBound);
-		}
+        private static string Capitalize(string line)
+        {
+            if (string.IsNullOrWhiteSpace(line))
+                return "";
 
-		public static IPredicate inRange(String fragment, int lowerBound, int upperBound) {
-			return new Predicate("number.inRange", fragment, (Double)lowerBound, (Double)upperBound);
-		}
+            return line.Substring(0, 1).ToUpper() + line.Substring(1).ToLower();
+        }
+    }
 
-		public static IPredicate inRange(String fragment, Double lowerBound, Double upperBound) {
-			return new Predicate("number.inRange", fragment, lowerBound, upperBound);
-		}
+    public static class Predicates
+    {
 
-		public static IPredicate dateBefore(String fragment, DateTime before) {
-			return new Predicate("date.before", fragment, before);
-		}
+        public enum Months
+        {
+            January, February, March, April, May, June,
+            July, August, September, October, November, December
+        }
 
-		public static IPredicate dateAfter(String fragment, DateTime after) {
-			return new Predicate("date.after", fragment, after);
-		}
+        public static IPredicate At(string fragment, string value) => new Predicate("at", fragment, value);
 
-		public static IPredicate dateBetween(String fragment, DateTime lower, DateTime upper) {
-			return new Predicate("date.between", fragment, lower, upper);
-		}
+        public static IPredicate At(string fragment, string[] values) => new Predicate("at", fragment, values);
 
-		public static IPredicate dayOfMonth(String fragment, int day) {
-			return new Predicate("date.day-of-month", fragment, day);
-		}
+        public static IPredicate Any(string fragment, IEnumerable<string> values) => new Predicate("any", fragment, values);
 
-		public static IPredicate dayOfMonthBefore(String fragment, int day) {
-			return new Predicate("date.day-of-month-before", fragment, day);
-		}
+        public static IPredicate In(string fragment, IEnumerable<string> values) => new Predicate("in", fragment, values);
 
-		public static IPredicate dayOfMonthAfter(String fragment, int day) {
-			return new Predicate("date.day-of-month-after", fragment, day);
-		}
+        public static IPredicate Fulltext(string fragment, string value) => new Predicate("fulltext", fragment, value);
 
-		public static IPredicate dayOfWeek(String fragment, DayOfWeek day) {
-			return new Predicate("date.day-of-week", fragment, day);
-		}
+        public static IPredicate Similar(string documentId, int maxResults) => new Predicate("similar", documentId, maxResults);
 
-		public static IPredicate dayOfWeekAfter(String fragment, DayOfWeek day) {
-			return new Predicate("date.day-of-week-after", fragment, day);
-		}
+        public static IPredicate Lt(string fragment, double lowerBound) => new Predicate("number.lt", fragment, lowerBound);
 
-		public static IPredicate dayOfWeekBefore(String fragment, DayOfWeek day) {
-			return new Predicate("date.day-of-week-before", fragment, day);
-		}
+        public static IPredicate Lt(string fragment, int lowerBound) => new Predicate("number.lt", fragment, lowerBound);
 
-		public static IPredicate month(String fragment, Month month) {
-			return new Predicate("date.month", fragment, month);
-		}
+        public static IPredicate Gt(string fragment, double upperBound) => new Predicate("number.gt", fragment, upperBound);
 
-		public static IPredicate monthBefore(String fragment, Month month) {
-			return new Predicate("date.month-before", fragment, month);
-		}
+        public static IPredicate Gt(string fragment, int upperBound) => new Predicate("number.gt", fragment, (double)upperBound);
 
-		public static IPredicate monthAfter(String fragment, Month month) {
-			return new Predicate("date.month-after", fragment, month);
-		}
+        public static IPredicate InRange(string fragment, int lowerBound, int upperBound) => new Predicate("number.inRange", fragment, (double)lowerBound, (double)upperBound);
 
-		public static IPredicate year(String fragment, int year) {
-			return new Predicate("date.year", fragment, year);
-		}
+        public static IPredicate InRange(string fragment, double lowerBound, double upperBound) => new Predicate("number.inRange", fragment, lowerBound, upperBound);
 
-		public static IPredicate hour(String fragment, int hour) {
-			return new Predicate("date.hour", fragment, hour);
-		}
+        public static IPredicate DateBefore(string fragment, DateTime before) => new Predicate("date.before", fragment, before);
 
-		public static IPredicate hourBefore(String fragment, int hour) {
-			return new Predicate("date.hour-before", fragment, hour);
-		}
+        public static IPredicate DateAfter(string fragment, DateTime after) => new Predicate("date.after", fragment, after);
 
-		public static IPredicate hourAfter(String fragment, int hour) {
-			return new Predicate("date.hour-after", fragment, hour);
-		}
+        public static IPredicate DateBetween(string fragment, DateTime lower, DateTime upper) => new Predicate("date.between", fragment, lower, upper);
 
-		public static IPredicate near(String fragment, Double latitude, Double longitude, int radius) {
-			return new Predicate("geopoint.near", fragment, latitude, longitude, radius);
-		}
+        public static IPredicate DayOfMonth(string fragment, int day) => new Predicate("date.day-of-month", fragment, day);
 
-	}
+        public static IPredicate DayOfMonthBefore(string fragment, int day) => new Predicate("date.day-of-month-before", fragment, day);
+
+        public static IPredicate DayOfMonthAfter(string fragment, int day) => new Predicate("date.day-of-month-after", fragment, day);
+
+        public static IPredicate DayOfWeek(string fragment, DayOfWeek day) => new Predicate("date.day-of-week", fragment, day);
+
+        public static IPredicate DayOfWeekAfter(string fragment, DayOfWeek day) => new Predicate("date.day-of-week-after", fragment, day);
+
+        public static IPredicate DayOfWeekBefore(string fragment, DayOfWeek day) => new Predicate("date.day-of-week-before", fragment, day);
+
+        public static IPredicate Month(string fragment, Months month) => new Predicate("date.month", fragment, month);
+
+        public static IPredicate MonthBefore(string fragment, Months month) => new Predicate("date.month-before", fragment, month);
+
+        public static IPredicate MonthAfter(string fragment, Months month) => new Predicate("date.month-after", fragment, month);
+
+        public static IPredicate Year(string fragment, int year) => new Predicate("date.year", fragment, year);
+
+        public static IPredicate Hour(string fragment, int hour) => new Predicate("date.hour", fragment, hour);
+
+        public static IPredicate HourBefore(string fragment, int hour) => new Predicate("date.hour-before", fragment, hour);
+
+        public static IPredicate HourAfter(string fragment, int hour) => new Predicate("date.hour-after", fragment, hour);
+
+        public static IPredicate Near(string fragment, double latitude, double longitude, int radius) => new Predicate("geopoint.near", fragment, latitude, longitude, radius);
+
+        public static IPredicate Not(string fragment, string value) => new Predicate("not", fragment, value);
+
+        public static IPredicate Not(string fragment, string[] values) => new Predicate("not", fragment, values);
+
+        public static IPredicate Has(string path) => new Predicate("has", path);
+    }
 }
 

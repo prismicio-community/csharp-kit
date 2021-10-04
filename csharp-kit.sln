@@ -1,0 +1,56 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26124.0
+MinimumVisualStudioVersion = 15.0.26124.0
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{7E5C0C00-6452-4B41-A12E-CEFE34C7F3CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "prismic", "src\prismic\prismicio.csproj", "{B37858DD-1563-4087-977E-21D5A3C34123}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{5C7AAB71-A3E0-46F0-9685-AF48587AA50B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "prismic.tests", "tests\prismic.tests\prismicio.tests.csproj", "{B8B4EEBC-D8E2-426C-ACFC-944E41BA5FC9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B37858DD-1563-4087-977E-21D5A3C34123}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B37858DD-1563-4087-977E-21D5A3C34123}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B37858DD-1563-4087-977E-21D5A3C34123}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B37858DD-1563-4087-977E-21D5A3C34123}.Debug|x64.Build.0 = Debug|Any CPU
+		{B37858DD-1563-4087-977E-21D5A3C34123}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B37858DD-1563-4087-977E-21D5A3C34123}.Debug|x86.Build.0 = Debug|Any CPU
+		{B37858DD-1563-4087-977E-21D5A3C34123}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B37858DD-1563-4087-977E-21D5A3C34123}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B37858DD-1563-4087-977E-21D5A3C34123}.Release|x64.ActiveCfg = Release|Any CPU
+		{B37858DD-1563-4087-977E-21D5A3C34123}.Release|x64.Build.0 = Release|Any CPU
+		{B37858DD-1563-4087-977E-21D5A3C34123}.Release|x86.ActiveCfg = Release|Any CPU
+		{B37858DD-1563-4087-977E-21D5A3C34123}.Release|x86.Build.0 = Release|Any CPU
+		{B8B4EEBC-D8E2-426C-ACFC-944E41BA5FC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8B4EEBC-D8E2-426C-ACFC-944E41BA5FC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8B4EEBC-D8E2-426C-ACFC-944E41BA5FC9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B8B4EEBC-D8E2-426C-ACFC-944E41BA5FC9}.Debug|x64.Build.0 = Debug|Any CPU
+		{B8B4EEBC-D8E2-426C-ACFC-944E41BA5FC9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B8B4EEBC-D8E2-426C-ACFC-944E41BA5FC9}.Debug|x86.Build.0 = Debug|Any CPU
+		{B8B4EEBC-D8E2-426C-ACFC-944E41BA5FC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8B4EEBC-D8E2-426C-ACFC-944E41BA5FC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8B4EEBC-D8E2-426C-ACFC-944E41BA5FC9}.Release|x64.ActiveCfg = Release|Any CPU
+		{B8B4EEBC-D8E2-426C-ACFC-944E41BA5FC9}.Release|x64.Build.0 = Release|Any CPU
+		{B8B4EEBC-D8E2-426C-ACFC-944E41BA5FC9}.Release|x86.ActiveCfg = Release|Any CPU
+		{B8B4EEBC-D8E2-426C-ACFC-944E41BA5FC9}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B37858DD-1563-4087-977E-21D5A3C34123} = {7E5C0C00-6452-4B41-A12E-CEFE34C7F3CC}
+		{B8B4EEBC-D8E2-426C-ACFC-944E41BA5FC9} = {5C7AAB71-A3E0-46F0-9685-AF48587AA50B}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,91 @@
+{
+  "id": "WV-gECQAACgAYZhq",
+  "uid": null,
+  "type": "page",
+  "href": "https://levi-templeting.prismic.io/api/v1/documents/search?ref=WYhXLigAACUA3hcM&q=%5B%5B%3Ad+%3D+at%28document.id%2C+%22WV-gECQAACgAYZhq%22%29+%5D%5D",
+  "tags": [],
+  "first_publication_date": "2017-07-07T14:52:04+0000",
+  "last_publication_date": "2017-08-07T12:01:21+0000",
+  "slugs": [
+    "new-slices"
+  ],
+  "lang": "en-us",
+  "alternate_languages": [
+    {
+      "id": "WV-gECQAACgAYZhx",
+      "uid": "foo-fr",
+      "type": "product",
+      "lang": "fr-fr"
+    }
+  ],
+  "linked_documents": [],
+  "data": {
+    "page": {
+      "title": {
+        "type": "StructuredText",
+        "value": [
+          {
+            "type": "heading1",
+            "text": "Page Title",
+            "spans": []
+          }
+        ]
+      },
+      "page_content": {
+        "type": "SliceZone",
+        "value": [
+          {
+            "type": "Slice",
+            "slice_type": "linked_document",
+            "slice_label": null,
+            "repeat": [
+              {
+                "linked_document": {
+                  "type": "Link.document",
+                  "value": {
+                    "document": {
+                      "id": "Xea7dhEAACUAmxFy",
+                      "type": "indicator",
+                      "tags": [],
+                      "lang": "fr-ca",
+                      "slug": "linked-doc-1",
+                      "uid": "linked-doc-1",
+                      "data": {
+                        "indicator": {
+                          "title": [
+                            {
+                              "type": "heading1",
+                              "text": "Indicator Heading",
+                              "spans": []
+                            }
+                          ],
+                          "select": {
+                            "type": "Select",
+                            "value": "Oui"
+                          }
+                        }
+                      }
+                    },
+                    "isBroken": false
+                  }
+                }
+              }
+            ],
+            "non-repeat": {
+              "gallery_title": {
+                "type": "StructuredText",
+                "value": [
+                  {
+                    "type": "heading2",
+                    "text": "Image Gallery",
+                    "spans": []
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}
