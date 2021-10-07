@@ -1,6 +1,9 @@
 #Autosave files
 *~
 
+# Test coverage
+**/lcov.info
+
 # Build/test output
 obj
 bin
@@ -35,10 +38,10 @@ UpgradeLog.*
 [Dd]ebug*/
 [Rr]elease*/
 
-# src/packages/
+src/packages/
 src/Help
 src/nuget/packages/
 src/nuget/packaging/
 
 node_modules/
-
+coverage.json

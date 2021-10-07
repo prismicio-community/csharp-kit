@@ -1,79 +1,98 @@
-﻿using System;
-
-using System.Collections.Generic;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
-using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json.Linq;
+using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
+using System.Net.Http.Headers;
 
 namespace prismic
 {
-	public class PrismicHttpClient
-	{
-		private HttpClient client;
+    public class PrismicHttpClient
+    {
+        private readonly HttpClient _client;
+        private readonly ICache _cache;
+        private readonly ILogger<PrismicHttpClient> _logger;
 
-		public PrismicHttpClient()
-		{
-			this.client = new HttpClient ();
-		}
+        public PrismicHttpClient(HttpClient client, ICache cache, ILogger<PrismicHttpClient> logger)
+        {
+            _client = client;
+            _cache = cache;
+            _logger = logger;
+        }
 
-		public PrismicHttpClient(HttpClient client)
-		{
-			if (client == null) {
-				this.client = new HttpClient ();
-			} else {
-				this.client = client;
-			}
-		}
+        public Task<JToken> Fetch(string url) => FetchImpl(url);
 
-		public async Task<JToken> fetch(string url, ILogger logger, ICache cache)
-		{
-			JToken fromCache = cache.Get (url);
-			if (fromCache != null) {
-				return await Task.FromResult(fromCache);
-			} else {
-				return await _fetch (url, logger, cache);
-			}
-		}
+        private async Task<JToken> FetchImpl(string url)
+        {
+            var key = $"prismic_request::{url}";
 
-		private static Regex maxAgeRe = new Regex(@"max-age=(\d+)");
+            var cachedResponse = _cache.Get(key);
 
-		private async Task<JToken> _fetch(string url, ILogger logger, ICache cache) {
-			var response = await this.client.GetAsync(url);
-			var body = await response.Content.ReadAsStringAsync();
-			switch (response.StatusCode) {
-			case HttpStatusCode.OK:
-				var json = JToken.Parse (body);
-				var maxAgeValue = "";
-				IEnumerable<string> maxAgeValues;
-				if (response.Headers.TryGetValues("max-age", out maxAgeValues))
-				{
-					maxAgeValue = maxAgeValues.FirstOrDefault();
-				}
-				var maxAge = maxAgeRe.Match (maxAgeValue);
-				if (maxAge.Success) {
-					long ttl = long.Parse (maxAge.Groups [1].Value);
-					cache.Set (url, ttl, json);
-				}
-				return json;
-			case HttpStatusCode.Unauthorized:
-				var errorText = (string)JObject.Parse(body)["error"];
-				if (errorText == "Invalid access token") {
-					throw new Error(Error.ErrorCode.INVALID_TOKEN, errorText);
-				} else {
-					throw new Error(Error.ErrorCode.AUTHORIZATION_NEEDED, errorText);
-				}
-			default:
-				throw new Error (Error.ErrorCode.UNEXPECTED, body);
-			}
+            if (cachedResponse != null)
+                return cachedResponse;
 
-		}
+            _logger.LogDebug("Fetching URL: {url}", url);
 
-	}
+            using (var response = await _client.GetAsync(url))
+            {
+                var body = await response.Content.ReadAsStringAsync();
+                string errorText;
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.OK:
+                        var json = JToken.Parse(body);
+                        var ttl = GetMaxAgeInSeconds(response.Headers);
 
+                        if (ttl > 0)
+                            _cache.Set(key, ttl, json);
+
+                        return json;
+
+                    case HttpStatusCode.Unauthorized:
+                        errorText = (string)JObject.Parse(body)["error"];
+
+                        _logger.LogWarning("Unauthorised request {message}", errorText);
+
+                        throw new PrismicClientException(
+                            errorText == "Invalid access token"
+                                ? PrismicClientException.ErrorCode.INVALID_TOKEN
+                                : PrismicClientException.ErrorCode.AUTHORIZATION_NEEDED,
+                            errorText
+                        );
+
+                    case HttpStatusCode.NotFound:
+                        var jsonBody = JObject.Parse(body);
+                        errorText = (string)jsonBody["message"] ?? (string)jsonBody["error"];
+
+                        if (!string.IsNullOrWhiteSpace(errorText) &&
+                            (Regex.IsMatch(errorText, @"^Release (?:.*) not found$")
+                            || errorText == "This preview token has expired"))
+                            throw new PrismicClientException(PrismicClientException.ErrorCode.INVALID_PREVIEW, errorText);
+
+                        throw new PrismicClientException(PrismicClientException.ErrorCode.UNEXPECTED, body);
+
+                    default:
+                        throw new PrismicClientException(PrismicClientException.ErrorCode.UNEXPECTED, body);
+                }
+            }
+        }
+
+        private static readonly Regex maxAgeValueRegex = new Regex(@"max-age=(\d+)");
+
+        private long GetMaxAgeInSeconds(HttpResponseHeaders headers)
+        {
+            if (!headers.TryGetValues(HeaderNames.CacheControl, out var headerValues))
+                return 0;
+
+            var matchResult = maxAgeValueRegex.Match(headerValues.FirstOrDefault());
+
+            if (!matchResult.Success || matchResult.Groups.Count < 2)
+                return 0;
+
+            return long.Parse(matchResult.Groups[1].Value);
+        }
+    }
 }
-

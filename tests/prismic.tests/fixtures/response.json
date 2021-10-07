@@ -1,0 +1,73 @@
+{
+    "page": 1,
+    "results_per_page": 20,
+    "results_size": 1,
+    "total_results_size": 1,
+    "total_pages": 1,
+    "next_page": null,
+    "prev_page": null,
+    "results": [
+        {
+            "id": "XPZFuxAAAIGaEtfj",
+            "uid": "test-document",
+            "type": "test_document",
+            "href": "https://fake.prismic.io/api/v1/documents/search?ref=XkyW8hAAACEAJ2Hi&q=%5B%5B%3Ad+%3D+at%28document.id%2C+%22XPZFuxAAAIGaEtfj%22%29+%5D%5D",
+            "tags": [],
+            "first_publication_date": "2019-06-04T10:19:44+0000",
+            "last_publication_date": "2020-02-19T02:01:22+0000",
+            "slugs": [
+                "test-document"
+            ],
+            "linked_documents": [],
+            "lang": "en-gb",
+            "alternate_languages": [],
+            "data": {
+                "test_document": {
+                    "text": {
+                        "type": "Text",
+                        "value": "Test Document"
+                    },
+                    "structuredtext": {
+                        "type": "StructuredText",
+                        "value": [
+                            {
+                                "type": "paragraph",
+                                "text": "Test",
+                                "spans": []
+                            }
+                        ]
+                    },
+                    "number": {
+                        "type": "Number",
+                        "value": 15.0
+                    },
+                    "group": {
+                        "type": "Group",
+                        "value": [
+                            {
+                                "group_text": {
+                                    "type": "Text",
+                                    "value": "Test1"
+                                }
+                            },
+                            {
+                                "group_text": {
+                                    "type": "Text",
+                                    "value": "Test2"
+                                }
+                            }
+                        ]
+                    },
+                    "group_non_repeating": {
+                        "type": "Group",
+                        "value": [
+                            {}
+                        ]
+                    }
+                }
+            }
+        }
+    ],
+    "version": "c16395c",
+    "license": "All Rights Reserved"
+}

@@ -4,26 +4,22 @@ namespace prismic
 {
 	public abstract class HtmlSerializer
 	{
-		public abstract String Serialize(fragments.StructuredText.Element element, String content);
+		public abstract string Serialize(fragments.StructuredText.IElement element, string content);
 
-		public static HtmlSerializer For(System.Func<Object, string, string> f) {
-			return new LambdaHtmlSerializer(f);
-		}
-	}
+        public static HtmlSerializer For(Func<object, string, string> f) 
+			=> new LambdaHtmlSerializer(f);
+    }
 
 	public class LambdaHtmlSerializer: HtmlSerializer {
-		private System.Func<Object, string, string> f;
+		private readonly Func<object, string, string> _f;
 
-		public LambdaHtmlSerializer(System.Func<Object, string, string> f) {
-			this.f = f;
+		public LambdaHtmlSerializer(Func<object, string, string> f) {
+			_f = f;
 		}
 
-		public override string Serialize (fragments.StructuredText.Element element, String content)
-		{
-			return f(element, content);
-		}
-
-	}
+        public override string Serialize(fragments.StructuredText.IElement element, string content)
+			=> _f(element, content);
+    }
 
 }
 

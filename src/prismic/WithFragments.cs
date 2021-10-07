@@ -1,240 +1,271 @@
-﻿using System;
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
-using System.Diagnostics;
 using prismic.fragments;
 
 namespace prismic
 {
-	public abstract class WithFragments
-	{
-		private IDictionary<String, Fragment> fragments;
-		public IDictionary<String, Fragment> Fragments {
-			get {
-				return fragments;
-			}
-		}
+    public abstract class WithFragments
+    {
+        public IDictionary<string, IFragment> Fragments { get; }
 
-		public WithFragments (IDictionary<String, Fragment> fragments)
-		{
-			this.fragments = fragments;
-		}
+        public WithFragments(IDictionary<string, IFragment> fragments)
+        {
+            Fragments = fragments;
+        }
 
-		public IList<Fragment> GetAll(String field) {
-			Regex r = new Regex (Regex.Escape(field) + @"\[\d+\]");
-			IList<Fragment> result = new List<Fragment>();
-			foreach(KeyValuePair<String,Fragment> entry in Fragments) {
-				if(r.Match(entry.Key).Success) {
-					result.Add(entry.Value);
-				}
-			}
-			return result;
-		}
+        public IList<IFragment> GetAll(string field)
+        {
+            Regex r = new Regex(Regex.Escape(field) + @"\[\d+\]");
+            // TODO test this...
+            // return Fragments
+            //     .Where(f => r.Match(f.Key).Success)
+            //     .Select(f => f.Value)
+            //     .ToList();
+            IList<IFragment> result = new List<IFragment>();
+            foreach (KeyValuePair<string, IFragment> entry in Fragments)
+            {
+                if (r.Match(entry.Key).Success)
+                {
+                    result.Add(entry.Value);
+                }
+            }
+            return result;
+        }
 
-		public Fragment Get(String field) {
-			Fragment single = null;
-			Fragments.TryGetValue(field, out single);
-			if (single == null) {
-				IList<Fragment> multi = GetAll(field);
-				if (multi.Count > 0) {
-					single = multi [0];
-				}
-			}
-			return single;
-		}
+        public IFragment Get(string field)
+        {
+            if (!Fragments.TryGetValue(field, out IFragment single))
+                return null;
 
-		public String GetText(String field) {
-			Fragment frag = Get (field);
-			if (frag is fragments.Text) {
-				return ((fragments.Text)frag).Value;
-			}
-			if (frag is fragments.Number) {
-				return ((fragments.Number)frag).Value.ToString ();
-			}
-			if (frag is fragments.Color) {
-				return ((fragments.Color)frag).Hex;
-			}
-			if (frag is fragments.StructuredText) {
-				var result = "";
-				foreach (fragments.StructuredText.Block block in ((fragments.StructuredText)frag).Blocks) {
-					if (block is fragments.StructuredText.TextBlock) {
-						result += ((fragments.StructuredText.TextBlock)block).Text;
-					}
-				}
-				return result;
-			}
-			if (frag is fragments.Number) {
-				return ((fragments.Number)frag).Value.ToString ();
-			}
-			return null;
-		}
+            // IList<IFragment> multi = GetAll(field);
+            // if (multi.Count > 0)
+            // {
+            //     return multi[0];
+            // }
+            return single;
+        }
 
-		public fragments.Number GetNumber(String field)
-		{
-			Fragment frag = Get(field);
-			return frag is fragments.Number ? (fragments.Number)frag : null;
-		}
+        public string GetText(string field)
+        {
+            IFragment frag = Get(field);
+            if (frag is Text text)
+            {
+                return text.Value;
+            }
+            if (frag is Number number)
+            {
+                return number.Value.ToString();
+            }
+            if (frag is Color color)
+            {
+                return color.Hex;
+            }
+            if (frag is StructuredText sturcturedText)
+            {
+                var result = "";
+                foreach (StructuredText.Block block in sturcturedText.Blocks)
+                {
+                    if (block is StructuredText.TextBlock textBlock)
+                    {
+                        result += textBlock.Text;
+                    }
+                }
+                return result;
+            }
+            if (frag is Number number1)
+            {
+                return number1.Value.ToString();
+            }
+            if (frag is BooleanFragment boolean)
+            {
+                return boolean.Value.ToString();
+            }
+            return null;
+        }
 
-		public fragments.SliceZone GetSliceZone(String field)
-		{
-			Fragment frag = Get(field);
-			return frag is fragments.SliceZone ? (fragments.SliceZone)frag : null;
-		}
+        public Number GetNumber(string field)
+        {
+            IFragment frag = Get(field);
+            return (Number)frag;
+        }
 
-		public fragments.Image.View GetImageView(String field, String view)
-		{
-			var image = GetImage (field);
-			if (image != null)
-				return image.GetView (view);
-			return null;
-		}
+        public SliceZone GetSliceZone(string field)
+        {
+            IFragment frag = Get(field);
+            return (SliceZone)frag;
+        }
 
-		public fragments.Image GetImage(String field) {
-			Fragment frag = Get (field);
-			return frag is fragments.Image ? (fragments.Image)frag : null;
-		}
+        public Image.View GetImageView(string field, string view)
+        {
+            var image = GetImage(field);
+            if (image != null && image.HasView(view))
+                return image.GetView(view);
+            return null;
+        }
 
-		public fragments.Link GetLink(String field) {
-			Fragment frag = Get (field);
-			return frag is fragments.Link ? (fragments.Link)frag : null;
-		}
+        public Image GetImage(string field)
+        {
+            IFragment frag = Get(field);
+            return frag is Image image ? image : null;
+        }
 
-		public fragments.Date GetDate(String field) {
-			Fragment frag = Get (field);
-			return frag is fragments.Date ? (fragments.Date)frag : null;
-		}
+        public ILink GetLink(string field)
+        {
+            IFragment frag = Get(field);
+            return frag is ILink link ? link : null;
+        }
 
-		public fragments.Timestamp GetTimestamp(String field) {
-			Fragment frag = Get (field);
-			return frag is fragments.Timestamp ? (fragments.Timestamp)frag : null;
-		}
+        public Date GetDate(string field)
+        {
+            IFragment frag = Get(field);
+            return frag is Date date ? date : null;
+        }
 
-		public fragments.Embed GetEmbed(String field) {
-			Fragment frag = Get (field);
-			return frag is fragments.Embed ? (fragments.Embed)frag : null;
-		}
+        public Timestamp GetTimestamp(string field)
+        {
+            IFragment frag = Get(field);
+            return frag is Timestamp timestamp ? timestamp : null;
+        }
 
-		public fragments.Group GetGroup(String field) {
-			Fragment frag = Get (field);
-			return frag is fragments.Group ? (fragments.Group)frag : null;
-		}
+        public Embed GetEmbed(string field)
+        {
+            IFragment frag = Get(field);
+            return (Embed)frag;
+        }
 
-		public fragments.Color GetColor(String field) {
-			Fragment frag = Get (field);
-			return frag is fragments.Color ? (fragments.Color)frag : null;
-		}
+        public fragments.Group GetGroup(string field)
+        {
+            IFragment frag = Get(field);
+            return (fragments.Group)frag;
+        }
 
-		public fragments.GeoPoint GetGeoPoint(String field) {
-			Fragment frag = Get (field);
-			return frag is fragments.GeoPoint ? (fragments.GeoPoint)frag : null;
-		}
+        public Color GetColor(string field)
+        {
+            IFragment frag = Get(field);
+            return frag is Color color ? color : null;
+        }
 
-		public fragments.StructuredText GetStructuredText(String field) {
-			Fragment frag = Get (field);
-			return frag is fragments.StructuredText ? (fragments.StructuredText)frag : null;
-		}
-		
-		public fragments.Raw GetRaw(String field)
-		{
-		    Fragment frag = Get(field);
-		    return frag is fragments.Raw ? (fragments.Raw)frag : null;
-		}
+        public GeoPoint GetGeoPoint(string field)
+        {
+            IFragment frag = Get(field);
+            return (GeoPoint)frag;
+        }
 
-		public String GetHtml(String field, DocumentLinkResolver resolver) {
-			return GetHtml (field, resolver, null);
-		}
+        public StructuredText GetStructuredText(string field)
+        {
+            IFragment frag = Get(field);
+            return (StructuredText)frag;
+        }
 
-		public String GetHtml(String field, DocumentLinkResolver resolver, HtmlSerializer serializer) {
-			Fragment fragment = Get(field);
-			return WithFragments.GetHtml(fragment, resolver, serializer);
-		}
+        public string GetHtml(string field, DocumentLinkResolver resolver)
+        {
+            return GetHtml(field, resolver, null);
+        }
 
-		public static String GetHtml(Fragment fragment, DocumentLinkResolver resolver, HtmlSerializer serializer) {
-			if (fragment == null)
-				return "";
-			if (fragment is fragments.StructuredText) {
-				return ((fragments.StructuredText)fragment).AsHtml(resolver, serializer);
-			}
-			if(fragment is fragments.Number) {
-				return ((fragments.Number)fragment).AsHtml();
-			}
-			if(fragment is fragments.Color) {
-				return ((fragments.Color)fragment).AsHtml();
-			}
-			if(fragment is fragments.Text) {
-				return ((fragments.Text)fragment).AsHtml();
-			}
-			if(fragment is fragments.Date) {
-				return ((fragments.Date)fragment).AsHtml();
-			}
-			if(fragment is fragments.Embed) {
-				return ((fragments.Embed)fragment).AsHtml();
-			}
-			else if(fragment is fragments.Image) {
-				return ((fragments.Image)fragment).AsHtml(resolver);
-			}
-			else if(fragment is fragments.WebLink) {
-				return ((fragments.WebLink)fragment).AsHtml();
-			}
-			else if(fragment is fragments.DocumentLink) {
-				return ((fragments.DocumentLink)fragment).AsHtml(resolver);
-			}
-			else if(fragment is fragments.Group) {
-				return ((fragments.Group)fragment).AsHtml(resolver);
-			}
-			else if (fragment is fragments.SliceZone) {
-				return ((fragments.SliceZone)fragment).AsHtml(resolver);
-			}
+        public string GetHtml(string field, DocumentLinkResolver resolver, HtmlSerializer serializer)
+        {
+            IFragment fragment = Get(field);
+            return GetHtml(fragment, resolver, serializer);
+        }
 
-			return "";
+        public static string GetHtml(IFragment fragment, DocumentLinkResolver resolver, HtmlSerializer serializer)
+        {
+            if (fragment == null)
+                return string.Empty;
 
-		}
+            switch (fragment)
+            {
+                case StructuredText structuredText:
+                    return structuredText.AsHtml(resolver, serializer);
+                case Number number:
+                    return number.AsHtml();
+                case Color color:
+                    return color.AsHtml();
+                case Text text:
+                    return text.AsHtml();
+                case Date date:
+                    return date.AsHtml();
+                case Embed embed:
+                    return embed.AsHtml();
+                case Image image:
+                    return image.AsHtml(resolver);
+                case WebLink webLink:
+                    return webLink.AsHtml();
+                case DocumentLink docLink:
+                    return docLink.AsHtml(resolver);
+                case fragments.Group group:
+                    return group.AsHtml(resolver);
+                case SliceZone zone:
+                    return zone.AsHtml(resolver);
+                default:
+                    return string.Empty;
+            }
+        }
 
-		public String AsHtml(DocumentLinkResolver linkResolver) {
-			return AsHtml(linkResolver, null);
-		}
+        public BooleanFragment GetBoolean(string field)
+        {
+            IFragment fragment = Get(field);
+            return (BooleanFragment)fragment;
+        }
 
-		public String AsHtml(DocumentLinkResolver linkResolver, HtmlSerializer htmlSerializer) {
-			String html = "";
-			foreach(KeyValuePair<String,Fragment> fragment in Fragments) {
-				html += ("<section data-field=\"" + fragment.Key + "\">");
-				html += GetHtml(fragment.Key, linkResolver, htmlSerializer);
-				html += ("</section>");
-			}
-			return html.Trim();
-		}
+        public string AsHtml(DocumentLinkResolver linkResolver) => AsHtml(linkResolver, null);
 
-		public IList<DocumentLink> LinkedDocuments() {
-			var result = new List<DocumentLink>();
-			foreach(Fragment fragment in Fragments.Values) {
-				if (fragment is fragments.DocumentLink) {
-					result.Add ((fragments.DocumentLink)fragment);
-				} else if (fragment is fragments.StructuredText) {
-					var text = (fragments.StructuredText)fragment;
-					foreach (fragments.StructuredText.Block block in text.Blocks) {
-						if (block is fragments.StructuredText.TextBlock) {
-							var spans = ((fragments.StructuredText.TextBlock)block).Spans;
-							foreach (fragments.StructuredText.Span span in spans) {
-								if (span is fragments.StructuredText.Hyperlink) {
-									var link = ((fragments.StructuredText.Hyperlink)span).Link;
-									if (link is fragments.DocumentLink) {
-										result.Add ((fragments.DocumentLink)link);
-									}
-								}
-							}
-						}
-					}
-				} else if (fragment is fragments.Group) {
-					var group = (fragments.Group)fragment;
-					foreach (GroupDoc doc in group.GroupDocs) {
-						result.AddRange (doc.LinkedDocuments());
-					}
-				}
-			}
-			return result;
-		}
+        public string AsHtml(DocumentLinkResolver linkResolver, HtmlSerializer htmlSerializer)
+        {
+            string html = "";
+            foreach (KeyValuePair<string, IFragment> fragment in Fragments)
+            {
+                html += ("<section data-field=\"" + fragment.Key + "\">");
+                html += GetHtml(fragment.Key, linkResolver, htmlSerializer);
+                html += ("</section>");
+            }
+            return html.Trim();
+        }
 
-	}
+        public IList<DocumentLink> LinkedDocuments()
+        {
+            var result = new List<DocumentLink>();
+            foreach (IFragment fragment in Fragments.Values)
+            {
+                if (fragment is DocumentLink dl)
+                {
+                    result.Add(dl);
+                }
+                else if (fragment is StructuredText text)
+                {
+                    foreach (StructuredText.Block block in text.Blocks)
+                    {
+                        if (block is StructuredText.TextBlock textBlock)
+                        {
+                            var spans = textBlock.Spans;
+                            foreach (StructuredText.Span span in spans)
+                            {
+                                if (span is StructuredText.Hyperlink hyperlink)
+                                {
+                                    var link = hyperlink.Link;
+                                    if (link is DocumentLink docLink)
+                                    {
+                                        result.Add(docLink);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (fragment is fragments.Group group)
+                {
+                    result.AddRange(group.GroupDocs.SelectMany(d => d.LinkedDocuments()));
+                }
+            }
+            return result;
+        }
+
+        public Raw GetRaw(string field)
+        {
+            var frag = Get(field);
+            return (Raw)frag;
+        }
+    }
 }
 

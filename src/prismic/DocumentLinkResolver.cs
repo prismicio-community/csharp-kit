@@ -2,37 +2,24 @@
 
 namespace prismic
 {
-	public abstract class DocumentLinkResolver
-	{
-	
-		public abstract String Resolve(fragments.DocumentLink link);
+    public abstract class DocumentLinkResolver
+    {
+        public abstract string Resolve(fragments.DocumentLink link);
 
-		public String Resolve(Document doc) {
-			return Resolve(doc.AsDocumentLink());
-		}
+        public string Resolve(Document doc) => Resolve(doc.AsDocumentLink());
 
-		public String GetTitle(fragments.DocumentLink link) {
-			return null;
-		}
+        public virtual string GetTitle(fragments.DocumentLink link) => null;
 
-		public static DocumentLinkResolver For(System.Func<fragments.DocumentLink, string> resolver) {
-			return new LambdaDocumentLinkResolver(resolver);
-		}
+        public static DocumentLinkResolver For(Func<fragments.DocumentLink, string> resolver) => new LambdaDocumentLinkResolver(resolver);
+    }
 
-	}
+    public class LambdaDocumentLinkResolver : DocumentLinkResolver
+    {
+        private readonly Func<fragments.DocumentLink, string> _f;
 
-	public class LambdaDocumentLinkResolver: DocumentLinkResolver {
-		private System.Func<fragments.DocumentLink, string> f;
+        public override string Resolve(fragments.DocumentLink link) => _f(link);
 
-		public override String Resolve(fragments.DocumentLink link) {
-			return f(link);
-		}
+        public LambdaDocumentLinkResolver(Func<fragments.DocumentLink, string> f) => _f = f;
 
-		public LambdaDocumentLinkResolver(System.Func<fragments.DocumentLink, string> f) {
-			this.f = f;
-		}
-
-	}
-
+    }
 }
-
